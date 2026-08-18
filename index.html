@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -13,9 +12,18 @@
         /* Desain Diperbesar (Scale-Up) buat Mobile - NB THEME */
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 0; font-size: 15px; color: #333;} 
         
-        /* App Header Khusus Logo */
-        .app-header { background-color: #1c1c1c; text-align: center; padding: 12px 0 5px 0; border-bottom: 1px solid #333;}
+        /* App Header Khusus Logo & Logout */
+        .app-header { background-color: #1c1c1c; display: flex; justify-content: center; align-items: center; padding: 12px 15px 12px 15px; border-bottom: 1px solid #333; position: relative;}
         .app-header img { height: 28px; object-fit: contain; }
+        .btn-logout { position: absolute; right: 15px; background: transparent; border: 1px solid #555; color: #ccc; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
+        .btn-logout:active { background: #cc0000; border-color: #cc0000; color: white;}
+
+        /* LAYAR LOGIN EKSKLUSIF */
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1c1c1c; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        #loginScreen img { height: 60px; margin-bottom: 30px; }
+        .btn-google { background: white; color: #1c1c1c; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s;}
+        .btn-google:active { transform: scale(0.95); }
+        .btn-google img { height: 20px; margin: 0; }
 
         /* Navbar & Tabs - Dark Charcoal */
         .tab-bar { display: flex; background: #1c1c1c; color: white; padding: 0 5px 0 5px; position: sticky; top: 0; z-index: 20;}
@@ -50,12 +58,12 @@
         .btn-add { background-color: #cc0000; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; letter-spacing: 1px;}
         .btn-add:active { background-color: #990000; }
         
-        /* Tombol Batal & Hapus Permanen (di dalam mode edit) */
+        /* Tombol Batal & Hapus Permanen */
         .btn-action-row { display: flex; gap: 10px; margin-top: 10px; }
         .btn-batal { flex: 1; background: #888888; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .btn-hapus-permanen { flex: 1; background: #1c1c1c; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
 
-        /* PIVOT GROUP HEADER (SO + Artikel) - DIBIKIN CENTER & 1 BARIS */
+        /* PIVOT GROUP HEADER */
         .pivot-group-header {
             background-color: #e0e0e0;
             color: #1c1c1c;
@@ -64,14 +72,14 @@
             margin-top: 15px;
             margin-bottom: 10px;
             border-left: 4px solid #cc0000;
-            border-right: 4px solid #cc0000; /* Kanan-kiri merah biar seimbang karena di tengah */
+            border-right: 4px solid #cc0000;
             border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            white-space: nowrap; /* Memaksa cuma 1 baris */
+            white-space: nowrap; 
             overflow: hidden;
         }
         .pivot-group-header span {
@@ -86,21 +94,19 @@
             font-size: 11px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            flex-shrink: 0; /* Biar tulisan badge ini nggak penyok/kegencet */
+            flex-shrink: 0; 
         }
 
-        /* GRID CARDS (Monitoring Style) */
+        /* GRID CARDS */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
         
         .mini-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; border-top: 5px solid #cc0000; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;}
         .mini-card.history-card { border-top: 5px solid #888888; background: #fafafa; }
         
-        /* DESAIN CARD ITEM BARU YANG LEBIH MODERN & BERSANDING */
         .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;}
         .badge-so-modern { flex: 1; background: #1c1c1c; color: white; padding: 8px 5px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .badge-size-modern { flex: 0.6; background: #cc0000; color: white; padding: 8px 5px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center; letter-spacing: 1px;}
         
-        /* Info Box Grid (Pengganti Teks Paragraf) */
         .info-box { background: #f8f9fa; border: 1px solid #eee; padding: 8px 6px; border-radius: 6px; text-align: center; }
         .info-label { display: block; font-size: 10px; color: #888; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;}
         .info-value { display: block; font-size: 13px; font-weight: 900; color: #1c1c1c; }
@@ -109,13 +115,9 @@
         .keterangan-text { background-color: #fff3cd; padding: 6px; border-radius: 5px; color: #333; font-size: 12px; margin-top: 8px; border-left: 3px solid #cc0000; font-weight: bold;}
         .tanggal-text { font-size: 12px; color: #777; font-weight: bold; margin: 0;}
 
-        /* Animasi Berkedip Untuk Indikator Multi-Artikel */
-        @keyframes blinker {
-            50% { opacity: 0; }
-        }
+        @keyframes blinker { 50% { opacity: 0; } }
         .alert-multi { background-color: #cc0000; color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 4px; border-radius: 4px; margin-bottom: 10px; animation: blinker 1.5s linear infinite; letter-spacing: 0.5px;}
 
-        /* Tombol Action di Kartu */
         .action-row { display: flex; gap: 8px; margin-top: 12px; }
         .action-row button { flex: 1; padding: 12px 0; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; text-transform: uppercase;}
         .btn-edit { background: #555555; }
@@ -124,85 +126,98 @@
 </head>
 <body>
 
-    <!-- APP HEADER LOGO -->
-    <div class="app-header">
-        <img src="logo.png" alt="Logo">
+    <!-- LAYAR LOGIN GOOGLE -->
+    <div id="loginScreen">
+        <img src="logo.png" alt="Logo NB">
+        <h2 style="color: white; margin-bottom: 30px;">FG WH SYSTEM</h2>
+        <button class="btn-google" id="btnGoogleLogin">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
+            Masuk dengan Google
+        </button>
     </div>
 
-    <!-- TAB NAVIGATION -->
-    <div class="tab-bar">
-        <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)">➕ INPUT</div>
-        <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)">🟢 AKTIF</div>
-        <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)">🔴 RIWAYAT</div>
-    </div>
+    <!-- WADAH UTAMA APLIKASI (Sembunyi sebelum login) -->
+    <div id="mainApp" style="display: none;">
+        
+        <!-- APP HEADER LOGO -->
+        <div class="app-header">
+            <img src="logo.png" alt="Logo">
+            <button class="btn-logout" id="btnLogout">LOGOUT</button>
+        </div>
 
-    <!-- TAB 1: SMART FORM INPUT -->
-    <div id="tabInput" class="content active">
-        <div class="form-card" id="formSmart">
-            <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 14px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
-            
-            <!-- Global Info (1x Input) -->
-            <div class="form-row">
-                <input type="date" id="tanggalInput" class="form-input">
-                <input type="text" id="soInput" class="form-input" placeholder="SO (LO9089)">
-            </div>
-            <div class="form-row">
-                <select id="jenisInput" class="form-select" style="text-transform: none;">
-                    <option value="SOLID">📦 SOLID</option>
-                    <option value="MIX">🔀 MIX</option>
-                </select>
-                <input type="text" id="artikelInput" class="form-input" placeholder="Artikel / Style">
-            </div>
-            <div class="form-row">
-                <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (FG-A)">
-                <input type="text" id="keteranganInput" class="form-input" placeholder="Ket. (Opsional)">
-            </div>
+        <!-- TAB NAVIGATION -->
+        <div class="tab-bar">
+            <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)">➕ INPUT</div>
+            <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)">🟢 AKTIF</div>
+            <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)">🔴 RIWAYAT</div>
+        </div>
 
-            <!-- Dynamic Input Box (Size & Karton) -->
-            <div class="dynamic-box">
-                <div class="dynamic-header">👟 List Size & No. Karton</div>
-                <div id="kartonList">
-                    <!-- Baris Default -->
-                    <div class="form-row karton-item" style="margin-bottom: 10px;">
-                        <input type="text" class="form-input size-input" placeholder="Size (8T)">
-                        <!-- INPUTMODE NUMERIC AGAR MUNCUL NUMBER PAD -->
-                        <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Karton (123)">
-                        <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
-                    </div>
+        <!-- TAB 1: SMART FORM INPUT -->
+        <div id="tabInput" class="content active">
+            <div class="form-card" id="formSmart">
+                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 14px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
+                
+                <div class="form-row">
+                    <input type="date" id="tanggalInput" class="form-input">
+                    <input type="text" id="soInput" class="form-input" placeholder="SO (LO9089)">
                 </div>
-                <button id="btnTambahBaris" class="btn-tambah-baris">➕ TAMBAH KARTON LAIN</button>
+                <div class="form-row">
+                    <select id="jenisInput" class="form-select" style="text-transform: none;">
+                        <option value="SOLID">📦 SOLID</option>
+                        <option value="MIX">🔀 MIX</option>
+                    </select>
+                    <input type="text" id="artikelInput" class="form-input" placeholder="Artikel / Style">
+                </div>
+                <div class="form-row">
+                    <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (FG-A)">
+                    <input type="text" id="keteranganInput" class="form-input" placeholder="Ket. (Opsional)">
+                </div>
+
+                <div class="dynamic-box">
+                    <div class="dynamic-header">👟 List Size & No. Karton</div>
+                    <div id="kartonList">
+                        <div class="form-row karton-item" style="margin-bottom: 10px;">
+                            <input type="text" class="form-input size-input" placeholder="Size (8T)">
+                            <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Karton (123)">
+                            <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
+                        </div>
+                    </div>
+                    <button id="btnTambahBaris" class="btn-tambah-baris">➕ TAMBAH KARTON LAIN</button>
+                </div>
+                
+                <button class="btn-add" id="btnTambah">SUBMIT</button>
+                
+                <div id="editActionGroup" class="btn-action-row" style="display: none;">
+                    <button class="btn-batal" onclick="batalEdit()">Batal Edit</button>
+                    <button class="btn-hapus-permanen" onclick="hapusPermanen()">Hapus</button>
+                </div>
             </div>
-            
-            <button class="btn-add" id="btnTambah">SUBMIT</button>
-            
-            <!-- Wadah tombol Batal Edit dan Hapus Permanen -->
-            <div id="editActionGroup" class="btn-action-row" style="display: none;">
-                <button class="btn-batal" onclick="batalEdit()">Batal Edit</button>
-                <button class="btn-hapus-permanen" onclick="hapusPermanen()">Hapus</button>
+        </div>
+
+        <!-- TAB 2: STOK AKTIF -->
+        <div id="tabAktif" class="content">
+            <div class="sticky-filter">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari Sales Order/SO">
             </div>
+            <div id="gridKartonAktif"></div> 
+        </div>
+
+        <!-- TAB 3: RIWAYAT OUT -->
+        <div id="tabRiwayat" class="content">
+            <div class="sticky-filter">
+                <input type="text" id="filterSORiwayat" class="search-box" placeholder="🔍 Cari Sales Order/SO">
+            </div>
+            <div id="gridRiwayatOut"></div> 
         </div>
     </div>
 
-    <!-- TAB 2: STOK AKTIF -->
-    <div id="tabAktif" class="content">
-        <div class="sticky-filter">
-            <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari Sales Order/SO">
-        </div>
-        <div id="gridKartonAktif"></div> 
-    </div>
-
-    <!-- TAB 3: RIWAYAT OUT -->
-    <div id="tabRiwayat" class="content">
-        <div class="sticky-filter">
-            <input type="text" id="filterSORiwayat" class="search-box" placeholder="🔍 Cari Sales Order/SO">
-        </div>
-        <div id="gridRiwayatOut"></div> 
-    </div>
-
-    <!-- FIREBASE REALTIME DATABASE SDK -->
+    <!-- FIREBASE REALTIME DATABASE SDK & AUTH -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+        
+        // IMPORT FIREBASE AUTHENTICATION
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
         // Konfigurasi Database Realtime
         const firebaseConfig = {
@@ -218,13 +233,52 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const kartonRef = ref(db, 'stok_fg_wh');
+        
+        // SETUP AUTH
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
+        // ELEMENT UI LOGIN
+        const loginScreen = document.getElementById('loginScreen');
+        const mainApp = document.getElementById('mainApp');
+        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+        const btnLogout = document.getElementById('btnLogout');
+
+        // FUNGSI CEK STATUS LOGIN
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User udah login, tampilkan aplikasi
+                loginScreen.style.display = "none";
+                mainApp.style.display = "block";
+            } else {
+                // Belum login, sembunyikan aplikasi
+                loginScreen.style.display = "flex";
+                mainApp.style.display = "none";
+            }
+        });
+
+        // FUNGSI TOMBOL LOGIN GOOGLE
+        btnGoogleLogin.addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch((error) => {
+                alert("Gagal login: " + error.message);
+            });
+        });
+
+        // FUNGSI TOMBOL LOGOUT
+        btnLogout.addEventListener('click', () => {
+            if(confirm("Yakin mau keluar/logout?")) {
+                signOut(auth);
+            }
+        });
+
+
+        // ============================================
+        // LOGIKA APLIKASI SEPERTI SEBELUMNYA
+        // ============================================
         document.getElementById('tanggalInput').valueAsDate = new Date();
-
         let rawData = [];
         window.currentEditId = null; 
 
-        // Fungsi Auto-Uppercase
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 if(!input.hasAttribute('data-upper')) {
@@ -236,19 +290,16 @@
             });
         }
         
-        // Fungsi Auto Format '#' untuk Nomor Karton
         function applyKartonFormatListener() {
             document.querySelectorAll('.nokarton-input').forEach(input => {
                 if(!input.hasAttribute('data-format')) {
                     input.setAttribute('data-format', 'true');
                     
-                    // Batasi hanya angka dan # saat ngetik
                     input.addEventListener('input', function() {
                         let val = this.value.replace(/[^0-9#]/g, '');
                         this.value = val;
                     });
 
-                    // Tambahkan # secara otomatis saat selesai (blur)
                     input.addEventListener('blur', function() {
                         let val = this.value.trim();
                         if(val !== '' && !val.startsWith('#')) {
@@ -262,7 +313,6 @@
         applyUppercaseListener(); 
         applyKartonFormatListener();
 
-        // Fitur Tambah Baris (Dinamic Row)
         document.getElementById('btnTambahBaris').addEventListener('click', () => {
             const list = document.getElementById('kartonList');
             const row = document.createElement('div');
@@ -282,7 +332,6 @@
             btn.parentElement.remove();
         }
 
-        // FUNGSI BATAL EDIT & RESET FORM
         window.batalEdit = () => {
             window.currentEditId = null; 
             
@@ -316,7 +365,6 @@
             if(tabName !== 'tabInput' && window.currentEditId !== null) {
                 batalEdit();
             }
-
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
@@ -324,7 +372,6 @@
             renderData();
         }
 
-        // CREATE (SINGLE/MASSAL) ATAU UPDATE
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
             const tanggal = document.getElementById('tanggalInput').value; 
@@ -347,7 +394,6 @@
                 const sizeInput = item.querySelector('.size-input').value.toUpperCase().trim();
                 let noKartonInput = item.querySelector('.nokarton-input').value.toUpperCase().trim();
                 
-                // Pastikan ada # saat submit kalau kelewatan
                 if(noKartonInput && !noKartonInput.startsWith('#')) {
                     noKartonInput = '#' + noKartonInput;
                 }
@@ -411,7 +457,6 @@
                 } else {
                     alert("Berhasil disimpan!");
                 }
-                
                 batalEdit(); 
             }
         });
@@ -422,7 +467,6 @@
             if(confirm("🚨 PERINGATAN! Yakin mau hapus data ini secara PERMANEN dari database? Data nggak akan masuk ke Riwayat OUT!")) {
                 const itemRef = ref(db, `stok_fg_wh/${window.currentEditId}`);
                 await remove(itemRef); 
-                
                 alert("Data berhasil dihapus permanen!");
                 batalEdit(); 
                 openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
@@ -468,18 +512,13 @@
             snapshot.forEach((childSnapshot) => {
                 let data = childSnapshot.val();
                 data.id = childSnapshot.key;
-                
                 let sizeStr = data.size.toString().toUpperCase();
                 data.sizeValue = parseFloat(sizeStr.replace('T', '.5')); 
-                
                 rawData.push(data);
             });
             renderData();
         });
 
-        // ----------------------------------------------------
-        // SISTEM RENDER PIVOT & MODERN CARD ITEM
-        // ----------------------------------------------------
         function renderData() {
             const gridAktif = document.getElementById('gridKartonAktif');
             const gridRiwayat = document.getElementById('gridRiwayatOut');
@@ -493,7 +532,6 @@
             let dataAktif = rawData.filter(d => d.status === "AKTIF" && (d.so_number || "").toUpperCase().includes(filterAktif));
             let dataOut = rawData.filter(d => d.status === "OUT" && (d.so_number || "").toUpperCase().includes(filterRiwayat));
 
-            // Cek Multi-Artikel per SO
             let soArtikelMap = {};
             rawData.filter(d => d.status === "AKTIF").forEach(d => {
                 let so = (d.so_number || "").toUpperCase();
@@ -502,13 +540,15 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
-            // Sorting 
             dataAktif.sort((a, b) => {
+                if (a.so_number !== b.so_number) return a.so_number.localeCompare(b.so_number);
+                if (a.artikel !== b.artikel) return a.artikel.localeCompare(b.artikel);
                 if (a.sizeValue !== b.sizeValue) return a.sizeValue - b.sizeValue;
                 return a.nomor_karton.localeCompare(b.nomor_karton);
             });
 
             dataOut.sort((a, b) => {
+                if (a.so_number !== b.so_number) return a.so_number.localeCompare(b.so_number);
                 if (a.sizeValue !== b.sizeValue) return a.sizeValue - b.sizeValue;
                 return a.nomor_karton.localeCompare(b.nomor_karton);
             });
@@ -534,7 +574,6 @@
                 sortedKeys.forEach(key => {
                     let group = groupedBySOArt[key];
                     
-                    // HEADER PIVOT (SO + Artikel + Jumlah - CENTER & 1 BARIS)
                     htmlOutput += `
                         <div class="pivot-group-header">
                             <span>📦 SO: <b>${group.so}</b> | 👕 Art: <b>${group.art}</b></span>
@@ -543,7 +582,6 @@
                         <div class="grouped-grid">
                     `;
                     
-                    // RENDER CARD ITEM (Modern UI dengan Info Box)
                     group.items.forEach(data => {
                         let htmlKeterangan = data.keterangan ? `<div class="keterangan-text">📝 ${data.keterangan}</div>` : '';
                         let badgeJenis = data.jenis === 'MIX' 
@@ -557,21 +595,17 @@
                             htmlOutput += `
                                 <div class="mini-card">
                                     ${htmlPeringatanMulti}
-                                    
                                     <div class="card-header-modern">
                                         <div class="badge-so-modern">${data.so_number}</div>
                                         <div class="badge-size-modern">${data.size}</div>
                                     </div>
-                                    
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                         <span class="tanggal-text">📅 ${data.tanggal}</span>
                                         ${badgeJenis}
                                     </div>
-                                    
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                                         <div class="info-box">
                                             <span class="info-label">Karton</span>
-                                            <!-- Tanda pagar # udah nempel di value datanya -->
                                             <span class="info-value">${data.nomor_karton}</span>
                                         </div>
                                         <div class="info-box">
@@ -579,14 +613,11 @@
                                             <span class="info-value">${data.artikel}</span>
                                         </div>
                                     </div>
-                                    
                                     <div class="info-box" style="background: #eef2f5; border-color: #d1d9e0;">
                                         <span class="info-label">Lokasi FG</span>
                                         <span class="info-value" style="color: #cc0000; font-size: 14px;">📍 ${data.lokasi}</span>
                                     </div>
-                                    
                                     ${htmlKeterangan}
-                                    
                                     <div class="action-row">
                                         <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
                                         <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
@@ -600,12 +631,10 @@
                                         <div class="badge-so-modern" style="background: #888; border-color: #888;">${data.so_number}</div>
                                         <div class="badge-size-modern" style="background: #aaa; border-color: #aaa;">${data.size}</div>
                                     </div>
-                                    
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                         <span class="tanggal-text">📤 ${data.tanggal_out}</span>
                                         ${badgeJenis}
                                     </div>
-                                    
                                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                                         <div class="info-box">
                                             <span class="info-label">Karton</span>
@@ -616,7 +645,6 @@
                                             <span class="info-value">${data.artikel}</span>
                                         </div>
                                     </div>
-                                    
                                     ${htmlKeterangan}
                                 </div>
                             `;
@@ -625,7 +653,6 @@
                     
                     htmlOutput += `</div>`; 
                 });
-
                 return htmlOutput;
             }
 
