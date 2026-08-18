@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PP FG WH - SI MONITORING</title>
     
-    <!-- INI PEMANGGILAN ICON BROWSER LO COK -->
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
@@ -18,17 +17,20 @@
         .btn-logout { position: absolute; right: 15px; background: transparent; border: 1px solid #555; color: #ccc; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
         .btn-logout:active { background: #cc0000; border-color: #cc0000; color: white;}
 
-        /* LAYAR LOGIN EKSKLUSIF */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1c1c1c; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        #loginScreen img { height: 60px; margin-bottom: 30px; }
-        .btn-google { background: white; color: #1c1c1c; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s;}
-        .btn-google:active { transform: scale(0.95); }
-        .btn-google img { height: 20px; margin: 0; }
+        /* LAYAR LOGIN EKSKLUSIF (DIUPGRADE MAKIN PREMIUM) */
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1c1c1c 0%, #3a3a3a 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: white; padding: 40px 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; border-top: 6px solid #cc0000;}
+        .login-box img { height: 50px; margin-bottom: 20px; }
+        .login-box h2 { color: #1c1c1c; margin: 0 0 5px 0; font-weight: 900; font-size: 22px; letter-spacing: 1px;}
+        .login-box p { color: #777; font-size: 14px; margin: 0 0 30px 0;}
+        .btn-google { background: white; color: #333; border: 1px solid #ddd; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%; transition: 0.3s;}
+        .btn-google:active { transform: scale(0.97); background: #f9f9f9; }
+        .btn-google img { height: 22px; margin: 0; }
 
         /* Navbar & Tabs - Dark Charcoal */
         .tab-bar { display: flex; background: #1c1c1c; color: white; padding: 0 5px 0 5px; position: sticky; top: 0; z-index: 20;}
         .tab-btn { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; font-size: 14px; color: #888; border-bottom: 4px solid transparent; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;}
-        .tab-btn.active { color: white; border-bottom: 4px solid #cc0000; } /* NB Red */
+        .tab-btn.active { color: white; border-bottom: 4px solid #cc0000; } 
         
         .content { padding: 12px; display: none; }
         .content.active { display: block; }
@@ -50,9 +52,9 @@
         /* Box Dinamis untuk Size & Karton */
         .dynamic-box { background: #f9f9f9; border: 1px dashed #ccc; padding: 12px; border-radius: 8px; margin-bottom: 15px;}
         .dynamic-header { color: #cc0000; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;}
-        .btn-tambah-baris { background-color: #555; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.3s;}
+        .btn-tambah-baris { background-color: #555; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
         .btn-tambah-baris:active { background-color: #333; }
-        .btn-hapus-baris { background-color: #c0392b; color: white; border: none; border-radius: 6px; cursor: pointer; padding: 0 15px; font-weight: bold; font-size: 12px;}
+        .btn-hapus-baris { background-color: #c0392b; color: white; border: none; border-radius: 6px; cursor: pointer; padding: 0 15px; font-weight: bold; font-size: 14px;}
 
         /* Tombol Utama - NB Red */
         .btn-add { background-color: #cc0000; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; letter-spacing: 1px;}
@@ -60,25 +62,25 @@
         
         /* Tombol Batal & Hapus Permanen */
         .btn-action-row { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-batal { flex: 1; background: #888888; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .btn-hapus-permanen { flex: 1; background: #1c1c1c; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .btn-batal { flex: 1; background: #888888; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .btn-hapus-permanen { flex: 1; background: #1c1c1c; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
 
         /* PIVOT GROUP HEADER */
         .pivot-group-header {
             background-color: #e0e0e0;
             color: #1c1c1c;
-            padding: 10px 8px;
-            font-size: 13px;
+            padding: 12px 10px;
+            font-size: 14px;
             margin-top: 15px;
-            margin-bottom: 10px;
-            border-left: 4px solid #cc0000;
-            border-right: 4px solid #cc0000;
+            margin-bottom: 12px;
+            border-left: 5px solid #cc0000;
+            border-right: 5px solid #cc0000;
             border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             white-space: nowrap; 
             overflow: hidden;
         }
@@ -89,51 +91,56 @@
         .pivot-count {
             background-color: #1c1c1c;
             color: white;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             letter-spacing: 0.5px;
             flex-shrink: 0; 
         }
 
-        /* GRID CARDS */
+        /* GRID CARDS (DIUBAH JADI LEBIH BESAR TULISANNYA) */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
         
-        .mini-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; border-top: 5px solid #cc0000; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;}
+        .mini-card { background: white; border-radius: 10px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; border-top: 5px solid #cc0000; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;}
         .mini-card.history-card { border-top: 5px solid #888888; background: #fafafa; }
         
         .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;}
-        .badge-so-modern { flex: 1; background: #1c1c1c; color: white; padding: 8px 5px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .badge-size-modern { flex: 0.6; background: #cc0000; color: white; padding: 8px 5px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center; letter-spacing: 1px;}
+        /* FONT SIZE BADGE SO DAN SIZE DIPERBESAR */
+        .badge-so-modern { flex: 1; background: #1c1c1c; color: white; padding: 10px 5px; border-radius: 6px; font-weight: bold; font-size: 15px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .badge-size-modern { flex: 0.6; background: #cc0000; color: white; padding: 10px 5px; border-radius: 6px; font-weight: 900; font-size: 16px; text-align: center; letter-spacing: 1px;}
         
-        .info-box { background: #f8f9fa; border: 1px solid #eee; padding: 8px 6px; border-radius: 6px; text-align: center; }
-        .info-label { display: block; font-size: 10px; color: #888; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;}
-        .info-value { display: block; font-size: 13px; font-weight: 900; color: #1c1c1c; }
+        /* Info Box Grid Diperbesar */
+        .info-box { background: #f8f9fa; border: 1px solid #eee; padding: 10px 6px; border-radius: 6px; text-align: center; }
+        .info-label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;}
+        .info-value { display: block; font-size: 15px; font-weight: 900; color: #1c1c1c; } /* Angka Karton & Artikel Diperbesar */
         
-        .badge-jenis { background: #555; color: white; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px; letter-spacing: 0.5px;}
-        .keterangan-text { background-color: #fff3cd; padding: 6px; border-radius: 5px; color: #333; font-size: 12px; margin-top: 8px; border-left: 3px solid #cc0000; font-weight: bold;}
-        .tanggal-text { font-size: 12px; color: #777; font-weight: bold; margin: 0;}
+        .badge-jenis { background: #555; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; letter-spacing: 0.5px;}
+        .keterangan-text { background-color: #fff3cd; padding: 8px; border-radius: 5px; color: #333; font-size: 13px; margin-top: 10px; border-left: 4px solid #cc0000; font-weight: bold;}
+        .tanggal-text { font-size: 13px; color: #777; font-weight: bold; margin: 0;}
 
         @keyframes blinker { 50% { opacity: 0; } }
-        .alert-multi { background-color: #cc0000; color: white; text-align: center; font-size: 11px; font-weight: bold; padding: 4px; border-radius: 4px; margin-bottom: 10px; animation: blinker 1.5s linear infinite; letter-spacing: 0.5px;}
+        .alert-multi { background-color: #cc0000; color: white; text-align: center; font-size: 12px; font-weight: bold; padding: 6px; border-radius: 4px; margin-bottom: 12px; animation: blinker 1.5s linear infinite; letter-spacing: 0.5px;}
 
-        .action-row { display: flex; gap: 8px; margin-top: 12px; }
-        .action-row button { flex: 1; padding: 12px 0; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; text-transform: uppercase;}
+        .action-row { display: flex; gap: 8px; margin-top: 15px; }
+        .action-row button { flex: 1; padding: 12px 0; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
         .btn-edit { background: #555555; }
         .btn-out { background: #1c1c1c; }
     </style>
 </head>
 <body>
 
-    <!-- LAYAR LOGIN GOOGLE -->
+    <!-- LAYAR LOGIN GOOGLE (DESAIN PREMIUM) -->
     <div id="loginScreen">
-        <img src="logo.png" alt="Logo NB">
-        <h2 style="color: white; margin-bottom: 30px;">FG WH SYSTEM</h2>
-        <button class="btn-google" id="btnGoogleLogin">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
-            Masuk dengan Google
-        </button>
+        <div class="login-box">
+            <img src="logo.png" alt="Logo NB">
+            <h2>PP FG WH SYSTEM</h2>
+            <p>Silakan login untuk mengakses data.</p>
+            <button class="btn-google" id="btnGoogleLogin">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
+                Masuk dengan Google
+            </button>
+        </div>
     </div>
 
     <!-- WADAH UTAMA APLIKASI (Sembunyi sebelum login) -->
@@ -155,7 +162,7 @@
         <!-- TAB 1: SMART FORM INPUT -->
         <div id="tabInput" class="content active">
             <div class="form-card" id="formSmart">
-                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 14px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
+                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 15px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
                 
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
@@ -216,7 +223,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
         
-        // IMPORT FIREBASE AUTHENTICATION
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
         // Konfigurasi Database Realtime
@@ -238,43 +244,33 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // ELEMENT UI LOGIN
         const loginScreen = document.getElementById('loginScreen');
         const mainApp = document.getElementById('mainApp');
         const btnGoogleLogin = document.getElementById('btnGoogleLogin');
         const btnLogout = document.getElementById('btnLogout');
 
-        // FUNGSI CEK STATUS LOGIN
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User udah login, tampilkan aplikasi
                 loginScreen.style.display = "none";
                 mainApp.style.display = "block";
             } else {
-                // Belum login, sembunyikan aplikasi
                 loginScreen.style.display = "flex";
                 mainApp.style.display = "none";
             }
         });
 
-        // FUNGSI TOMBOL LOGIN GOOGLE
         btnGoogleLogin.addEventListener('click', () => {
             signInWithPopup(auth, provider).catch((error) => {
                 alert("Gagal login: " + error.message);
             });
         });
 
-        // FUNGSI TOMBOL LOGOUT
         btnLogout.addEventListener('click', () => {
             if(confirm("Yakin mau keluar/logout?")) {
                 signOut(auth);
             }
         });
 
-
-        // ============================================
-        // LOGIKA APLIKASI SEPERTI SEBELUMNYA
-        // ============================================
         document.getElementById('tanggalInput').valueAsDate = new Date();
         let rawData = [];
         window.currentEditId = null; 
@@ -576,8 +572,8 @@
                     
                     htmlOutput += `
                         <div class="pivot-group-header">
-                            <span>📦 SO: <b>${group.so}</b> | 👕 Art: <b>${group.art}</b></span>
-                            <span class="pivot-count">${group.items.length} KTN</span>
+                            <span>📦 SO : <b>${group.so}</b> | 👕 Artikel : <b>${group.art}</b></span>
+                            <span class="pivot-count">${group.items.length} Karton</span>
                         </div>
                         <div class="grouped-grid">
                     `;
@@ -615,7 +611,7 @@
                                     </div>
                                     <div class="info-box" style="background: #eef2f5; border-color: #d1d9e0;">
                                         <span class="info-label">Lokasi FG</span>
-                                        <span class="info-value" style="color: #cc0000; font-size: 14px;">📍 ${data.lokasi}</span>
+                                        <span class="info-value" style="color: #cc0000; font-size: 16px;">📍 ${data.lokasi}</span>
                                     </div>
                                     ${htmlKeterangan}
                                     <div class="action-row">
