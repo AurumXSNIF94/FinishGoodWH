@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PP FG WH - SI MONITORING</title>
+    <title>PP FG WH - SYSTEM</title>
     
     <link rel="icon" type="image/png" href="logo.png">
 
@@ -16,8 +16,11 @@
         .app-header img { height: 28px; object-fit: contain; }
         .btn-logout { position: absolute; right: 15px; background: transparent; border: 1px solid #555; color: #ccc; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
         .btn-logout:active { background: #cc0000; border-color: #cc0000; color: white;}
+        /* Tombol Sakti Fix Data */
+        .btn-fix { position: absolute; right: 90px; background: transparent; border: 1px solid #f39c12; color: #f39c12; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
+        .btn-fix:active { background: #f39c12; color: #1c1c1c;}
 
-        /* LAYAR LOGIN EKSKLUSIF */
+        /* LAYAR LOGIN EKSKLUSIF (DIUPGRADE MAKIN PREMIUM) */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1c1c1c 0%, #3a3a3a 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background: white; padding: 40px 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; border-top: 6px solid #cc0000;}
         .login-box img { height: 50px; margin-bottom: 20px; }
@@ -27,7 +30,7 @@
         .btn-google:active { transform: scale(0.97); background: #f9f9f9; }
         .btn-google img { height: 22px; margin: 0; }
 
-        /* Navbar & Tabs */
+        /* Navbar & Tabs - Dark Charcoal */
         .tab-bar { display: flex; background: #1c1c1c; color: white; padding: 0 5px 0 5px; position: sticky; top: 0; z-index: 20;}
         .tab-btn { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; font-size: 14px; color: #888; border-bottom: 4px solid transparent; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { color: white; border-bottom: 4px solid #cc0000; } 
@@ -49,18 +52,18 @@
         input.form-input:focus, select.form-select:focus { border-color: #1c1c1c; }
         input[type="date"] { text-transform: none; }
         
-        /* Box Dinamis */
+        /* Box Dinamis untuk Size & Karton */
         .dynamic-box { background: #f9f9f9; border: 1px dashed #ccc; padding: 12px; border-radius: 8px; margin-bottom: 15px;}
         .dynamic-header { color: #cc0000; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;}
         .btn-tambah-baris { background-color: #555; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
         .btn-tambah-baris:active { background-color: #333; }
         .btn-hapus-baris { background-color: #c0392b; color: white; border: none; border-radius: 6px; cursor: pointer; padding: 0 15px; font-weight: bold; font-size: 14px;}
 
-        /* Tombol Utama */
+        /* Tombol Utama - NB Red */
         .btn-add { background-color: #cc0000; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; letter-spacing: 1px;}
         .btn-add:active { background-color: #990000; }
         
-        /* Tombol Batal & Hapus Permanen (Form Edit) */
+        /* Tombol Batal & Hapus Permanen */
         .btn-action-row { display: flex; gap: 10px; margin-top: 10px; }
         .btn-batal { flex: 1; background: #888888; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
         .btn-hapus-permanen { flex: 1; background: #1c1c1c; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
@@ -96,7 +99,7 @@
             flex-shrink: 0; 
         }
 
-        /* GRID CARDS & CHECKBOX (FITUR BARU) */
+        /* GRID CARDS & CHECKBOX */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
         
         .mini-card { background: white; border-radius: 10px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; border-top: 5px solid #cc0000; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; position: relative;}
@@ -127,7 +130,7 @@
         .btn-edit { background: #555555; }
         .btn-out { background: #1c1c1c; }
 
-        /* FLOATING BULK ACTION BAR (FITUR BARU) */
+        /* FLOATING BULK ACTION BAR */
         .bulk-action-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1c1c1c; color: white; padding: 12px 20px; border-radius: 30px; display: none; align-items: center; gap: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100; border: 2px solid #cc0000; white-space: nowrap;}
         .bulk-action-bar span { font-weight: bold; font-size: 14px; color: #fff; }
         .bulk-btn { border: none; padding: 10px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; text-transform: uppercase;}
@@ -153,9 +156,10 @@
     <!-- WADAH UTAMA APLIKASI -->
     <div id="mainApp" style="display: none;">
         
-        <!-- APP HEADER -->
+        <!-- APP HEADER (TAMBAH TOMBOL FIX) -->
         <div class="app-header">
             <img src="logo.png" alt="Logo">
+            <button class="btn-fix" id="btnFixData">🛠️ FIX #</button>
             <button class="btn-logout" id="btnLogout">LOGOUT</button>
         </div>
 
@@ -169,7 +173,7 @@
         <!-- TAB 1: SMART FORM INPUT -->
         <div id="tabInput" class="content active">
             <div class="form-card" id="formSmart">
-                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 15px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT</h3>
+                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 15px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
                 
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
@@ -232,7 +236,7 @@
         <button class="bulk-btn bulk-btn-del" onclick="hapusTerpilih()">🗑️ HAPUS</button>
     </div>
 
-    <!-- FIREBASE SDK & AUTH -->
+    <!-- FIREBASE REALTIME DATABASE SDK & AUTH -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
@@ -287,9 +291,24 @@
         document.getElementById('tanggalInput').valueAsDate = new Date();
         let rawData = [];
         window.currentEditId = null; 
-        
-        // STATE UNTUK FITUR CHECKBOX (DELETE SELECTED)
         window.selectedIds = new Set();
+
+        // ----------------------------------------------------
+        // FITUR TOMBOL SAKTI: FIX DATA LAMA
+        // ----------------------------------------------------
+        document.getElementById('btnFixData').addEventListener('click', async () => {
+            if(confirm("Yakin mau otomatis nambahin '#' ke semua nomor karton data lama di database?")) {
+                let count = 0;
+                for (let data of rawData) {
+                    if (data.nomor_karton && !data.nomor_karton.startsWith('#')) {
+                        const itemRef = ref(db, `stok_fg_wh/${data.id}`);
+                        await update(itemRef, { nomor_karton: '#' + data.nomor_karton });
+                        count++;
+                    }
+                }
+                alert(`Beres cok! ${count} karton lama udah sukses dipasangi '#'.`);
+            }
+        });
 
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
@@ -306,10 +325,12 @@
             document.querySelectorAll('.nokarton-input').forEach(input => {
                 if(!input.hasAttribute('data-format')) {
                     input.setAttribute('data-format', 'true');
+                    
                     input.addEventListener('input', function() {
                         let val = this.value.replace(/[^0-9#]/g, '');
                         this.value = val;
                     });
+
                     input.addEventListener('blur', function() {
                         let val = this.value.trim();
                         if(val !== '' && !val.startsWith('#')) {
@@ -376,7 +397,6 @@
                 batalEdit();
             }
             
-            // Hapus pilihan saat pindah tab biar gak kecampur
             window.selectedIds.clear();
             updateBulkDeleteUI();
 
@@ -430,7 +450,6 @@
                 return;
             }
 
-            // Ambil Nama/Email User yang lagi Login
             const currentUser = auth.currentUser;
             const userName = currentUser ? (currentUser.displayName || currentUser.email) : "Admin";
             
@@ -449,7 +468,7 @@
                     nomor_karton: dataToPush[0].noKarton,
                     lokasi: lokasi,
                     keterangan: keterangan,
-                    diinput_oleh: userName // Update juga siapa yg edit
+                    diinput_oleh: userName 
                 });
                 
                 alert("Data berhasil di-Update!");
@@ -468,7 +487,7 @@
                         lokasi: lokasi, 
                         keterangan: keterangan,
                         status: "AKTIF",
-                        diinput_oleh: userName, // Tanda siapa yg input
+                        diinput_oleh: userName, 
                         timestamp_in: new Date().toISOString()
                     });
                 }
@@ -482,7 +501,6 @@
             }
         });
 
-        // FUNGSI HAPUS SINGLE DI FORM EDIT
         window.hapusPermanen = async () => {
             if(!window.currentEditId) return;
 
@@ -541,9 +559,6 @@
             renderData();
         });
 
-        // ----------------------------------------------------
-        // FITUR CHECKBOX & BULK ACTION (NEW)
-        // ----------------------------------------------------
         window.toggleSelect = (cb) => {
             if (cb.checked) {
                 window.selectedIds.add(cb.value);
@@ -559,7 +574,6 @@
                 bar.style.display = 'flex';
                 document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Terpilih`;
                 
-                // Sembunyikan tombol OUT massal jika lagi di Tab Riwayat (karena udah OUT)
                 if(document.getElementById('tabRiwayat').classList.contains('active')) {
                     document.getElementById('btnBulkOut').style.display = 'none';
                 } else {
@@ -570,7 +584,6 @@
             }
         }
 
-        // AKSI MASSAL: OUT TERPILIH
         window.outTerpilih = async () => {
             if(confirm(`Yakin mau nge-OUT ${window.selectedIds.size} kardus yang dipilih?`)) {
                 for (let id of window.selectedIds) {
@@ -585,7 +598,6 @@
             }
         }
 
-        // AKSI MASSAL: HAPUS TERPILIH (PERMANEN)
         window.hapusTerpilih = async () => {
             if(confirm(`🚨 PERINGATAN! Yakin mau HAPUS PERMANEN ${window.selectedIds.size} kardus yang dipilih?`)) {
                 for (let id of window.selectedIds) {
@@ -654,7 +666,7 @@
                     
                     htmlOutput += `
                         <div class="pivot-group-header">
-                            <span>📦 SO : <b>${group.so}</b> | 👟 Artikel/Style : <b>${group.art}</b></span>
+                            <span>📦 SO : <b>${group.so}</b> | 👟 Artikel : <b>${group.art}</b></span>
                             <span class="pivot-count">${group.items.length} Karton</span>
                         </div>
                         <div class="grouped-grid">
@@ -666,7 +678,6 @@
                             ? (isHistory ? `<span class="badge-jenis" style="background:#999; color:white;">MIX</span>` : `<span class="badge-jenis" style="background:#d35400;">MIX</span>`) 
                             : (isHistory ? `<span class="badge-jenis" style="background:#ccc; color:#333;">SOLID</span>` : `<span class="badge-jenis" style="background:#1c1c1c;">SOLID</span>`);
 
-                        // Cek apakah item ini lagi di-select (penting pas ngetik filter biar checkbox gak ke-reset)
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
 
                         if(!isHistory) {
@@ -677,7 +688,6 @@
                                 <div class="mini-card">
                                     ${htmlPeringatanMulti}
                                     <div class="card-header-modern">
-                                        <!-- TAMBAHAN CHECKBOX KIRI ATAS -->
                                         <div style="display: flex; align-items: center; flex: 1; overflow: hidden;">
                                             <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
                                             <div class="badge-so-modern">${data.so_number}</div>
@@ -699,13 +709,10 @@
                                         </div>
                                     </div>
                                     <div class="info-box" style="background: #eef2f5; border-color: #d1d9e0;">
-                                        <span class="info-label">Lokasi FG</span>
+                                        <span class="info-label">Lokasi FG WH</span>
                                         <span class="info-value" style="color: #cc0000; font-size: 16px;">📍 ${data.lokasi}</span>
                                     </div>
-                                    
-                                    <!-- INFO SIAPA YANG INPUT -->
-                                    <div class="user-info">Input By: <b>${data.diinput_oleh || 'Sistem / Admin'}</b></div>
-
+                                    <div class="user-info">👤 Oleh: <b>${data.diinput_oleh || 'Sistem / Admin'}</b></div>
                                     ${htmlKeterangan}
                                     <div class="action-row">
                                         <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
@@ -717,7 +724,6 @@
                             htmlOutput += `
                                 <div class="mini-card history-card">
                                     <div class="card-header-modern">
-                                        <!-- TAMBAHAN CHECKBOX KIRI ATAS DI RIWAYAT JUGA -->
                                         <div style="display: flex; align-items: center; flex: 1; overflow: hidden;">
                                             <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
                                             <div class="badge-so-modern" style="background: #888; border-color: #888;">${data.so_number}</div>
@@ -738,10 +744,7 @@
                                             <span class="info-value">${data.artikel}</span>
                                         </div>
                                     </div>
-                                    
-                                    <!-- INFO SIAPA YANG INPUT -->
                                     <div class="user-info">👤 Oleh: <b>${data.diinput_oleh || 'Sistem / Admin'}</b></div>
-
                                     ${htmlKeterangan}
                                 </div>
                             `;
@@ -756,7 +759,6 @@
             gridAktif.innerHTML = buildPivotHTML(dataAktif, false);
             gridRiwayat.innerHTML = buildPivotHTML(dataOut, true);
             
-            // Re-render UI Bulk Delete kalau-kalau ada kartu yang ke-filter tapi masih ke-select
             updateBulkDeleteUI();
         }
 
