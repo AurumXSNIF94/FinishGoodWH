@@ -123,7 +123,7 @@
 
         /* GRID KARTU */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
-        .grouped-grid.single-col { grid-template-columns: 1fr; } /* Buat Lokasi */
+        .grouped-grid.single-col { grid-template-columns: 1fr; } 
         
         .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 2px solid var(--dark); transition: 0.3s;}
         
@@ -164,9 +164,6 @@
         .bulk-btn { border: 2px solid var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: 900; cursor: pointer; font-size: 13px; transition: 0.2s;}
         .bulk-btn-out { background: var(--dark); color: var(--surface); }
         .bulk-btn-del { background: var(--danger-bg); color: var(--primary); border-color: var(--primary); }
-        
-        .alert-multi { background-color: var(--primary); color: white; text-align: center; font-size: 12px; font-weight: 900; padding: 6px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .keterangan-text { background-color: var(--bg-color); padding: 10px; border-radius: var(--radius-md); color: var(--primary); font-size: 13px; margin-bottom: 12px; font-weight: 800; border: 2px solid var(--primary);}
     </style>
 </head>
 <body>
@@ -239,26 +236,28 @@
         <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="Cari SO ...">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Artikel, atau Nama...">
             </div>
             <div id="gridKartonAktif"></div> 
         </div>
 
         <!-- TAB 3: RIWAYAT OUT -->
         <div id="tabRiwayat" class="content">
-            <div class="sticky-filter">
-                <input type="text" id="filterSORiwayat" class="search-box" placeholder="Cari Histori SO...">
+            <div class="sticky-filter" style="display: flex; gap: 8px;">
+                <!-- Tambahan Tanggal Kalender untuk Tab Riwayat -->
+                <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; padding: 14px 10px; font-size: 13px;">
+                <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO / Artikel / Nama...">
             </div>
             <div id="gridRiwayatOut"></div> 
         </div>
 
-        <!-- TAB 4: LOKASI SO (BARU) -->
+        <!-- TAB 4: LOKASI SO -->
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Ketik SO (Contoh: 10206297)...">
             </div>
-            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 15px; background: var(--dark); border-color: var(--dark);">🔄 Sinkron Data Lokasi</button>
-            <div id="statusLokasi" style="text-align:center; font-size:12px; font-weight:900; margin-bottom:15px; color:var(--primary);"></div>
+            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 15px; background: var(--dark); border-color: var(--dark); color: var(--surface);">🔄 Sinkron Data Lokasi</button>
+            <div id="statusLokasi" style="text-align:center; font-size:13px; font-weight:900; margin-bottom:15px; color:var(--primary);"></div>
             <div id="gridLokasi" class="grouped-grid single-col"></div>
         </div>
         
@@ -338,24 +337,23 @@
         window.selectedIds = new Set();
 
         // ----------------------------------------------------
-        // FITUR CARI LOKASI DARI SPREADSHEET (BARU)
+        // FITUR CARI LOKASI DARI SPREADSHEET
         // ----------------------------------------------------
-        // TODO: GANTI URL DI BAWAH INI SAMA URL WEB APP LO (LANGKAH 1)
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         let dataLokasiExcel = [];
 
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
-            statusDiv.innerText = '⏳ Menyedot data lokasi dari Excel...';
+            statusDiv.innerText = '⏳ Mengambil data lokasi dari Spreadsheet FGWH...';
+            statusDiv.style.color = 'var(--primary)';
             try {
                 const response = await fetch(URL_GAS_LOKASI);
                 dataLokasiExcel = await response.json();
                 statusDiv.innerText = `✅ Berhasil narik ${dataLokasiExcel.length} baris lokasi!`;
-                statusDiv.style.color = '#27ae60';
+                statusDiv.style.color = '#27ae60'; // Warna hijau sukses yang aman di dark mode
                 renderDataLokasi();
             } catch (error) {
                 statusDiv.innerText = '❌ Gagal terhubung ke Excel. Cek URL!';
-                statusDiv.style.color = 'var(--primary)';
             }
         });
 
@@ -399,7 +397,6 @@
                 `;
             });
         }
-        // ----------------------------------------------------
 
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
@@ -585,14 +582,57 @@
             }
         }
 
+        // ==============================================================
+        // MESIN PENCARIAN SUPER (MULTI-PARAMETER + KALENDER RIWAYAT)
+        // ==============================================================
         function renderData() {
-            const gridAktif = document.getElementById('gridKartonAktif'), gridRiwayat = document.getElementById('gridRiwayatOut');
-            const fAktif = document.getElementById('filterSOAktif').value.toUpperCase(), fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase();
+            const gridAktif = document.getElementById('gridKartonAktif');
+            const gridRiwayat = document.getElementById('gridRiwayatOut');
+            
+            const fAktif = document.getElementById('filterSOAktif').value.toUpperCase().trim();
+            const fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase().trim();
+            const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat').value;
+
+            // Konversi format tanggal kalender (YYYY-MM-DD) jadi (DD/MM/YYYY) biar cocok sama database
+            let tglFilterKalender = "";
+            if(fTglRiwayatInput) {
+                let [y, m, d] = fTglRiwayatInput.split('-');
+                tglFilterKalender = new Date(y, m-1, d).toLocaleDateString('id-ID');
+            }
             
             gridAktif.innerHTML = ''; gridRiwayat.innerHTML = ''; 
 
-            let dataAktif = rawData.filter(d => d.status === "AKTIF" && (d.so_number || "").toUpperCase().includes(fAktif));
-            let dataOut = rawData.filter(d => d.status === "OUT" && (d.so_number || "").toUpperCase().includes(fRiwayat));
+            // FILTER TAB AKTIF (Cari SO, Artikel, atau Nama Input)
+            let dataAktif = rawData.filter(d => {
+                if (d.status !== "AKTIF") return false;
+                if (!fAktif) return true;
+                
+                return (d.so_number || "").toUpperCase().includes(fAktif) ||
+                       (d.artikel || "").toUpperCase().includes(fAktif) ||
+                       (d.diinput_oleh || "").toUpperCase().includes(fAktif);
+            });
+
+            // FILTER TAB RIWAYAT (Cari SO, Artikel, Nama, Teks Tanggal + Kalender Tanggal)
+            let dataOut = rawData.filter(d => {
+                if (d.status !== "OUT") return false;
+
+                // 1. Cek dari teks pencarian (Bisa ngetik Agustus, SO, atau Nama)
+                let matchText = true;
+                if(fRiwayat) {
+                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) ||
+                                (d.artikel || "").toUpperCase().includes(fRiwayat) ||
+                                (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) ||
+                                (d.tanggal_out || "").toUpperCase().includes(fRiwayat);
+                }
+
+                // 2. Cek dari input kalender (Kalau user milih tanggal dari kalendernya)
+                let matchKalender = true;
+                if(tglFilterKalender) {
+                    matchKalender = (d.tanggal_out === tglFilterKalender);
+                }
+
+                return matchText && matchKalender; // Keduanya harus cocok (kalau diisi)
+            });
 
             let soArtikelMap = {};
             rawData.filter(d => d.status === "AKTIF").forEach(d => {
@@ -708,8 +748,10 @@
             updateBulkDeleteUI();
         }
 
+        // Panggil renderData pas Kalender atau Kolom Pencarian diketik/dipilih
         document.getElementById('filterSOAktif').addEventListener('input', renderData);
         document.getElementById('filterSORiwayat').addEventListener('input', renderData);
+        document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData); // Trigger Kalender
 
         window.pindahKeRiwayat = async (id) => {
             if(confirm("Yakin barang dikeluarkan (OUT)?")) {
