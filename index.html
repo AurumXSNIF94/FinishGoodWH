@@ -8,772 +8,240 @@
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
-        /* Desain Diperbesar (Scale-Up) buat Mobile - NB THEME */
+        /* Desain Mobile - NB THEME */
         body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 0; font-size: 15px; color: #333;} 
         
-        /* App Header Khusus Logo & Logout */
         .app-header { background-color: #1c1c1c; display: flex; justify-content: center; align-items: center; padding: 12px 15px 12px 15px; border-bottom: 1px solid #333; position: relative;}
         .app-header img { height: 28px; object-fit: contain; }
-        .btn-logout { position: absolute; right: 15px; background: transparent; border: 1px solid #555; color: #ccc; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
-        .btn-logout:active { background: #cc0000; border-color: #cc0000; color: white;}
-        /* Tombol Sakti Fix Data */
-        .btn-fix { position: absolute; right: 90px; background: transparent; border: 1px solid #f39c12; color: #f39c12; border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s;}
-        .btn-fix:active { background: #f39c12; color: #1c1c1c;}
-
-        /* LAYAR LOGIN EKSKLUSIF (DIUPGRADE MAKIN PREMIUM) */
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1c1c1c 0%, #3a3a3a 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .login-box { background: white; padding: 40px 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; border-top: 6px solid #cc0000;}
-        .login-box img { height: 50px; margin-bottom: 20px; }
-        .login-box h2 { color: #1c1c1c; margin: 0 0 5px 0; font-weight: 900; font-size: 22px; letter-spacing: 1px;}
-        .login-box p { color: #777; font-size: 14px; margin: 0 0 30px 0;}
-        .btn-google { background: white; color: #333; border: 1px solid #ddd; padding: 12px 20px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%; transition: 0.3s;}
-        .btn-google:active { transform: scale(0.97); background: #f9f9f9; }
-        .btn-google img { height: 22px; margin: 0; }
-
-        /* Navbar & Tabs - Dark Charcoal */
-        .tab-bar { display: flex; background: #1c1c1c; color: white; padding: 0 5px 0 5px; position: sticky; top: 0; z-index: 20;}
-        .tab-btn { flex: 1; padding: 15px 5px; text-align: center; font-weight: bold; font-size: 14px; color: #888; border-bottom: 4px solid transparent; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        /* Navbar & Tabs (Sekarang ada 4 Tab) */
+        .tab-bar { display: flex; background: #1c1c1c; color: white; padding: 0 5px 0 5px; position: sticky; top: 0; z-index: 20; overflow-x: auto; white-space: nowrap;}
+        .tab-btn { flex: 1; padding: 15px 10px; text-align: center; font-weight: bold; font-size: 13px; color: #888; border-bottom: 4px solid transparent; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { color: white; border-bottom: 4px solid #cc0000; } 
         
         .content { padding: 12px; display: none; }
         .content.active { display: block; }
 
-        /* Filter Sticky */
-        .sticky-filter { position: sticky; top: 55px; background: #f4f5f7; padding: 12px; z-index: 10; margin: -12px -12px 0 -12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
-        input.search-box { padding: 14px; width: 100%; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-weight: bold; text-align: center; text-transform: uppercase; outline: none; transition: 0.3s;} 
+        .sticky-filter { position: sticky; top: 52px; background: #f4f5f7; padding: 12px; z-index: 10; margin: -12px -12px 0 -12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+        input.search-box { padding: 14px; width: 100%; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; font-weight: bold; text-align: center; text-transform: uppercase; outline: none;} 
         input.search-box:focus { border-color: #cc0000; }
 
         /* Form Input */
         .form-card { background: white; padding: 18px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; margin-bottom: 15px;}
         .form-row { display: flex; gap: 12px; margin-bottom: 15px; }
         .form-row > * { flex: 1; }
-        input.form-input, select.form-select { padding: 14px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; outline: none; font-family: monospace;} 
-        input.form-input, select.form-select { text-transform: uppercase; font-family: inherit;}
-        input.form-input:focus, select.form-select:focus { border-color: #1c1c1c; }
-        input[type="date"] { text-transform: none; }
+        input.form-input, select.form-select { padding: 14px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; outline: none;} 
+        input.form-input { text-transform: uppercase; font-family: monospace;}
         
-        /* Box Dinamis untuk Size & Karton */
-        .dynamic-box { background: #f9f9f9; border: 1px dashed #ccc; padding: 12px; border-radius: 8px; margin-bottom: 15px;}
-        .dynamic-header { color: #cc0000; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;}
-        .btn-tambah-baris { background-color: #555; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
-        .btn-tambah-baris:active { background-color: #333; }
-        .btn-hapus-baris { background-color: #c0392b; color: white; border: none; border-radius: 6px; cursor: pointer; padding: 0 15px; font-weight: bold; font-size: 14px;}
-
-        /* Tombol Utama - NB Red */
-        .btn-add { background-color: #cc0000; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; letter-spacing: 1px;}
-        .btn-add:active { background-color: #990000; }
+        .btn-add { background-color: #cc0000; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; letter-spacing: 1px; margin-top: 10px;}
+        .btn-sync { background-color: #1c1c1c; color: white; padding: 12px; border: none; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 15px;}
         
-        /* Tombol Batal & Hapus Permanen */
-        .btn-action-row { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-batal { flex: 1; background: #888888; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
-        .btn-hapus-permanen { flex: 1; background: #1c1c1c; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
-
-        /* PIVOT GROUP HEADER */
-        .pivot-group-header {
-            background-color: #e0e0e0;
-            color: #1c1c1c;
-            padding: 12px 10px;
-            font-size: 14px;
-            margin-top: 15px;
-            margin-bottom: 12px;
-            border-left: 5px solid #cc0000;
-            border-right: 5px solid #cc0000;
-            border-radius: 6px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            white-space: nowrap; 
-            overflow: hidden;
-        }
-        .pivot-group-header span { overflow: hidden; text-overflow: ellipsis; }
-        .pivot-count {
-            background-color: #1c1c1c;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            flex-shrink: 0; 
-        }
-
-        /* GRID CARDS & CHECKBOX */
-        .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
+        /* Grid Cards */
+        .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;}
+        .mini-card { background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-top: 5px solid #cc0000; border-bottom: 1px solid #eee; display: flex; flex-direction: column; justify-content: space-between;}
+        .mini-card.stok-card { border-top: 5px solid #f39c12; } /* Warna beda untuk stok spreadsheet */
         
-        .mini-card { background: white; border-radius: 10px; padding: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; border-top: 5px solid #cc0000; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; position: relative;}
-        .mini-card.history-card { border-top: 5px solid #888888; background: #fafafa; }
+        .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 6px;}
+        .badge-so-modern { flex: 1; background: #1c1c1c; color: white; padding: 8px 4px; border-radius: 6px; font-weight: bold; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .badge-size-modern { flex: 0.6; background: #cc0000; color: white; padding: 8px 4px; border-radius: 6px; font-weight: 900; font-size: 14px; text-align: center;}
+        .badge-size-stok { background: #f39c12; }
         
-        /* Checkbox Styling */
-        .chk-select { transform: scale(1.4); margin-right: 8px; accent-color: #cc0000; cursor: pointer;}
+        .info-box { background: #f8f9fa; border: 1px solid #eee; padding: 8px 4px; border-radius: 6px; text-align: center; }
+        .info-label { display: block; font-size: 10px; color: #888; margin-bottom: 2px; text-transform: uppercase; font-weight: bold;}
+        .info-value { display: block; font-size: 13px; font-weight: 900; color: #1c1c1c; }
         
-        .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;}
-        .badge-so-modern { flex: 1; background: #1c1c1c; color: white; padding: 10px 5px; border-radius: 6px; font-weight: bold; font-size: 15px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .badge-size-modern { flex: 0.6; background: #cc0000; color: white; padding: 10px 5px; border-radius: 6px; font-weight: 900; font-size: 16px; text-align: center; letter-spacing: 1px;}
-        
-        /* Info Box */
-        .info-box { background: #f8f9fa; border: 1px solid #eee; padding: 10px 6px; border-radius: 6px; text-align: center; }
-        .info-label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;}
-        .info-value { display: block; font-size: 15px; font-weight: 900; color: #1c1c1c; }
-        
-        .badge-jenis { background: #555; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; letter-spacing: 0.5px;}
-        .keterangan-text { background-color: #fff3cd; padding: 8px; border-radius: 5px; color: #333; font-size: 13px; margin-top: 10px; border-left: 4px solid #cc0000; font-weight: bold;}
-        .tanggal-text { font-size: 13px; color: #777; font-weight: bold; margin: 0;}
-        .user-info { font-size: 11px; color: #888; margin-top: 8px; text-align: left; padding-top: 8px; border-top: 1px dashed #eee; font-style: italic;}
-
-        @keyframes blinker { 50% { opacity: 0; } }
-        .alert-multi { background-color: #cc0000; color: white; text-align: center; font-size: 12px; font-weight: bold; padding: 6px; border-radius: 4px; margin-bottom: 12px; animation: blinker 1.5s linear infinite; letter-spacing: 0.5px;}
-
-        .action-row { display: flex; gap: 8px; margin-top: 15px; }
-        .action-row button { flex: 1; padding: 12px 0; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
-        .btn-edit { background: #555555; }
-        .btn-out { background: #1c1c1c; }
-
-        /* FLOATING BULK ACTION BAR */
-        .bulk-action-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1c1c1c; color: white; padding: 12px 20px; border-radius: 30px; display: none; align-items: center; gap: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100; border: 2px solid #cc0000; white-space: nowrap;}
-        .bulk-action-bar span { font-weight: bold; font-size: 14px; color: #fff; }
-        .bulk-btn { border: none; padding: 10px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; text-transform: uppercase;}
-        .bulk-btn-out { background: #fff; color: #1c1c1c; }
-        .bulk-btn-del { background: #cc0000; color: white; }
+        /* Warning Status untuk Data Spreadsheet */
+        .status-loading { text-align: center; color: #888; font-weight: bold; padding: 20px; font-size: 14px; }
+        .status-error { text-align: center; color: #c0392b; font-weight: bold; padding: 20px; background: #fadbd8; border-radius: 8px; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <!-- LAYAR LOGIN GOOGLE -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <img src="logo.png" alt="Logo NB">
-            <h2>PP FG WH SYSTEM</h2>
-            <p>Silakan login untuk mengakses data.</p>
-            <button class="btn-google" id="btnGoogleLogin">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo">
-                Masuk dengan Google
-            </button>
-        </div>
-    </div>
-
-    <!-- WADAH UTAMA APLIKASI -->
-    <div id="mainApp" style="display: none;">
-        
-        <!-- APP HEADER (TAMBAH TOMBOL FIX) -->
+    <div id="mainApp">
+        <!-- HEADER -->
         <div class="app-header">
             <img src="logo.png" alt="Logo">
-            <button class="btn-fix" id="btnFixData">🛠️ FIX #</button>
-            <button class="btn-logout" id="btnLogout">LOGOUT</button>
         </div>
 
-        <!-- TAB NAVIGATION -->
+        <!-- TABS NAVIGASI -->
         <div class="tab-bar">
-            <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)">➕ INPUT</div>
-            <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)">🟢 AKTIF</div>
-            <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)">🔴 RIWAYAT</div>
+            <!-- Tab buat ngecek stok dari Excel -->
+            <div id="btnTabStokFG" class="tab-btn active" onclick="openTab('tabStokFG', this)">📦 STOK FG</div>
+            <!-- Tab buat operasional kerja lo -->
+            <div id="btnTabInputSI" class="tab-btn" onclick="openTab('tabInputSI', this)">➕ INPUT SI</div>
+            <div id="btnTabAktifSI" class="tab-btn" onclick="openTab('tabAktifSI', this)">🟢 SI AKTIF</div>
         </div>
 
-        <!-- TAB 1: SMART FORM INPUT -->
-        <div id="tabInput" class="content active">
-            <div class="form-card" id="formSmart">
-                <h3 style="margin-top: 0; color: #1c1c1c; text-transform: uppercase; font-size: 15px; text-align: center; margin-bottom: 15px;">📝 FORM INPUT (SINGLE/MASSAL)</h3>
-                
+        <!-- TAB 1: PANTUAN STOK DARI SPREADSHEET (Read-Only) -->
+        <div id="tabStokFG" class="content active">
+            <div class="sticky-filter">
+                <input type="text" id="filterStokSheet" class="search-box" placeholder="🔍 Cari SO / Artikel di FG">
+            </div>
+            
+            <button class="btn-sync" onclick="tarikDataSpreadsheet()">🔄 SINKRONKAN DARI EXCEL</button>
+            
+            <div id="statusSpreadsheet" class="status-loading">
+                Klik tombol sinkronisasi di atas untuk menarik data dari file "Production Planning - Finish Good".
+            </div>
+            
+            <div id="gridStokSpreadsheet" class="grouped-grid"></div>
+        </div>
+
+        <!-- TAB 2: INPUT SI (Kerja Operasional Lo) -->
+        <div id="tabInputSI" class="content">
+            <div class="form-card">
+                <h3 style="margin-top: 0; color: #1c1c1c; text-align: center; margin-bottom: 15px;">📝 FORM INPUT SI (EQL)</h3>
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
                     <input type="text" id="soInput" class="form-input" placeholder="SO (LO9089)">
                 </div>
                 <div class="form-row">
-                    <select id="jenisInput" class="form-select" style="text-transform: none;">
-                        <option value="SOLID">📦 SOLID</option>
-                        <option value="MIX">🔀 MIX</option>
-                    </select>
                     <input type="text" id="artikelInput" class="form-input" placeholder="Artikel / Style">
+                    <input type="text" id="sizeInput" class="form-input" placeholder="Size (8T)">
                 </div>
                 <div class="form-row">
-                    <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (FG-A)">
-                    <input type="text" id="keteranganInput" class="form-input" placeholder="Ket. (Opsional)">
+                    <input type="text" id="kartonInput" class="form-input" placeholder="No Karton (#123)">
                 </div>
-
-                <div class="dynamic-box">
-                    <div class="dynamic-header">👟 List Size & No. Karton</div>
-                    <div id="kartonList">
-                        <div class="form-row karton-item" style="margin-bottom: 10px;">
-                            <input type="text" class="form-input size-input" placeholder="Size (8T)">
-                            <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Karton (123)">
-                            <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
-                        </div>
-                    </div>
-                    <button id="btnTambahBaris" class="btn-tambah-baris">➕ TAMBAH KARTON LAIN</button>
-                </div>
-                
-                <button class="btn-add" id="btnTambah">SUBMIT</button>
-                
-                <div id="editActionGroup" class="btn-action-row" style="display: none;">
-                    <button class="btn-batal" onclick="batalEdit()">Batal Edit</button>
-                    <button class="btn-hapus-permanen" onclick="hapusPermanen()">Hapus</button>
-                </div>
+                <button class="btn-add" onclick="simpanDataSI()">SIMPAN KE SI</button>
             </div>
         </div>
 
-        <!-- TAB 2: STOK AKTIF -->
-        <div id="tabAktif" class="content">
+        <!-- TAB 3: DATA SI AKTIF -->
+        <div id="tabAktifSI" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari Sales Order/SO">
+                <input type="text" id="filterSIAktif" class="search-box" placeholder="🔍 Cari SO di SI">
             </div>
-            <div id="gridKartonAktif"></div> 
+            <div id="gridSIAktif" class="grouped-grid"></div>
         </div>
 
-        <!-- TAB 3: RIWAYAT OUT -->
-        <div id="tabRiwayat" class="content">
-            <div class="sticky-filter">
-                <input type="text" id="filterSORiwayat" class="search-box" placeholder="🔍 Cari Sales Order/SO">
-            </div>
-            <div id="gridRiwayatOut"></div> 
-        </div>
     </div>
 
-    <!-- FLOATING BAR UNTUK BULK ACTION -->
-    <div class="bulk-action-bar" id="bulkActionBar">
-        <span id="bulkCount">0 Dipilih</span>
-        <button class="bulk-btn bulk-btn-out" id="btnBulkOut" onclick="outTerpilih()">📤 OUT</button>
-        <button class="bulk-btn bulk-btn-del" onclick="hapusTerpilih()">🗑️ HAPUS</button>
-    </div>
-
-    <!-- FIREBASE REALTIME DATABASE SDK & AUTH -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-        // Konfigurasi Database Realtime
-        const firebaseConfig = {
-            apiKey: "AIzaSyDSaLtB4b2XyuisVAJ-Djf1RQDtXyOy5_U",
-            authDomain: "bizsight-33tbg.firebaseapp.com",
-            databaseURL: "https://bizsight-33tbg-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "bizsight-33tbg",
-            storageBucket: "bizsight-33tbg.firebasestorage.app",
-            messagingSenderId: "333910528874",
-            appId: "1:333910528874:web:c6632d3517a157a3584b13"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const kartonRef = ref(db, 'stok_fg_wh');
-        
-        // SETUP AUTH
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        const loginScreen = document.getElementById('loginScreen');
-        const mainApp = document.getElementById('mainApp');
-        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
-        const btnLogout = document.getElementById('btnLogout');
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginScreen.style.display = "none";
-                mainApp.style.display = "block";
-            } else {
-                loginScreen.style.display = "flex";
-                mainApp.style.display = "none";
-            }
-        });
-
-        btnGoogleLogin.addEventListener('click', () => {
-            signInWithPopup(auth, provider).catch((error) => {
-                alert("Gagal login: " + error.message);
-            });
-        });
-
-        btnLogout.addEventListener('click', () => {
-            if(confirm("Yakin mau keluar/logout?")) {
-                signOut(auth);
-            }
-        });
-
+    <!-- LOGIKA JAVASCRIPT -->
+    <script>
         document.getElementById('tanggalInput').valueAsDate = new Date();
-        let rawData = [];
-        window.currentEditId = null; 
-        window.selectedIds = new Set();
-
-        // ----------------------------------------------------
-        // FITUR TOMBOL SAKTI: FIX DATA LAMA
-        // ----------------------------------------------------
-        document.getElementById('btnFixData').addEventListener('click', async () => {
-            if(confirm("Yakin mau otomatis nambahin '#' ke semua nomor karton data lama di database?")) {
-                let count = 0;
-                for (let data of rawData) {
-                    if (data.nomor_karton && !data.nomor_karton.startsWith('#')) {
-                        const itemRef = ref(db, `stok_fg_wh/${data.id}`);
-                        await update(itemRef, { nomor_karton: '#' + data.nomor_karton });
-                        count++;
-                    }
-                }
-                alert(`Beres cok! ${count} karton lama udah sukses dipasangi '#'.`);
-            }
-        });
-
-        function applyUppercaseListener() {
-            document.querySelectorAll('input[type="text"]').forEach(input => {
-                if(!input.hasAttribute('data-upper')) {
-                    input.setAttribute('data-upper', 'true');
-                    input.addEventListener('input', function() {
-                        this.value = this.value.toUpperCase(); 
-                    });
-                }
-            });
-        }
         
-        function applyKartonFormatListener() {
-            document.querySelectorAll('.nokarton-input').forEach(input => {
-                if(!input.hasAttribute('data-format')) {
-                    input.setAttribute('data-format', 'true');
-                    
-                    input.addEventListener('input', function() {
-                        let val = this.value.replace(/[^0-9#]/g, '');
-                        this.value = val;
-                    });
+        // ARRAY PENAMPUNG DATA
+        let dataStokExcel = []; 
+        let dataSIAktif = []; // Nanti ini disambungin ke Firebase lagi
 
-                    input.addEventListener('blur', function() {
-                        let val = this.value.trim();
-                        if(val !== '' && !val.startsWith('#')) {
-                            this.value = '#' + val;
-                        }
-                    });
-                }
-            });
-        }
-
-        applyUppercaseListener(); 
-        applyKartonFormatListener();
-
-        document.getElementById('btnTambahBaris').addEventListener('click', () => {
-            const list = document.getElementById('kartonList');
-            const row = document.createElement('div');
-            row.className = 'form-row karton-item';
-            row.style.marginBottom = '10px';
-            row.innerHTML = `
-                <input type="text" class="form-input size-input" placeholder="Size (8T)">
-                <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Karton (123)">
-                <button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>
-            `;
-            list.appendChild(row);
-            applyUppercaseListener(); 
-            applyKartonFormatListener();
-        });
-
-        window.hapusBaris = (btn) => {
-            btn.parentElement.remove();
-        }
-
-        window.batalEdit = () => {
-            window.currentEditId = null; 
-            
-            const btnTbh = document.getElementById('btnTambah');
-            btnTbh.innerHTML = "SUBMIT"; 
-            btnTbh.style.backgroundColor = "#cc0000"; 
-            
-            document.getElementById('editActionGroup').style.display = "none";
-            document.getElementById('btnTambahBaris').style.display = "block"; 
-            
-            document.getElementById('tanggalInput').valueAsDate = new Date();
-            document.getElementById('soInput').value = '';
-            document.getElementById('jenisInput').value = 'SOLID'; 
-            document.getElementById('artikelInput').value = '';
-            document.getElementById('lokasiInput').value = '';
-            document.getElementById('keteranganInput').value = '';
-
-            const list = document.getElementById('kartonList');
-            list.innerHTML = `
-                <div class="form-row karton-item" style="margin-bottom: 10px;">
-                    <input type="text" class="form-input size-input" placeholder="Size (8T)">
-                    <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Karton (123)">
-                    <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
-                </div>
-            `;
-            applyUppercaseListener();
-            applyKartonFormatListener();
-        }
-
-        window.openTab = (tabName, elmnt) => {
-            if(tabName !== 'tabInput' && window.currentEditId !== null) {
-                batalEdit();
-            }
-            
-            window.selectedIds.clear();
-            updateBulkDeleteUI();
-
+        // FUNGSI GANTI TAB
+        function openTab(tabName, elmnt) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             elmnt.classList.add('active');
-            renderData();
         }
 
-        document.getElementById('btnTambah').addEventListener('click', async () => {
-            const val = (id) => document.getElementById(id).value.toUpperCase().trim();
-            const tanggal = document.getElementById('tanggalInput').value; 
-            const jenis = document.getElementById('jenisInput').value; 
-            const so = val('soInput');
-            const artikel = val('artikelInput');
-            const lokasi = val('lokasiInput');
-            const keterangan = val('keteranganInput');
-
-            if(!so || !artikel || !lokasi) {
-                alert("SO, Artikel, dan Lokasi wajib diisi, cok!");
-                return;
-            }
-
-            const kartonItems = document.querySelectorAll('.karton-item');
-            let dataToPush = [];
-            let isErrorPartial = false;
-
-            kartonItems.forEach(item => {
-                const sizeInput = item.querySelector('.size-input').value.toUpperCase().trim();
-                let noKartonInput = item.querySelector('.nokarton-input').value.toUpperCase().trim();
-                
-                if(noKartonInput && !noKartonInput.startsWith('#')) {
-                    noKartonInput = '#' + noKartonInput;
-                }
-
-                if(sizeInput && noKartonInput) {
-                    dataToPush.push({ size: sizeInput, noKarton: noKartonInput });
-                } else if (sizeInput || noKartonInput) {
-                    isErrorPartial = true; 
-                }
-            });
-
-            if(isErrorPartial) {
-                alert("Ada baris Size atau No Karton yang cuma diisi sebelah! Lengkapi atau hapus barisnya (❌).");
-                return;
-            }
-
-            if(dataToPush.length === 0) {
-                alert("Minimal isi 1 pasang Size dan No. Karton, cok!");
-                return;
-            }
-
-            const currentUser = auth.currentUser;
-            const userName = currentUser ? (currentUser.displayName || currentUser.email) : "Admin";
+        // ==========================================
+        // FITUR SINKRONISASI KE GOOGLE SPREADSHEET
+        // ==========================================
+        async function tarikDataSpreadsheet() {
+            const statusDiv = document.getElementById('statusSpreadsheet');
+            const gridStok = document.getElementById('gridStokSpreadsheet');
             
-            if (window.currentEditId) {
-                if(dataToPush.length > 1) {
-                    alert("Mode Edit cuma bisa nyimpen 1 karton!");
-                    return;
-                }
-                const itemRef = ref(db, `stok_fg_wh/${window.currentEditId}`);
-                await update(itemRef, {
-                    tanggal: tanggal,
-                    so_number: so,
-                    jenis: jenis, 
-                    artikel: artikel,
-                    size: dataToPush[0].size,
-                    nomor_karton: dataToPush[0].noKarton,
-                    lokasi: lokasi,
-                    keterangan: keterangan,
-                    diinput_oleh: userName 
-                });
-                
-                alert("Data berhasil di-Update!");
-                batalEdit(); 
-                openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
-            } else {
-                for(let kData of dataToPush) {
-                    const newDocRef = push(kartonRef);
-                    await set(newDocRef, { 
-                        tanggal: tanggal, 
-                        so_number: so, 
-                        jenis: jenis, 
-                        artikel: artikel, 
-                        size: kData.size, 
-                        nomor_karton: kData.noKarton, 
-                        lokasi: lokasi, 
-                        keterangan: keterangan,
-                        status: "AKTIF",
-                        diinput_oleh: userName, 
-                        timestamp_in: new Date().toISOString()
-                    });
-                }
-                
-                if(dataToPush.length > 1) {
-                    alert(`🔥 MANTAP! ${dataToPush.length} Karton berhasil dilesatkan ke sistem!`);
-                } else {
-                    alert("Berhasil disimpan!");
-                }
-                batalEdit(); 
-            }
-        });
+            gridStok.innerHTML = '';
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'status-loading';
+            statusDiv.innerText = '⏳ Menyedot data dari Production Planning - Finish Good...';
 
-        window.hapusPermanen = async () => {
-            if(!window.currentEditId) return;
+            // NANTI URL INI DIGANTI SAMA URL APPS SCRIPT LO
+            const URL_SPREADSHEET_LO = "https://script.google.com/macros/s/AKfycbz_DUMMY_URL_BISA_DIGANTI_NANTI/exec"; 
 
-            if(confirm("🚨 PERINGATAN! Yakin mau hapus data ini secara PERMANEN dari database?")) {
-                const itemRef = ref(db, `stok_fg_wh/${window.currentEditId}`);
-                await remove(itemRef); 
-                alert("Data berhasil dihapus permanen!");
-                batalEdit(); 
-                openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
-            }
-        };
-
-        window.editSemuanya = (id) => {
-            let item = rawData.find(d => d.id === id);
-            if(!item) return;
-
-            document.getElementById('tanggalInput').value = item.tanggal;
-            document.getElementById('soInput').value = item.so_number;
-            document.getElementById('jenisInput').value = item.jenis || 'SOLID'; 
-            document.getElementById('artikelInput').value = item.artikel;
-            document.getElementById('lokasiInput').value = item.lokasi;
-            document.getElementById('keteranganInput').value = item.keterangan || '';
-
-            const list = document.getElementById('kartonList');
-            list.innerHTML = `
-                <div class="form-row karton-item" style="margin-bottom: 10px;">
-                    <input type="text" class="form-input size-input" value="${item.size}">
-                    <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}">
-                    <button class="btn-hapus-baris" style="display:none;">❌</button>
-                </div>
-            `;
-            applyUppercaseListener();
-            applyKartonFormatListener();
-
-            window.currentEditId = id;
-            
-            const btnTbh = document.getElementById('btnTambah');
-            btnTbh.innerHTML = "💾 UPDATE DATA";
-            btnTbh.style.backgroundColor = "#1c1c1c"; 
-            
-            document.getElementById('btnTambahBaris').style.display = "none";
-            document.getElementById('editActionGroup').style.display = "flex";
-
-            openTab('tabInput', document.getElementById('btnTabInput'));
-        }
-
-        onValue(kartonRef, (snapshot) => {
-            rawData = [];
-            snapshot.forEach((childSnapshot) => {
-                let data = childSnapshot.val();
-                data.id = childSnapshot.key;
-                let sizeStr = data.size.toString().toUpperCase();
-                data.sizeValue = parseFloat(sizeStr.replace('T', '.5')); 
-                rawData.push(data);
-            });
-            renderData();
-        });
-
-        window.toggleSelect = (cb) => {
-            if (cb.checked) {
-                window.selectedIds.add(cb.value);
-            } else {
-                window.selectedIds.delete(cb.value);
-            }
-            updateBulkDeleteUI();
-        }
-
-        window.updateBulkDeleteUI = () => {
-            const bar = document.getElementById('bulkActionBar');
-            if (window.selectedIds.size > 0) {
-                bar.style.display = 'flex';
-                document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Terpilih`;
-                
-                if(document.getElementById('tabRiwayat').classList.contains('active')) {
-                    document.getElementById('btnBulkOut').style.display = 'none';
-                } else {
-                    document.getElementById('btnBulkOut').style.display = 'block';
-                }
-            } else {
-                bar.style.display = 'none';
-            }
-        }
-
-        window.outTerpilih = async () => {
-            if(confirm(`Yakin mau nge-OUT ${window.selectedIds.size} kardus yang dipilih?`)) {
-                for (let id of window.selectedIds) {
-                    await update(ref(db, `stok_fg_wh/${id}`), {
-                        status: "OUT",
-                        tanggal_out: new Date().toLocaleDateString('id-ID')
-                    });
-                }
-                window.selectedIds.clear();
-                updateBulkDeleteUI();
-                alert("Data terpilih berhasil di-OUT!");
-            }
-        }
-
-        window.hapusTerpilih = async () => {
-            if(confirm(`🚨 PERINGATAN! Yakin mau HAPUS PERMANEN ${window.selectedIds.size} kardus yang dipilih?`)) {
-                for (let id of window.selectedIds) {
-                    await remove(ref(db, `stok_fg_wh/${id}`));
-                }
-                window.selectedIds.clear();
-                updateBulkDeleteUI();
-                alert("Data terpilih berhasil dihapus!");
-            }
-        }
-
-        function renderData() {
-            const gridAktif = document.getElementById('gridKartonAktif');
-            const gridRiwayat = document.getElementById('gridRiwayatOut');
-            
-            const filterAktif = document.getElementById('filterSOAktif').value.toUpperCase(); 
-            const filterRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase();
-            
-            gridAktif.innerHTML = ''; 
-            gridRiwayat.innerHTML = ''; 
-
-            let dataAktif = rawData.filter(d => d.status === "AKTIF" && (d.so_number || "").toUpperCase().includes(filterAktif));
-            let dataOut = rawData.filter(d => d.status === "OUT" && (d.so_number || "").toUpperCase().includes(filterRiwayat));
-
-            let soArtikelMap = {};
-            rawData.filter(d => d.status === "AKTIF").forEach(d => {
-                let so = (d.so_number || "").toUpperCase();
-                let art = (d.artikel || "").toUpperCase();
-                if (!soArtikelMap[so]) soArtikelMap[so] = new Set();
-                if (art) soArtikelMap[so].add(art);
-            });
-
-            dataAktif.sort((a, b) => {
-                if (a.so_number !== b.so_number) return a.so_number.localeCompare(b.so_number);
-                if (a.artikel !== b.artikel) return a.artikel.localeCompare(b.artikel);
-                if (a.sizeValue !== b.sizeValue) return a.sizeValue - b.sizeValue;
-                return a.nomor_karton.localeCompare(b.nomor_karton);
-            });
-
-            dataOut.sort((a, b) => {
-                if (a.so_number !== b.so_number) return a.so_number.localeCompare(b.so_number);
-                if (a.sizeValue !== b.sizeValue) return a.sizeValue - b.sizeValue;
-                return a.nomor_karton.localeCompare(b.nomor_karton);
-            });
-
-            function buildPivotHTML(dataArray, isHistory) {
-                if (dataArray.length === 0) return '<p style="text-align:center; color:#888; margin-top:20px;">Tidak ada data yang cocok.</p>';
-
-                let groupedBySOArt = {};
-                dataArray.forEach(d => {
-                    let so = (d.so_number || "TANPA SO").toUpperCase();
-                    let art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
-                    let key = so + "|||" + art; 
+            try {
+                // Simulasi tarik data (Karena URL asli belum ada)
+                // Anggap aja ini data beneran dari Excel lo
+                setTimeout(() => {
+                    dataStokExcel = [
+                        { so: "LO9089", artikel: "NB-RUNNER", size: "8", karton: "#101" },
+                        { so: "LO9089", artikel: "NB-RUNNER", size: "8.5", karton: "#102" },
+                        { so: "SO1234", artikel: "NB-WALK", size: "9", karton: "#005" }
+                    ];
                     
-                    if (!groupedBySOArt[key]) {
-                        groupedBySOArt[key] = { so: so, art: art, items: [] };
-                    }
-                    groupedBySOArt[key].items.push(d);
-                });
+                    statusDiv.style.display = 'none';
+                    renderStokExcel();
+                }, 1500);
 
-                let sortedKeys = Object.keys(groupedBySOArt).sort();
-                let htmlOutput = '';
+            } catch (error) {
+                statusDiv.className = 'status-error';
+                statusDiv.innerText = '❌ Gagal terhubung ke Spreadsheet. Pastikan URL Apps Script sudah benar.';
+            }
+        }
 
-                sortedKeys.forEach(key => {
-                    let group = groupedBySOArt[key];
-                    
-                    htmlOutput += `
-                        <div class="pivot-group-header">
-                            <span>📦 SO : <b>${group.so}</b> | 👟 Artikel : <b>${group.art}</b></span>
-                            <span class="pivot-count">${group.items.length} Karton</span>
+        // RENDER TAMPILAN STOK DARI EXCEL
+        function renderStokExcel() {
+            const grid = document.getElementById('gridStokSpreadsheet');
+            const filterText = document.getElementById('filterStokSheet').value.toUpperCase();
+            
+            grid.innerHTML = '';
+
+            let filteredData = dataStokExcel.filter(d => 
+                (d.so || "").toUpperCase().includes(filterText) || 
+                (d.artikel || "").toUpperCase().includes(filterText)
+            );
+
+            filteredData.forEach(data => {
+                grid.innerHTML += `
+                    <div class="mini-card stok-card">
+                        <div class="card-header-modern">
+                            <div class="badge-so-modern">${data.so}</div>
+                            <div class="badge-size-modern badge-size-stok">${data.size}</div>
                         </div>
-                        <div class="grouped-grid">
-                    `;
-                    
-                    group.items.forEach(data => {
-                        let htmlKeterangan = data.keterangan ? `<div class="keterangan-text">📝 ${data.keterangan}</div>` : '';
-                        let badgeJenis = data.jenis === 'MIX' 
-                            ? (isHistory ? `<span class="badge-jenis" style="background:#999; color:white;">MIX</span>` : `<span class="badge-jenis" style="background:#d35400;">MIX</span>`) 
-                            : (isHistory ? `<span class="badge-jenis" style="background:#ccc; color:#333;">SOLID</span>` : `<span class="badge-jenis" style="background:#1c1c1c;">SOLID</span>`);
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div class="info-box"><span class="info-label">Karton</span><span class="info-value">${data.karton}</span></div>
+                            <div class="info-box"><span class="info-label">Artikel</span><span class="info-value" style="font-size:11px;">${data.artikel}</span></div>
+                        </div>
+                    </div>
+                `;
+            });
 
-                        let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
-
-                        if(!isHistory) {
-                            let isMultiArtikel = soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
-                            let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">⚠ SO INI BEDA ARTIKEL! ⚠</div>` : '';
-
-                            htmlOutput += `
-                                <div class="mini-card">
-                                    ${htmlPeringatanMulti}
-                                    <div class="card-header-modern">
-                                        <div style="display: flex; align-items: center; flex: 1; overflow: hidden;">
-                                            <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
-                                            <div class="badge-so-modern">${data.so_number}</div>
-                                        </div>
-                                        <div class="badge-size-modern">${data.size}</div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <span class="tanggal-text">📅 ${data.tanggal}</span>
-                                        ${badgeJenis}
-                                    </div>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                                        <div class="info-box">
-                                            <span class="info-label">Karton</span>
-                                            <span class="info-value">${data.nomor_karton}</span>
-                                        </div>
-                                        <div class="info-box">
-                                            <span class="info-label">Artikel</span>
-                                            <span class="info-value">${data.artikel}</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-box" style="background: #eef2f5; border-color: #d1d9e0;">
-                                        <span class="info-label">Lokasi FG WH</span>
-                                        <span class="info-value" style="color: #cc0000; font-size: 16px;">📍 ${data.lokasi}</span>
-                                    </div>
-                                    <div class="user-info">👤 Oleh: <b>${data.diinput_oleh || 'Sistem / Admin'}</b></div>
-                                    ${htmlKeterangan}
-                                    <div class="action-row">
-                                        <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
-                                        <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
-                                    </div>
-                                </div>
-                            `;
-                        } else {
-                            htmlOutput += `
-                                <div class="mini-card history-card">
-                                    <div class="card-header-modern">
-                                        <div style="display: flex; align-items: center; flex: 1; overflow: hidden;">
-                                            <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
-                                            <div class="badge-so-modern" style="background: #888; border-color: #888;">${data.so_number}</div>
-                                        </div>
-                                        <div class="badge-size-modern" style="background: #aaa; border-color: #aaa;">${data.size}</div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <span class="tanggal-text">📤 ${data.tanggal_out}</span>
-                                        ${badgeJenis}
-                                    </div>
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                                        <div class="info-box">
-                                            <span class="info-label">Karton</span>
-                                            <span class="info-value">${data.nomor_karton}</span>
-                                        </div>
-                                        <div class="info-box">
-                                            <span class="info-label">Artikel</span>
-                                            <span class="info-value">${data.artikel}</span>
-                                        </div>
-                                    </div>
-                                    <div class="user-info">👤 Oleh: <b>${data.diinput_oleh || 'Sistem / Admin'}</b></div>
-                                    ${htmlKeterangan}
-                                </div>
-                            `;
-                        }
-                    });
-                    
-                    htmlOutput += `</div>`; 
-                });
-                return htmlOutput;
+            if(filteredData.length === 0) {
+                grid.innerHTML = '<p style="grid-column: span 2; text-align:center; color:#888;">Data tidak ditemukan di Spreadsheet.</p>';
             }
-
-            gridAktif.innerHTML = buildPivotHTML(dataAktif, false);
-            gridRiwayat.innerHTML = buildPivotHTML(dataOut, true);
-            
-            updateBulkDeleteUI();
         }
 
-        document.getElementById('filterSOAktif').addEventListener('input', renderData);
-        document.getElementById('filterSORiwayat').addEventListener('input', renderData);
+        document.getElementById('filterStokSheet').addEventListener('input', renderStokExcel);
 
-        window.pindahKeRiwayat = async (id) => {
-            if(confirm("Yakin barang di-OUT?")) {
-                const itemRef = ref(db, `stok_fg_wh/${id}`);
-                await update(itemRef, { 
-                    status: "OUT", 
-                    tanggal_out: new Date().toLocaleDateString('id-ID')
-                }); 
-            }
-        };
+        // ==========================================
+        // SIMULASI SIMPAN DATA SI (LOKAL DULU)
+        // ==========================================
+        function simpanDataSI() {
+            const so = document.getElementById('soInput').value.toUpperCase();
+            const artikel = document.getElementById('artikelInput').value.toUpperCase();
+            const size = document.getElementById('sizeInput').value.toUpperCase();
+            const karton = document.getElementById('kartonInput').value.toUpperCase();
+
+            if(!so || !karton) return alert("SO dan Karton wajib diisi!");
+
+            dataSIAktif.push({ so, artikel, size, karton });
+            alert("Berhasil masuk ke Data SI!");
+            
+            document.getElementById('soInput').value = '';
+            document.getElementById('artikelInput').value = '';
+            document.getElementById('sizeInput').value = '';
+            document.getElementById('kartonInput').value = '';
+            
+            renderSIAktif();
+        }
+
+        function renderSIAktif() {
+            const grid = document.getElementById('gridSIAktif');
+            grid.innerHTML = '';
+            
+            dataSIAktif.forEach(data => {
+                grid.innerHTML += `
+                    <div class="mini-card">
+                        <div class="card-header-modern">
+                            <div class="badge-so-modern">${data.so}</div>
+                            <div class="badge-size-modern">${data.size}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div class="info-box"><span class="info-label">Karton</span><span class="info-value">${data.karton}</span></div>
+                            <div class="info-box"><span class="info-label">Artikel</span><span class="info-value" style="font-size:11px;">${data.artikel}</span></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
     </script>
 </body>
 </html>
