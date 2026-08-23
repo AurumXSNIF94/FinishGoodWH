@@ -8,30 +8,30 @@
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
-        /* CSS MODERN APP - UI/UX 2024 */
+        /* CSS MODERN APP - UI/UX 2024 (BLACK TEXT EDITION) */
         :root {
             --bg-color: #f0f2f5;
             --surface: #ffffff;
             --primary: #cc0000;
             --primary-dark: #a30000;
-            --dark: #1c1c1c;
-            --text-main: #2d3748;
-            --text-muted: #718096;
+            --dark: #000000; /* Hitam pekat */
+            --text-main: #000000; /* Hitam pekat */
+            --text-muted: #000000; /* Abu-abu dibasmi, ganti hitam */
             --border: #e2e8f0;
             --radius-lg: 16px;
             --radius-md: 12px;
             --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 80px; /* Space for bottom nav */ } 
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 80px; } 
         
         /* HEADER MODERN MINIMALIS */
         .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 30;}
         .app-header img { height: 26px; object-fit: contain; }
-        .btn-logout { position: absolute; right: 15px; background: #f8f9fa; border: 1px solid var(--border); color: var(--text-muted); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s;}
-        .btn-logout:active { background: #fee2e2; color: var(--primary); border-color: #fca5a5;}
+        .btn-logout { position: absolute; right: 15px; background: #ffffff; border: 2px solid var(--dark); color: var(--dark); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
+        .btn-logout:active { background: #fee2e2; color: var(--primary); border-color: var(--primary);}
         
-        .btn-fix { position: absolute; left: 15px; background: #fffaf0; border: 1px solid #fbd38d; color: #dd6b20; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s;}
+        .btn-fix { position: absolute; left: 15px; background: #fffaf0; border: 2px solid #dd6b20; color: #dd6b20; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
         .btn-fix:active { background: #dd6b20; color: white;}
 
         /* LAYAR LOGIN PREMIUM */
@@ -39,17 +39,17 @@
         .login-box { background: var(--surface); padding: 40px 30px; text-align: center; width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; }
         .login-box img { height: 60px; margin-bottom: 25px; }
         .login-box h2 { color: var(--dark); margin: 0 0 8px 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;}
-        .login-box p { color: var(--text-muted); font-size: 15px; margin: 0 0 35px 0;}
-        .btn-google { background: var(--surface); color: var(--text-main); border: 2px solid var(--border); padding: 14px 20px; font-size: 15px; font-weight: 700; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .login-box p { color: var(--dark); font-size: 15px; margin: 0 0 35px 0; font-weight: 600;}
+        .btn-google { background: var(--surface); color: var(--dark); border: 2px solid var(--dark); padding: 14px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .btn-google:active { transform: scale(0.98); background: #f8f9fa; }
         .btn-google img { height: 22px; margin: 0; }
 
         /* BOTTOM NAVIGATION (GAYA HP KEKINIAN) */
-        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); padding-bottom: env(safe-area-inset-bottom); border-top-left-radius: 24px; border-top-right-radius: 24px;}
-        .tab-btn { flex: 1; padding: 16px 5px; text-align: center; font-weight: 700; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
-        .tab-btn span.icon { font-size: 20px; margin-bottom: 2px; opacity: 0.5; transition: 0.3s; }
+        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); border-top-left-radius: 24px; border-top-right-radius: 24px; border-top: 2px solid var(--dark);}
+        .tab-btn { flex: 1; padding: 16px 5px; text-align: center; font-weight: 800; font-size: 13px; color: var(--dark); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .tab-btn span.icon { font-size: 22px; margin-bottom: 2px; opacity: 1; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); } 
-        .tab-btn.active span.icon { opacity: 1; transform: translateY(-2px); }
+        .tab-btn.active span.icon { transform: translateY(-3px); }
         
         .content { padding: 15px; display: none; animation: fadeIn 0.3s ease; }
         .content.active { display: block; }
@@ -57,90 +57,93 @@
 
         /* PENCARIAN STICKY MODERN */
         .sticky-filter { position: sticky; top: 56px; background: var(--bg-color); padding: 10px 0 15px 0; z-index: 10; margin: 0;}
-        input.search-box { padding: 14px 20px; width: 100%; border: none; border-radius: 30px; box-sizing: border-box; font-size: 15px; font-weight: 600; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: var(--surface); outline: none; transition: 0.2s; color: var(--text-main);} 
-        input.search-box:focus { box-shadow: 0 0 0 2px var(--primary); }
+        input.search-box { padding: 14px 20px; width: 100%; border: 2px solid var(--dark); border-radius: 30px; box-sizing: border-box; font-size: 15px; font-weight: 800; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: var(--surface); outline: none; transition: 0.2s; color: var(--dark);} 
+        input.search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(204,0,0,0.2); }
 
         /* FORM INPUT MODERN */
-        .form-card { background: var(--surface); padding: 22px 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px;}
-        .form-card h3 { font-size: 16px; font-weight: 800; color: var(--dark); margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
+        .form-card { background: var(--surface); padding: 22px 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px; border: 2px solid var(--dark);}
+        .form-card h3 { font-size: 16px; font-weight: 900; color: var(--dark); margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
         .form-row { display: flex; gap: 12px; margin-bottom: 15px; }
         .form-row > * { flex: 1; }
-        input.form-input, select.form-select { padding: 15px; border: 1.5px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-weight: 500; outline: none; background: #f8fafc; transition: 0.2s; color: var(--text-main);} 
-        input.form-input:focus, select.form-select:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 4px 12px rgba(204,0,0,0.08);}
+        input.form-input, select.form-select { padding: 15px; border: 2px solid var(--dark); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-weight: 800; outline: none; background: #ffffff; transition: 0.2s; color: var(--dark);} 
+        input.form-input:focus, select.form-select:focus { border-color: var(--primary); }
         
         /* BOX DINAMIS */
-        .dynamic-box { background: #f8fafc; border: 1px solid var(--border); padding: 16px; border-radius: var(--radius-lg); margin-bottom: 20px;}
-        .dynamic-header { color: var(--text-muted); font-size: 12px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .btn-tambah-baris { background-color: #edf2f7; color: var(--text-main); border: none; padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s;}
-        .btn-tambah-baris:active { background-color: #e2e8f0; }
-        .btn-hapus-baris { background-color: #fee2e2; color: #c0392b; border: none; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: bold; font-size: 14px; transition: 0.2s;}
+        .dynamic-box { background: #ffffff; border: 2px solid var(--dark); padding: 16px; border-radius: var(--radius-lg); margin-bottom: 20px;}
+        .dynamic-header { color: var(--dark); font-size: 13px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .btn-tambah-baris { background-color: #ffffff; color: var(--dark); border: 2px solid var(--dark); padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 900; cursor: pointer; font-size: 14px; transition: 0.2s;}
+        .btn-tambah-baris:active { background-color: var(--dark); color: #ffffff;}
+        .btn-hapus-baris { background-color: #fee2e2; color: #c0392b; border: 2px solid #c0392b; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900; font-size: 14px; transition: 0.2s;}
 
         /* TOMBOL UTAMA */
-        .btn-add { background-color: var(--primary); color: white; padding: 16px; border: none; border-radius: 30px; width: 100%; font-weight: 800; cursor: pointer; font-size: 15px; transition: 0.2s; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(204,0,0,0.3);}
+        .btn-add { background-color: var(--primary); color: white; padding: 16px; border: 2px solid var(--primary-dark); border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; transition: 0.2s; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(204,0,0,0.3);}
         .btn-add:active { background-color: var(--primary-dark); transform: translateY(2px); box-shadow: none;}
         
-        /* PIVOT GROUP HEADER */
+        /* PIVOT GROUP HEADER (SEKARANG BISA DIPENCET / DROPDOWN) */
         .pivot-group-header {
-            background-color: var(--surface);
-            color: var(--text-main);
+            background-color: #ffffff;
+            color: var(--dark);
             padding: 14px 16px;
-            font-size: 14px;
+            font-size: 15px;
             margin-top: 10px;
             margin-bottom: 15px;
             border-radius: var(--radius-lg);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: var(--shadow-soft);
-            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            font-weight: 800;
+            border: 2px solid var(--dark);
+            cursor: pointer; /* Kursor berubah jadi jari pas disentuh */
+            transition: 0.2s;
         }
-        .pivot-group-header b { color: var(--dark); font-weight: 800; }
-        .pivot-count { background-color: var(--bg-color); color: var(--text-muted); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+        .pivot-group-header:active { transform: scale(0.98); background-color: #f8f9fa; }
+        .pivot-group-header b { color: var(--dark); font-weight: 900; }
+        .pivot-count { background-color: var(--dark); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 900; }
 
         /* GRID KARTU (MODERN CARDS) */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
         
-        .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid rgba(0,0,0,0.02);}
-        .mini-card.history-card { opacity: 0.85; background: #fcfcfc;}
+        .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 2px solid var(--dark);}
         
-        .chk-select { transform: scale(1.3); margin-right: 8px; accent-color: var(--primary); cursor: pointer;}
+        .chk-select { transform: scale(1.4); margin-right: 8px; accent-color: var(--primary); cursor: pointer;}
         
         /* Badges Card */
         .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 8px;}
-        .badge-so-modern { flex: 1; color: var(--dark); font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .badge-size-modern { background: #fee2e2; color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 15px; text-align: center;}
+        .badge-so-modern { flex: 1; color: var(--dark); font-weight: 900; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .badge-size-modern { background: #fee2e2; color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 15px; text-align: center; border: 1px solid var(--primary);}
         
         /* Grid Info Label */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .info-item { display: flex; flex-direction: column; gap: 2px; }
-        .info-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
-        .info-value { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .info-item { display: flex; flex-direction: column; gap: 4px; }
+        .info-label { font-size: 11px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px;}
+        .info-value { font-size: 16px; font-weight: 900; color: var(--dark); }
         
-        .lokasi-box { background: #f8fafc; padding: 10px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;}
+        .lokasi-box { background: #ffffff; padding: 10px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 2px dashed var(--dark);}
         .lokasi-box .info-label { margin: 0; }
-        .lokasi-box .info-value { color: var(--primary); font-size: 16px; }
+        .lokasi-box .info-value { color: var(--primary); font-size: 17px; }
 
-        .badge-jenis { background: var(--dark); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px;}
-        .tanggal-text { font-size: 12px; color: var(--text-muted); font-weight: 600; margin: 0;}
-        .user-info { font-size: 11px; color: #a0aec0; padding-top: 12px; border-top: 1px solid var(--border); font-weight: 500;}
+        .badge-jenis { padding: 4px 10px; border-radius: 12px; font-weight: 900; font-size: 11px; letter-spacing: 0.5px;}
+        .tanggal-text { font-size: 13px; color: var(--dark); font-weight: 800; margin: 0;}
+        .user-info { font-size: 12px; color: var(--dark); padding-top: 12px; border-top: 2px dotted var(--dark); font-weight: 700;}
 
         /* Aksi Kartu */
         .action-row { display: flex; gap: 8px; margin-top: 15px; }
-        .action-row button { flex: 1; padding: 10px 0; border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer; font-size: 13px; transition: 0.2s;}
-        .btn-edit { background: #edf2f7; color: var(--text-main); }
-        .btn-edit:active { background: #e2e8f0; }
+        .action-row button { flex: 1; padding: 10px 0; border: 2px solid var(--dark); border-radius: var(--radius-md); font-weight: 900; cursor: pointer; font-size: 13px; transition: 0.2s;}
+        .btn-edit { background: #ffffff; color: var(--dark); }
+        .btn-edit:active { background: var(--dark); color: #ffffff; }
         .btn-out { background: var(--dark); color: white; }
         .btn-out:active { background: #000; }
 
         /* FLOATING BULK BAR */
-        .bulk-action-bar { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface); padding: 12px 16px; border-radius: 30px; display: none; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 100; border: 1px solid var(--border);}
-        .bulk-action-bar span { font-weight: 800; font-size: 13px; color: var(--dark); padding: 0 10px;}
-        .bulk-btn { border: none; padding: 10px 20px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 12px; transition: 0.2s;}
+        .bulk-action-bar { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface); padding: 12px 16px; border-radius: 30px; display: none; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 100; border: 3px solid var(--dark);}
+        .bulk-action-bar span { font-weight: 900; font-size: 14px; color: var(--dark); padding: 0 10px;}
+        .bulk-btn { border: 2px solid var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: 900; cursor: pointer; font-size: 13px; transition: 0.2s;}
         .bulk-btn-out { background: var(--dark); color: white; }
-        .bulk-btn-del { background: #fee2e2; color: var(--primary); }
+        .bulk-btn-del { background: #fee2e2; color: var(--primary); border-color: var(--primary); }
         
-        .alert-multi { background-color: var(--primary); color: white; text-align: center; font-size: 11px; font-weight: 800; padding: 6px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .keterangan-text { background-color: #fffaf0; padding: 10px; border-radius: var(--radius-md); color: #dd6b20; font-size: 12px; margin-bottom: 12px; font-weight: 600;}
+        .alert-multi { background-color: var(--primary); color: white; text-align: center; font-size: 12px; font-weight: 900; padding: 6px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px;}
+        .keterangan-text { background-color: #fffaf0; padding: 10px; border-radius: var(--radius-md); color: #dd6b20; font-size: 13px; margin-bottom: 12px; font-weight: 800; border: 2px solid #dd6b20;}
     </style>
 </head>
 <body>
@@ -204,8 +207,8 @@
                 <button class="btn-add" id="btnTambah">Simpan Data</button>
                 
                 <div id="editActionGroup" class="form-row" style="display: none; margin-top:15px;">
-                    <button class="btn-tambah-baris" style="background:#edf2f7;" onclick="batalEdit()">Batal</button>
-                    <button class="btn-add" style="background:var(--dark); width:auto;" onclick="hapusPermanen()">Hapus</button>
+                    <button class="btn-tambah-baris" style="background:#ffffff;" onclick="batalEdit()">Batal</button>
+                    <button class="btn-add" style="background:var(--dark); border-color:var(--dark); width:auto;" onclick="hapusPermanen()">Hapus</button>
                 </div>
             </div>
         </div>
@@ -226,7 +229,7 @@
             <div id="gridRiwayatOut"></div> 
         </div>
         
-        <!-- BOTTOM NAVIGATION (Pengganti Tab Atas) -->
+        <!-- BOTTOM NAVIGATION -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)">
                 <span class="icon">➕</span>
@@ -250,7 +253,6 @@
         <button class="bulk-btn bulk-btn-del" onclick="hapusTerpilih()">Hapus</button>
     </div>
 
-    <!-- FIREBASE SCRIPT (Logic Tetap Sama 100%) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
@@ -346,6 +348,19 @@
             document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 10px;"><input type="text" class="form-input size-input" placeholder="Size"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
             applyUppercaseListener(); applyKartonFormatListener();
         }
+
+        // FUNGSI BUAT DROPDOWN / ACCORDION HEADER
+        window.toggleDropdown = (headerEl) => {
+            const grid = headerEl.nextElementSibling;
+            const icon = headerEl.querySelector('.toggle-icon');
+            if (grid.style.display === 'none') {
+                grid.style.display = 'grid'; // Grid container kembali tampil
+                icon.innerText = '▼';
+            } else {
+                grid.style.display = 'none'; // Grid container dilipat
+                icon.innerText = '▶';
+            }
+        };
 
         window.openTab = (tabName, elmnt) => {
             if(tabName !== 'tabInput' && window.currentEditId !== null) batalEdit();
@@ -492,7 +507,7 @@
             dataAktif.sort(sorter); dataOut.sort(sorter);
 
             function buildPivotHTML(dataArray, isHistory) {
-                if (dataArray.length === 0) return '<p style="text-align:center; color:var(--text-muted); margin-top:30px; font-weight:600;">Data tidak ditemukan.</p>';
+                if (dataArray.length === 0) return '<p style="text-align:center; color:var(--dark); margin-top:30px; font-weight:800;">Data tidak ditemukan.</p>';
                 let groupedBySOArt = {};
                 dataArray.forEach(d => {
                     let so = (d.so_number || "TANPA SO").toUpperCase(), art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
@@ -505,15 +520,18 @@
                 Object.keys(groupedBySOArt).sort().forEach(key => {
                     let group = groupedBySOArt[key];
                     htmlOutput += `
-                        <div class="pivot-group-header">
-                            <span>📦 <b>${group.so}</b> | ${group.art}</span>
+                        <div class="pivot-group-header" onclick="toggleDropdown(this)">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="toggle-icon" style="font-size:12px;">▼</span>
+                                <span>📦 <b>${group.so}</b> | ${group.art}</span>
+                            </div>
                             <span class="pivot-count">${group.items.length} Box</span>
                         </div>
                         <div class="grouped-grid">
                     `;
                     group.items.forEach(data => {
                         let htmlKeterangan = data.keterangan ? `<div class="keterangan-text">${data.keterangan}</div>` : '';
-                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis" style="background:#dd6b20;">MIX</span>` : `<span class="badge-jenis">SOLID</span>`;
+                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis" style="background:#dd6b20; color:white;">MIX</span>` : `<span class="badge-jenis" style="background:var(--dark); color:white;">SOLID</span>`;
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
                         let isMultiArtikel = !isHistory && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
                         let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">BEDA ARTIKEL!</div>` : '';
@@ -552,14 +570,15 @@
                                     </div>
                                 </div>`;
                         } else {
+                            // TAMPILAN RIWAYAT (WARNA FULL SAMA DENGAN AKTIF, GA ADA OPACITY/ABU-ABU)
                             htmlOutput += `
-                                <div class="mini-card history-card">
+                                <div class="mini-card">
                                     <div class="card-header-modern">
                                         <div style="display: flex; align-items: center; flex: 1; overflow: hidden; gap: 8px;">
                                             <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
-                                            <div class="badge-so-modern" style="color:var(--text-muted);">${data.so_number}</div>
+                                            <div class="badge-so-modern">${data.so_number}</div>
                                         </div>
-                                        <div class="badge-size-modern" style="background:#e2e8f0; color:var(--text-muted);">${data.size}</div>
+                                        <div class="badge-size-modern">${data.size}</div>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                         <span class="tanggal-text">OUT: ${data.tanggal_out}</span>
