@@ -29,9 +29,9 @@
         body.dark-mode {
             --bg-color: #121212;
             --surface: #1e1e1e;
-            --primary: #ff4d4d; /* Merah lebih terang di layar gelap */
+            --primary: #ff4d4d; 
             --primary-dark: #cc0000;
-            --dark: #ffffff; /* Hitam berubah jadi putih */
+            --dark: #ffffff; 
             --text-main: #ffffff;
             --text-muted: #e0e0e0;
             --border: #444444;
@@ -45,7 +45,7 @@
         /* HEADER MODERN MINIMALIS */
         .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 30; transition: 0.3s;}
         .app-header img { height: 26px; object-fit: contain; filter: drop-shadow(0px 0px 1px rgba(255,255,255,0.2)); }
-        body.dark-mode .app-header img { filter: invert(1); } /* Logo jadi putih di dark mode */
+        body.dark-mode .app-header img { filter: invert(1); }
 
         .btn-logout { position: absolute; right: 15px; background: var(--surface); border: 2px solid var(--dark); color: var(--dark); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
         .btn-logout:active { background: var(--danger-bg); color: var(--primary); border-color: var(--primary);}
@@ -64,10 +64,10 @@
         .btn-google:active { transform: scale(0.98); background: var(--bg-color); }
         .btn-google img { height: 22px; margin: 0; }
 
-        /* BOTTOM NAVIGATION (GAYA HP KEKINIAN) */
+        /* BOTTOM NAVIGATION (4 TABS) */
         .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); border-top-left-radius: 24px; border-top-right-radius: 24px; border-top: 2px solid var(--dark); transition: 0.3s;}
-        .tab-btn { flex: 1; padding: 16px 5px; text-align: center; font-weight: 800; font-size: 13px; color: var(--dark); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
-        .tab-btn span.icon { font-size: 22px; margin-bottom: 2px; opacity: 1; transition: 0.3s; }
+        .tab-btn { flex: 1; padding: 14px 2px; text-align: center; font-weight: 800; font-size: 12px; color: var(--dark); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .tab-btn span.icon { font-size: 20px; margin-bottom: 2px; opacity: 1; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); } 
         .tab-btn.active span.icon { transform: translateY(-3px); }
         
@@ -99,7 +99,7 @@
         .btn-add { background-color: var(--primary); color: white; padding: 16px; border: 2px solid var(--primary-dark); border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; transition: 0.2s; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(204,0,0,0.3);}
         .btn-add:active { background-color: var(--primary-dark); transform: translateY(2px); box-shadow: none;}
         
-        /* PIVOT GROUP HEADER (DROPDOWN) */
+        /* PIVOT GROUP HEADER */
         .pivot-group-header {
             background-color: var(--surface);
             color: var(--dark);
@@ -121,28 +121,30 @@
         .pivot-group-header b { color: var(--dark); font-weight: 900; }
         .pivot-count { background-color: var(--dark); color: var(--surface); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 900; }
 
-        /* GRID KARTU (MODERN CARDS) */
+        /* GRID KARTU */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
+        .grouped-grid.single-col { grid-template-columns: 1fr; } /* Buat Lokasi */
         
         .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 2px solid var(--dark); transition: 0.3s;}
         
         .chk-select { transform: scale(1.4); margin-right: 8px; accent-color: var(--primary); cursor: pointer;}
         
-        /* Badges Card */
         .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 8px;}
         .badge-so-modern { flex: 1; color: var(--dark); font-weight: 900; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .badge-size-modern { background: var(--danger-bg); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 15px; text-align: center; border: 1px solid var(--primary);}
         
-        /* Grid Info Label */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .info-item { display: flex; flex-direction: column; gap: 4px; }
         .info-label { font-size: 11px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px;}
         .info-value { font-size: 15px; font-weight: 900; color: var(--dark); }
         
-        /* ARTIKEL JADI BESAR */
         .artikel-box { background: var(--bg-color); padding: 10px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 2px dashed var(--dark);}
         .artikel-box .info-label { margin: 0; }
         .artikel-box .info-value { color: var(--primary); font-size: 18px; font-weight: 900;}
+
+        .lokasi-besar { background: var(--dark); padding: 12px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 2px solid var(--primary);}
+        .lokasi-besar .info-label { color: var(--surface); margin: 0; }
+        .lokasi-besar .info-value { color: #ffeb3b; font-size: 22px; font-weight: 900; letter-spacing: 1px;}
 
         .badge-jenis { padding: 4px 10px; border-radius: 12px; font-weight: 900; font-size: 11px; letter-spacing: 0.5px;}
         .tanggal-text { font-size: 13px; color: var(--dark); font-weight: 800; margin: 0;}
@@ -199,7 +201,7 @@
                 
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
-                    <input type="text" id="soInput" class="form-input" placeholder="SO (LO9089)">
+                    <input type="text" id="soInput" class="form-input" placeholder="SO (2026PYN)">
                 </div>
                 <div class="form-row">
                     <select id="jenisInput" class="form-select" style="text-transform: none;">
@@ -209,7 +211,7 @@
                     <input type="text" id="artikelInput" class="form-input" placeholder="Artikel / Style">
                 </div>
                 <div class="form-row">
-                    <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (FG-A)">
+                    <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (AR01-000)">
                     <input type="text" id="keteranganInput" class="form-input" placeholder="Ket. (Opsional)">
                 </div>
 
@@ -237,7 +239,7 @@
         <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="Cari SO...">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="Cari SO ...">
             </div>
             <div id="gridKartonAktif"></div> 
         </div>
@@ -249,20 +251,30 @@
             </div>
             <div id="gridRiwayatOut"></div> 
         </div>
+
+        <!-- TAB 4: LOKASI SO (BARU) -->
+        <div id="tabLokasi" class="content">
+            <div class="sticky-filter">
+                <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Ketik SO (Contoh: 10206297)...">
+            </div>
+            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 15px; background: var(--dark); border-color: var(--dark);">🔄 Sinkron Data Lokasi</button>
+            <div id="statusLokasi" style="text-align:center; font-size:12px; font-weight:900; margin-bottom:15px; color:var(--primary);"></div>
+            <div id="gridLokasi" class="grouped-grid single-col"></div>
+        </div>
         
-        <!-- BOTTOM NAVIGATION -->
+        <!-- BOTTOM NAVIGATION (4 TABS) -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)">
-                <span class="icon">➕</span>
-                Input
+                <span class="icon">➕</span> Input
             </div>
             <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)">
-                <span class="icon">📦</span>
-                Aktif
+                <span class="icon">📦</span> Aktif
             </div>
             <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)">
-                <span class="icon">⏱️</span>
-                Riwayat
+                <span class="icon">⏱️</span> Riwayat
+            </div>
+            <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)">
+                <span class="icon">📍</span> Lokasi
             </div>
         </div>
     </div>
@@ -325,6 +337,70 @@
         window.currentEditId = null; 
         window.selectedIds = new Set();
 
+        // ----------------------------------------------------
+        // FITUR CARI LOKASI DARI SPREADSHEET (BARU)
+        // ----------------------------------------------------
+        // TODO: GANTI URL DI BAWAH INI SAMA URL WEB APP LO (LANGKAH 1)
+        const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
+        let dataLokasiExcel = [];
+
+        document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
+            const statusDiv = document.getElementById('statusLokasi');
+            statusDiv.innerText = '⏳ Menyedot data lokasi dari Excel...';
+            try {
+                const response = await fetch(URL_GAS_LOKASI);
+                dataLokasiExcel = await response.json();
+                statusDiv.innerText = `✅ Berhasil narik ${dataLokasiExcel.length} baris lokasi!`;
+                statusDiv.style.color = '#27ae60';
+                renderDataLokasi();
+            } catch (error) {
+                statusDiv.innerText = '❌ Gagal terhubung ke Excel. Cek URL!';
+                statusDiv.style.color = 'var(--primary)';
+            }
+        });
+
+        document.getElementById('filterCariLokasi').addEventListener('input', renderDataLokasi);
+
+        function renderDataLokasi() {
+            const grid = document.getElementById('gridLokasi');
+            const filter = document.getElementById('filterCariLokasi').value.toUpperCase().trim();
+            grid.innerHTML = '';
+
+            if(dataLokasiExcel.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; font-weight:800; color:var(--dark);">Silakan klik tombol Sync di atas dulu cok!</p>';
+                return;
+            }
+            if(!filter) {
+                grid.innerHTML = '<p style="text-align:center; font-weight:800; color:var(--dark);">Ketik SO yang mau lo cari di kotak pencarian 👆</p>';
+                return;
+            }
+
+            let filtered = dataLokasiExcel.filter(d => (d.so || "").toUpperCase().includes(filter));
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; font-weight:800; color:var(--primary);">❌ SO tidak ditemukan di daftar lokasi.</p>';
+                return;
+            }
+
+            filtered.forEach(d => {
+                grid.innerHTML += `
+                    <div class="mini-card">
+                        <div class="info-grid" style="grid-template-columns: 1fr;">
+                            <div class="info-item">
+                                <span class="info-label">Sales Order (Data Excel)</span>
+                                <span class="info-value" style="font-size:16px;">${d.so}</span>
+                            </div>
+                        </div>
+                        <div class="lokasi-besar">
+                            <span class="info-label">LOKASI RAK</span>
+                            <span class="info-value">📍 ${d.lokasi}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        // ----------------------------------------------------
+
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 if(!input.hasAttribute('data-upper')) {
@@ -374,7 +450,6 @@
             applyUppercaseListener(); applyKartonFormatListener();
         }
 
-        // FUNGSI BUAT DROPDOWN / ACCORDION HEADER
         window.toggleDropdown = (headerEl) => {
             const grid = headerEl.nextElementSibling;
             const icon = headerEl.querySelector('.toggle-icon');
@@ -395,7 +470,9 @@
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             elmnt.classList.add('active');
-            renderData();
+            if (tabName !== 'tabLokasi') {
+                renderData();
+            }
         }
 
         document.getElementById('btnTambah').addEventListener('click', async () => {
@@ -588,7 +665,7 @@
                                     </div>
                                     
                                     ${htmlKeterangan}
-                                    <div class="user-info">Diinput Oleh : ${data.diinput_oleh || 'Admin'}</div>
+                                    <div class="user-info">Oleh : ${data.diinput_oleh || 'Admin'}</div>
                                     <div class="action-row">
                                         <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
                                         <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
@@ -605,7 +682,7 @@
                                         <div class="badge-size-modern">${data.size}</div>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                        <span class="tanggal-text">Keluar : ${data.tanggal_out}</span>
+                                        <span class="tanggal-text">KELUAR : ${data.tanggal_out}</span>
                                         ${badgeJenis}
                                     </div>
                                     <div class="info-grid">
@@ -617,7 +694,7 @@
                                         <span class="info-value">${data.artikel}</span>
                                     </div>
                                     ${htmlKeterangan}
-                                    <div class="user-info">Diinput Oleh : ${data.diinput_oleh || 'Admin'}</div>
+                                    <div class="user-info">Oleh : ${data.diinput_oleh || 'Admin'}</div>
                                 </div>`;
                         }
                     });
