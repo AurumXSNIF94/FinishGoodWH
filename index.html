@@ -8,44 +8,64 @@
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
-        /* CSS MODERN APP - UI/UX 2024 (BLACK TEXT EDITION) */
+        /* CSS MODERN APP - LIGHT/DARK THEME */
         :root {
             --bg-color: #f0f2f5;
             --surface: #ffffff;
             --primary: #cc0000;
             --primary-dark: #a30000;
-            --dark: #000000; /* Hitam pekat */
-            --text-main: #000000; /* Hitam pekat */
-            --text-muted: #000000; /* Abu-abu dibasmi, ganti hitam */
+            --dark: #000000;
+            --text-main: #000000;
+            --text-muted: #000000; 
             --border: #e2e8f0;
             --radius-lg: 16px;
             --radius-md: 12px;
-            --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+            --danger-bg: #fee2e2;
+            --danger-text: #c0392b;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 80px; } 
+        /* DARK MODE SETTINGS */
+        body.dark-mode {
+            --bg-color: #121212;
+            --surface: #1e1e1e;
+            --primary: #ff4d4d; /* Merah lebih terang di layar gelap */
+            --primary-dark: #cc0000;
+            --dark: #ffffff; /* Hitam berubah jadi putih */
+            --text-main: #ffffff;
+            --text-muted: #e0e0e0;
+            --border: #444444;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.5);
+            --danger-bg: #3b1616;
+            --danger-text: #ff6b6b;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 80px; transition: background-color 0.3s, color 0.3s;} 
         
         /* HEADER MODERN MINIMALIS */
-        .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 30;}
-        .app-header img { height: 26px; object-fit: contain; }
-        .btn-logout { position: absolute; right: 15px; background: #ffffff; border: 2px solid var(--dark); color: var(--dark); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
-        .btn-logout:active { background: #fee2e2; color: var(--primary); border-color: var(--primary);}
+        .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 30; transition: 0.3s;}
+        .app-header img { height: 26px; object-fit: contain; filter: drop-shadow(0px 0px 1px rgba(255,255,255,0.2)); }
+        body.dark-mode .app-header img { filter: invert(1); } /* Logo jadi putih di dark mode */
+
+        .btn-logout { position: absolute; right: 15px; background: var(--surface); border: 2px solid var(--dark); color: var(--dark); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
+        .btn-logout:active { background: var(--danger-bg); color: var(--primary); border-color: var(--primary);}
         
-        .btn-fix { position: absolute; left: 15px; background: #fffaf0; border: 2px solid #dd6b20; color: #dd6b20; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
-        .btn-fix:active { background: #dd6b20; color: white;}
+        .btn-mode { position: absolute; left: 15px; background: var(--surface); border: 2px solid var(--dark); color: var(--dark); border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: 0.2s;}
+        .btn-mode:active { background: var(--dark); color: var(--bg-color);}
 
         /* LAYAR LOGIN PREMIUM */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background: var(--surface); padding: 40px 30px; text-align: center; width: 85%; max-width: 320px; display: flex; flex-direction: column; align-items: center; }
         .login-box img { height: 60px; margin-bottom: 25px; }
+        body.dark-mode .login-box img { filter: invert(1); }
         .login-box h2 { color: var(--dark); margin: 0 0 8px 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;}
         .login-box p { color: var(--dark); font-size: 15px; margin: 0 0 35px 0; font-weight: 600;}
         .btn-google { background: var(--surface); color: var(--dark); border: 2px solid var(--dark); padding: 14px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-        .btn-google:active { transform: scale(0.98); background: #f8f9fa; }
+        .btn-google:active { transform: scale(0.98); background: var(--bg-color); }
         .btn-google img { height: 22px; margin: 0; }
 
         /* BOTTOM NAVIGATION (GAYA HP KEKINIAN) */
-        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); border-top-left-radius: 24px; border-top-right-radius: 24px; border-top: 2px solid var(--dark);}
+        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); border-top-left-radius: 24px; border-top-right-radius: 24px; border-top: 2px solid var(--dark); transition: 0.3s;}
         .tab-btn { flex: 1; padding: 16px 5px; text-align: center; font-weight: 800; font-size: 13px; color: var(--dark); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
         .tab-btn span.icon { font-size: 22px; margin-bottom: 2px; opacity: 1; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); } 
@@ -56,32 +76,32 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* PENCARIAN STICKY MODERN */
-        .sticky-filter { position: sticky; top: 56px; background: var(--bg-color); padding: 10px 0 15px 0; z-index: 10; margin: 0;}
+        .sticky-filter { position: sticky; top: 56px; background: var(--bg-color); padding: 10px 0 15px 0; z-index: 10; margin: 0; transition: 0.3s;}
         input.search-box { padding: 14px 20px; width: 100%; border: 2px solid var(--dark); border-radius: 30px; box-sizing: border-box; font-size: 15px; font-weight: 800; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: var(--surface); outline: none; transition: 0.2s; color: var(--dark);} 
         input.search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(204,0,0,0.2); }
 
         /* FORM INPUT MODERN */
-        .form-card { background: var(--surface); padding: 22px 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px; border: 2px solid var(--dark);}
+        .form-card { background: var(--surface); padding: 22px 18px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 20px; border: 2px solid var(--dark); transition: 0.3s;}
         .form-card h3 { font-size: 16px; font-weight: 900; color: var(--dark); margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
         .form-row { display: flex; gap: 12px; margin-bottom: 15px; }
         .form-row > * { flex: 1; }
-        input.form-input, select.form-select { padding: 15px; border: 2px solid var(--dark); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-weight: 800; outline: none; background: #ffffff; transition: 0.2s; color: var(--dark);} 
+        input.form-input, select.form-select { padding: 15px; border: 2px solid var(--dark); border-radius: var(--radius-md); box-sizing: border-box; font-size: 15px; font-weight: 800; outline: none; background: var(--surface); transition: 0.2s; color: var(--dark);} 
         input.form-input:focus, select.form-select:focus { border-color: var(--primary); }
         
         /* BOX DINAMIS */
-        .dynamic-box { background: #ffffff; border: 2px solid var(--dark); padding: 16px; border-radius: var(--radius-lg); margin-bottom: 20px;}
+        .dynamic-box { background: var(--surface); border: 2px solid var(--dark); padding: 16px; border-radius: var(--radius-lg); margin-bottom: 20px;}
         .dynamic-header { color: var(--dark); font-size: 13px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .btn-tambah-baris { background-color: #ffffff; color: var(--dark); border: 2px solid var(--dark); padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 900; cursor: pointer; font-size: 14px; transition: 0.2s;}
-        .btn-tambah-baris:active { background-color: var(--dark); color: #ffffff;}
-        .btn-hapus-baris { background-color: #fee2e2; color: #c0392b; border: 2px solid #c0392b; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900; font-size: 14px; transition: 0.2s;}
+        .btn-tambah-baris { background-color: var(--surface); color: var(--dark); border: 2px solid var(--dark); padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 900; cursor: pointer; font-size: 14px; transition: 0.2s;}
+        .btn-tambah-baris:active { background-color: var(--dark); color: var(--surface);}
+        .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: 2px solid var(--danger-text); border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900; font-size: 14px; transition: 0.2s;}
 
         /* TOMBOL UTAMA */
         .btn-add { background-color: var(--primary); color: white; padding: 16px; border: 2px solid var(--primary-dark); border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; transition: 0.2s; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(204,0,0,0.3);}
         .btn-add:active { background-color: var(--primary-dark); transform: translateY(2px); box-shadow: none;}
         
-        /* PIVOT GROUP HEADER (SEKARANG BISA DIPENCET / DROPDOWN) */
+        /* PIVOT GROUP HEADER (DROPDOWN) */
         .pivot-group-header {
-            background-color: #ffffff;
+            background-color: var(--surface);
             color: var(--dark);
             padding: 14px 16px;
             font-size: 15px;
@@ -94,34 +114,35 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             font-weight: 800;
             border: 2px solid var(--dark);
-            cursor: pointer; /* Kursor berubah jadi jari pas disentuh */
+            cursor: pointer; 
             transition: 0.2s;
         }
-        .pivot-group-header:active { transform: scale(0.98); background-color: #f8f9fa; }
+        .pivot-group-header:active { transform: scale(0.98); background-color: var(--bg-color); }
         .pivot-group-header b { color: var(--dark); font-weight: 900; }
-        .pivot-count { background-color: var(--dark); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 900; }
+        .pivot-count { background-color: var(--dark); color: var(--surface); padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 900; }
 
         /* GRID KARTU (MODERN CARDS) */
         .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;}
         
-        .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 2px solid var(--dark);}
+        .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 2px solid var(--dark); transition: 0.3s;}
         
         .chk-select { transform: scale(1.4); margin-right: 8px; accent-color: var(--primary); cursor: pointer;}
         
         /* Badges Card */
         .card-header-modern { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 8px;}
         .badge-so-modern { flex: 1; color: var(--dark); font-weight: 900; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .badge-size-modern { background: #fee2e2; color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 15px; text-align: center; border: 1px solid var(--primary);}
+        .badge-size-modern { background: var(--danger-bg); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-weight: 900; font-size: 15px; text-align: center; border: 1px solid var(--primary);}
         
         /* Grid Info Label */
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .info-item { display: flex; flex-direction: column; gap: 4px; }
         .info-label { font-size: 11px; color: var(--dark); text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px;}
-        .info-value { font-size: 16px; font-weight: 900; color: var(--dark); }
+        .info-value { font-size: 15px; font-weight: 900; color: var(--dark); }
         
-        .lokasi-box { background: #ffffff; padding: 10px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 2px dashed var(--dark);}
-        .lokasi-box .info-label { margin: 0; }
-        .lokasi-box .info-value { color: var(--primary); font-size: 17px; }
+        /* ARTIKEL JADI BESAR */
+        .artikel-box { background: var(--bg-color); padding: 10px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border: 2px dashed var(--dark);}
+        .artikel-box .info-label { margin: 0; }
+        .artikel-box .info-value { color: var(--primary); font-size: 18px; font-weight: 900;}
 
         .badge-jenis { padding: 4px 10px; border-radius: 12px; font-weight: 900; font-size: 11px; letter-spacing: 0.5px;}
         .tanggal-text { font-size: 13px; color: var(--dark); font-weight: 800; margin: 0;}
@@ -130,20 +151,20 @@
         /* Aksi Kartu */
         .action-row { display: flex; gap: 8px; margin-top: 15px; }
         .action-row button { flex: 1; padding: 10px 0; border: 2px solid var(--dark); border-radius: var(--radius-md); font-weight: 900; cursor: pointer; font-size: 13px; transition: 0.2s;}
-        .btn-edit { background: #ffffff; color: var(--dark); }
-        .btn-edit:active { background: var(--dark); color: #ffffff; }
-        .btn-out { background: var(--dark); color: white; }
-        .btn-out:active { background: #000; }
+        .btn-edit { background: var(--surface); color: var(--dark); }
+        .btn-edit:active { background: var(--dark); color: var(--surface); }
+        .btn-out { background: var(--dark); color: var(--surface); }
+        .btn-out:active { opacity: 0.8; }
 
         /* FLOATING BULK BAR */
-        .bulk-action-bar { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface); padding: 12px 16px; border-radius: 30px; display: none; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 100; border: 3px solid var(--dark);}
+        .bulk-action-bar { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface); padding: 12px 16px; border-radius: 30px; display: none; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; border: 3px solid var(--dark);}
         .bulk-action-bar span { font-weight: 900; font-size: 14px; color: var(--dark); padding: 0 10px;}
         .bulk-btn { border: 2px solid var(--dark); padding: 10px 20px; border-radius: 20px; font-weight: 900; cursor: pointer; font-size: 13px; transition: 0.2s;}
-        .bulk-btn-out { background: var(--dark); color: white; }
-        .bulk-btn-del { background: #fee2e2; color: var(--primary); border-color: var(--primary); }
+        .bulk-btn-out { background: var(--dark); color: var(--surface); }
+        .bulk-btn-del { background: var(--danger-bg); color: var(--primary); border-color: var(--primary); }
         
         .alert-multi { background-color: var(--primary); color: white; text-align: center; font-size: 12px; font-weight: 900; padding: 6px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px;}
-        .keterangan-text { background-color: #fffaf0; padding: 10px; border-radius: var(--radius-md); color: #dd6b20; font-size: 13px; margin-bottom: 12px; font-weight: 800; border: 2px solid #dd6b20;}
+        .keterangan-text { background-color: var(--bg-color); padding: 10px; border-radius: var(--radius-md); color: var(--primary); font-size: 13px; margin-bottom: 12px; font-weight: 800; border: 2px solid var(--primary);}
     </style>
 </head>
 <body>
@@ -166,7 +187,7 @@
         
         <!-- HEADER -->
         <div class="app-header">
-            <button class="btn-fix" id="btnFixData">🛠️ FIX #</button>
+            <button class="btn-mode" id="btnDarkMode">🌙 DARK</button>
             <img src="logo.png" alt="Logo">
             <button class="btn-logout" id="btnLogout">Logout</button>
         </div>
@@ -207,7 +228,7 @@
                 <button class="btn-add" id="btnTambah">Simpan Data</button>
                 
                 <div id="editActionGroup" class="form-row" style="display: none; margin-top:15px;">
-                    <button class="btn-tambah-baris" style="background:#ffffff;" onclick="batalEdit()">Batal</button>
+                    <button class="btn-tambah-baris" onclick="batalEdit()">Batal</button>
                     <button class="btn-add" style="background:var(--dark); border-color:var(--dark); width:auto;" onclick="hapusPermanen()">Hapus</button>
                 </div>
             </div>
@@ -282,23 +303,27 @@
         document.getElementById('btnGoogleLogin').addEventListener('click', () => signInWithPopup(auth, provider));
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm("Keluar dari sistem?")) signOut(auth); });
 
+        // LOGIKA DARK MODE
+        const btnDarkMode = document.getElementById('btnDarkMode');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            btnDarkMode.innerHTML = '☀️ LIGHT';
+        }
+        btnDarkMode.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                btnDarkMode.innerHTML = '☀️ LIGHT';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                btnDarkMode.innerHTML = '🌙 DARK';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
         document.getElementById('tanggalInput').valueAsDate = new Date();
         let rawData = [];
         window.currentEditId = null; 
         window.selectedIds = new Set();
-
-        document.getElementById('btnFixData').addEventListener('click', async () => {
-            if(confirm("Yakin mau otomatis nambahin '#' ke semua nomor karton data lama?")) {
-                let count = 0;
-                for (let data of rawData) {
-                    if (data.nomor_karton && !data.nomor_karton.startsWith('#')) {
-                        await update(ref(db, `stok_fg_wh/${data.id}`), { nomor_karton: '#' + data.nomor_karton });
-                        count++;
-                    }
-                }
-                alert(`Beres cok! ${count} karton lama udah sukses diperbarui.`);
-            }
-        });
 
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
@@ -354,10 +379,10 @@
             const grid = headerEl.nextElementSibling;
             const icon = headerEl.querySelector('.toggle-icon');
             if (grid.style.display === 'none') {
-                grid.style.display = 'grid'; // Grid container kembali tampil
+                grid.style.display = 'grid'; 
                 icon.innerText = '▼';
             } else {
-                grid.style.display = 'none'; // Grid container dilipat
+                grid.style.display = 'none'; 
                 icon.innerText = '▶';
             }
         };
@@ -531,7 +556,7 @@
                     `;
                     group.items.forEach(data => {
                         let htmlKeterangan = data.keterangan ? `<div class="keterangan-text">${data.keterangan}</div>` : '';
-                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis" style="background:#dd6b20; color:white;">MIX</span>` : `<span class="badge-jenis" style="background:var(--dark); color:white;">SOLID</span>`;
+                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis" style="background:#dd6b20; color:white;">MIX</span>` : `<span class="badge-jenis" style="background:var(--dark); color:var(--surface);">SOLID</span>`;
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
                         let isMultiArtikel = !isHistory && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
                         let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">BEDA ARTIKEL!</div>` : '';
@@ -554,12 +579,12 @@
                                     
                                     <div class="info-grid">
                                         <div class="info-item"><span class="info-label">Karton</span><span class="info-value">${data.nomor_karton}</span></div>
-                                        <div class="info-item"><span class="info-label">Artikel</span><span class="info-value" style="font-size:12px;">${data.artikel}</span></div>
+                                        <div class="info-item"><span class="info-label">Lokasi</span><span class="info-value" style="font-size:14px;">${data.lokasi}</span></div>
                                     </div>
                                     
-                                    <div class="lokasi-box">
-                                        <span class="info-label">LOKASI</span>
-                                        <span class="info-value">${data.lokasi}</span>
+                                    <div class="artikel-box">
+                                        <span class="info-label">ARTIKEL</span>
+                                        <span class="info-value">${data.artikel}</span>
                                     </div>
                                     
                                     ${htmlKeterangan}
@@ -570,7 +595,6 @@
                                     </div>
                                 </div>`;
                         } else {
-                            // TAMPILAN RIWAYAT (WARNA FULL SAMA DENGAN AKTIF, GA ADA OPACITY/ABU-ABU)
                             htmlOutput += `
                                 <div class="mini-card">
                                     <div class="card-header-modern">
@@ -586,7 +610,11 @@
                                     </div>
                                     <div class="info-grid">
                                         <div class="info-item"><span class="info-label">Karton</span><span class="info-value">${data.nomor_karton}</span></div>
-                                        <div class="info-item"><span class="info-label">Artikel</span><span class="info-value" style="font-size:12px;">${data.artikel}</span></div>
+                                        <div class="info-item"><span class="info-label">Lokasi</span><span class="info-value" style="font-size:14px;">${data.lokasi}</span></div>
+                                    </div>
+                                    <div class="artikel-box">
+                                        <span class="info-label">ARTIKEL</span>
+                                        <span class="info-value">${data.artikel}</span>
                                     </div>
                                     ${htmlKeterangan}
                                     <div class="user-info">Oleh: ${data.diinput_oleh || 'Admin'}</div>
