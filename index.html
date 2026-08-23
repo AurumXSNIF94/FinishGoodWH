@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PP FG WH - SYSTEM</title>
+    <title>PP FG WH - SI Monitoring</title>
     
     <link rel="icon" type="image/png" href="logo.png">
 
@@ -174,7 +174,7 @@
         <div class="login-box">
             <img src="logo.png" alt="Logo NB">
             <h2>Welcome Back</h2>
-            <p>Login to PP FG WH System</p>
+            <p>Login to PP FG WH SI Monitoring</p>
             <button class="btn-google" id="btnGoogleLogin">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
                 Continue with Google
@@ -195,7 +195,7 @@
         <!-- TAB 1: FORM INPUT -->
         <div id="tabInput" class="content active">
             <div class="form-card" id="formSmart">
-                <h3><span style="font-size:20px;">📝</span> Form Input EQL</h3>
+                <h3><span style="font-size:20px;">📝</span> Form Input AQL</h3>
                 
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
@@ -237,7 +237,7 @@
         <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="Cari SO atau Artikel...">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="Cari SO...">
             </div>
             <div id="gridKartonAktif"></div> 
         </div>
@@ -548,7 +548,7 @@
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <span class="toggle-icon" style="font-size:12px;">▼</span>
-                                <span>📦 <b>${group.so}</b> | ${group.art}</span>
+                                <span>📦 SO : <b>${group.so}</b> | Artikel : ${group.art}</span>
                             </div>
                             <span class="pivot-count">${group.items.length} Box</span>
                         </div>
@@ -588,7 +588,7 @@
                                     </div>
                                     
                                     ${htmlKeterangan}
-                                    <div class="user-info">Oleh: ${data.diinput_oleh || 'Admin'}</div>
+                                    <div class="user-info">Diinput Oleh : ${data.diinput_oleh || 'Admin'}</div>
                                     <div class="action-row">
                                         <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
                                         <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
@@ -605,7 +605,7 @@
                                         <div class="badge-size-modern">${data.size}</div>
                                     </div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                        <span class="tanggal-text">OUT: ${data.tanggal_out}</span>
+                                        <span class="tanggal-text">Keluar : ${data.tanggal_out}</span>
                                         ${badgeJenis}
                                     </div>
                                     <div class="info-grid">
