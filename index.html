@@ -384,27 +384,62 @@
         async function ensureUserProfile(user) {
             const userRef = ref(db, `users/${user.uid}`);
             try {
-                const snap = await new Promise((resolve, reject) => onValue(userRef, resolve, reject, { onlyOnce: true }));
-                if (snap.exists()) {
-                    window.currentUserProfile = { uid: user.uid, ...snap.val() };
-                } else {
-                    await set(userRef, {
+                // Semua user Google yang baru login otomatis dibuat sebagai VIEWER.
+                // Role user yang sudah ada TIDAK akan ditimpa agar Admin/Operator tetap aman.
+                const snap = await new Promise((resolve, reject) =>
+                    onValue(userRef, resolve, reject, { onlyOnce: true })
+                );
+
+                if (!snap.exists()) {
+                    const profile = {
                         uid: user.uid,
                         email: user.email || '',
                         displayName: user.displayName || user.email || 'User',
                         role: 'viewer',
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
-                    });
-                    window.currentUserProfile = { uid: user.uid, email: user.email || '', displayName: user.displayName || user.email || 'User', role: 'viewer' };
+                    };
+
+                    await set(userRef, profile);
+                    window.currentUserProfile = {
+                        ...profile,
+                        uid: user.uid,
+                        role: 'viewer'
+                    };
+                } else {
+                    const existing = snap.val() || {};
+                    let role = existing.role;
+
+                    // Jika profile lama belum punya role / role tidak valid,
+                    // normalisasi kembali ke VIEWER. Role admin/operator yang valid dipertahankan.
+                    if (!USER_ROLES.includes(role)) {
+                        await update(userRef, {
+                            uid: user.uid,
+                            email: user.email || existing.email || '',
+                            displayName: user.displayName || existing.displayName || user.email || 'User',
+                            role: 'viewer',
+                            updatedAt: serverTimestamp()
+                        });
+                        role = 'viewer';
+                    }
+
+                    window.currentUserProfile = {
+                        uid: user.uid,
+                        ...existing,
+                        email: existing.email || user.email || '',
+                        displayName: existing.displayName || user.displayName || user.email || 'User',
+                        role
+                    };
                 }
+
                 setRoleUI(window.currentUserProfile.role);
-                if (normalizeRole(window.currentUserProfile.role) === 'pending') alert('Akun Anda belum memiliki role aktif. Hubungi Admin.');
+                console.log('Profile user berhasil dimuat:', window.currentUserProfile);
+
             } catch (err) {
                 console.error('Gagal memuat profile user:', err);
                 document.getElementById('mainApp').style.display = 'none';
                 document.getElementById('loginScreen').style.display = 'flex';
-                alert('Profile user gagal dimuat. Periksa Firebase Rules.');
+                alert('Profile user gagal dimuat: ' + (err.message || err));
             }
         }
         function currentRole() { return normalizeRole(window.currentUserProfile?.role); }
