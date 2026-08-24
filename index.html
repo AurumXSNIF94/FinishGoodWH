@@ -1,4 +1,3 @@
-```
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -347,6 +346,8 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
+        const USER_ROLES = ['admin', 'operator', 'viewer'];
+
         onAuthStateChanged(auth, async (user) => {
             document.getElementById('loginScreen').style.display = user ? "none" : "flex";
             document.getElementById('mainApp').style.display = user ? "block" : "none";
@@ -471,8 +472,6 @@
         window.selectedIds = new Set();
         window.currentUserProfile = null;
         window.userProfiles = {};
-        const USER_ROLES = ['admin', 'operator', 'viewer'];
-
         // ====================================================
         // TAUTAN GOOGLE APPS SCRIPT ANDA DI SINI
         // ====================================================
@@ -986,4 +985,3 @@
     </script>
 </body>
 </html>
-```
