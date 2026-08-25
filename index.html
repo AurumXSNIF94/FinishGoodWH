@@ -826,7 +826,7 @@
                         let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
                         let isMultiArtikel = !isHistory && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
-                        let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">BEDA ARTIKEL!</div>` : '';
+                        let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
 
                         let tglTampil = data.tanggal;
                         if (isHistory) {
@@ -851,7 +851,7 @@
 
                                 <div class="card-mid">
                                     <span class="card-size">${data.size}</span>
-                                    <span class="card-date">${isHistory ? 'OUT: ' : ''}${tglTampil}</span>
+                                    <span class="card-date">${isHistory ? 'KELUAR : ' : ''}${tglTampil}</span>
                                 </div>
                                 
                                 <div class="card-info-grid">
@@ -870,7 +870,7 @@
                                 ${htmlKeterangan}
                                 
                                 <div class="card-footer">
-                                    <span class="card-user">Oleh: ${data.diinput_oleh || 'Sistem'}</span>
+                                    <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
                                 </div>
                                 
                                 ${!isHistory ? `
