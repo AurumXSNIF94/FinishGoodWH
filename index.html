@@ -585,7 +585,7 @@
 
                     <div class="card-mid" style="margin-top:10px;">
                         <div style="display:flex; flex-direction:column;">
-                            <span class="lbl-sm">UKURAN</span>
+                            <span class="lbl-sm">SIZE</span>
                             <span class="card-size">${d.size}</span>
                         </div>
                         <div style="display:flex; flex-direction:column; text-align:right;">
@@ -1326,7 +1326,7 @@
                                 </span>
                             </div>
                             <div style="display:flex; align-items:center; flex-shrink: 0;">
-                                <span class="pivot-count">${group.items.length} Box</span>
+                                <span class="pivot-count">${group.items.length} Karton</span>
                                 ${btnHapusSO}
                             </div>
                         </div>
@@ -1363,8 +1363,8 @@
                         if (tabType === 'AKTIF') {
                             actionHtml = `
                                 <div class="action-row">
-                                    <button class="btn-edit" onclick="editSemuanya('${data.id}')">UBAH</button>
-                                    <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">OUT</button>
+                                    <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
+                                    <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
                                 </div>`;
                         } else if (tabType === 'DELETED') {
                             actionHtml = `
@@ -1397,12 +1397,12 @@
 
                                 <div class="card-mid">
                                     <span class="card-size">${data.size}</span>
-                                    <span class="card-date">${tabType === 'OUT' ? 'OUT: ' : ''}${tglTampil}</span>
+                                    <span class="card-date">${tabType === 'OUT' ? 'KELUAR : ' : ''}${tglTampil}</span>
                                 </div>
                                 
                                 <div class="card-info-grid">
                                     <div class="info-col">
-                                        <span class="lbl-sm">KARTON</span>
+                                        <span class="lbl-sm">NO KARTON</span>
                                         <span class="val-md">${data.nomor_karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align: right;">
