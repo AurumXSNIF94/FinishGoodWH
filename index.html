@@ -10,7 +10,7 @@
     <style>
         /* TEMA TERANG (LIGHT MODE) */
         :root {
-            --bg-color: #f4f6f8;
+            --bg-color: #f8fafc;
             --surface: #ffffff;
             --primary: #dc2626;
             --primary-hover: #b91c1c;
@@ -18,133 +18,131 @@
             --text-main: #0f172a;
             --text-muted: #64748b; 
             --border: #e2e8f0;
-            --box-bg: #f1f5f9;
-            --radius-lg: 16px;
-            --radius-md: 10px;
-            --shadow-sm: 0 4px 15px rgba(0,0,0,0.05);
-            --danger-bg: #fef2f2;
-            --danger-text: #dc2626;
+            --input-bg: #f1f5f9;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+            --warning-bg: #fef9c3;
+            --warning-text: #854d0e;
         }
 
-        /* TEMA GELAP (DARK MODE) - DIOPTIMALKAN UNTUK KETERBACAAN */
+        /* TEMA GELAP (DARK MODE) */
         body.dark-mode {
-            color-scheme: dark; /* Bikin Kalender bawaan HP jadi ikut gelap */
-            --bg-color: #0f172a;
-            --surface: #1e293b;
+            color-scheme: dark; 
+            --bg-color: #0b1121;
+            --surface: #172033;
             --primary: #ef4444; 
             --primary-hover: #f87171;
             --secondary: #10b981;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155; 
-            --box-bg: #0f172a;
-            --shadow-sm: 0 4px 15px rgba(0,0,0,0.4);
+            --input-bg: #0f172a;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.5);
             --danger-bg: #450a0a;
             --danger-text: #fca5a5;
+            --warning-bg: #422006;
+            --warning-text: #fde047;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 100px; transition: background-color 0.3s, color 0.3s;} 
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); margin: 0; padding: 0; font-size: 15px; color: var(--text-main); -webkit-font-smoothing: antialiased; padding-bottom: 110px; transition: background-color 0.3s, color 0.3s;} 
         
         /* HEADER */
-        .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 18px 20px; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border); transition: 0.3s;}
-        .app-header img { height: 26px; object-fit: contain; }
-        body.dark-mode .app-header img { filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.2)) brightness(1.2); }
+        .app-header { background-color: var(--surface); display: flex; justify-content: center; align-items: center; padding: 16px 20px; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--border); transition: 0.3s;}
+        .app-header img { height: 24px; object-fit: contain; }
+        body.dark-mode .app-header img { filter: drop-shadow(0px 0px 2px rgba(255,255,255,0.2)) brightness(1.5); }
         .btn-logout { position: absolute; right: 20px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; padding: 6px 12px; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.2s;}
-        .btn-logout:active { background: var(--danger-bg); border-color: var(--danger-text); color: var(--danger-text); }
-        .btn-mode { position: absolute; left: 20px; background: var(--box-bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 50%; width: 34px; height: 34px; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: pointer;}
+        .btn-logout:hover { border-color: var(--danger-text); color: var(--danger-text); background: var(--danger-bg);}
+        .btn-mode { position: absolute; left: 20px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); border-radius: 50%; width: 34px; height: 34px; display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: pointer; transition: 0.2s;}
 
         /* LOGIN SCREEN */
         #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .login-box { background: var(--surface); padding: 40px 30px; text-align: center; width: 85%; max-width: 320px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+        .login-box { background: var(--surface); padding: 40px 30px; text-align: center; width: 85%; max-width: 320px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--border); }
         .login-box img { height: 50px; margin-bottom: 25px; }
         .login-box h2 { color: var(--text-main); margin: 0 0 8px 0; font-weight: 900; font-size: 22px;}
         .login-box p { color: var(--text-muted); font-size: 14px; margin: 0 0 35px 0;}
-        .btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 14px 20px; font-size: 14px; font-weight: 800; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;}
+        .btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 14px 20px; font-size: 14px; font-weight: 800; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: var(--shadow-sm);}
         .btn-google img { height: 20px; margin: 0; }
 
         /* BOTTOM NAVIGATION */
-        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 0; left: 0; width: 100%; z-index: 40; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-top: 1px solid var(--border); transition: 0.3s; padding-bottom: env(safe-area-inset-bottom);}
-        .tab-btn { flex: 1; padding: 12px 0; text-align: center; font-weight: 800; font-size: 10px; color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px;}
-        .tab-btn span.icon { font-size: 18px; transition: 0.2s; opacity: 0.6;}
-        .tab-btn.active { color: var(--primary); } 
-        .tab-btn.active span.icon { transform: scale(1.1); opacity: 1;}
+        .tab-bar { display: flex; background: var(--surface); position: fixed; bottom: 20px; left: 5%; width: 90%; z-index: 40; box-shadow: var(--shadow-md); border-radius: 30px; border: 1px solid var(--border); padding: 5px 10px; transition: 0.3s; justify-content: space-between;}
+        .tab-btn { flex: 1; padding: 10px 0; text-align: center; font-weight: 800; font-size: 9px; color: var(--text-muted); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; border-radius: 20px;}
+        .tab-btn span.icon { font-size: 18px; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); background: var(--danger-bg); } 
+        .tab-btn.active span.icon { transform: scale(1.1); }
         
-        .content { padding: 20px 15px; display: none; animation: fadeIn 0.3s ease; }
+        .content { padding: 20px 15px; display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* FORM INPUT YANG LEGA */
-        .sticky-filter { position: sticky; top: 60px; background: var(--bg-color); padding: 10px 0 15px 0; z-index: 10; transition: 0.3s;}
-        input.search-box { padding: 15px 20px; width: 100%; border: 1px solid var(--border); border-radius: 30px; box-sizing: border-box; font-size: 14px; font-weight: 700; background: var(--surface); color: var(--text-main); box-shadow: var(--shadow-sm); outline: none;} 
+        /* FORM INPUTS */
+        .sticky-filter { position: sticky; top: 57px; background: var(--bg-color); padding: 15px 0; z-index: 10; transition: 0.3s;}
+        input.search-box { padding: 15px 20px; width: 100%; border: 1px solid var(--border); border-radius: 30px; box-sizing: border-box; font-size: 14px; font-weight: 700; background: var(--surface); color: var(--text-main); box-shadow: var(--shadow-sm); outline: none; transition: 0.2s;} 
         input.search-box:focus { border-color: var(--primary); }
 
         .form-card { background: var(--surface); padding: 25px 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 20px; border: 1px solid var(--border);}
-        .form-card h3 { font-size: 18px; font-weight: 900; color: var(--text-main); margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 8px;}
-        .form-row { display: flex; gap: 15px; margin-bottom: 18px; }
+        .form-card h3 { font-size: 17px; font-weight: 900; color: var(--text-main); margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
+        .form-row { display: flex; gap: 12px; margin-bottom: 15px; }
         .form-row > * { flex: 1; }
-        input.form-input, select.form-select { padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 14px; font-weight: 700; outline: none; background: var(--box-bg); color: var(--text-main);} 
+        input.form-input, select.form-select { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-md); box-sizing: border-box; font-size: 14px; font-weight: 700; outline: none; background: var(--input-bg); color: var(--text-main); transition: 0.2s;} 
         input.form-input:focus, select.form-select:focus { border-color: var(--primary); background: var(--surface); }
         
-        .dynamic-box { background: var(--bg-color); border: 1px dashed var(--border); padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px;}
-        .dynamic-header { color: var(--text-muted); font-size: 12px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase;}
-        .btn-tambah-baris { background-color: var(--box-bg); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 800; cursor: pointer; font-size: 13px;}
-        .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: none; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900;}
+        .dynamic-box { background: var(--bg-color); border: 1px dashed var(--text-muted); padding: 15px; border-radius: var(--radius-md); margin-bottom: 20px;}
+        .dynamic-header { color: var(--text-muted); font-size: 11px; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-tambah-baris { background-color: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-md); width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; transition: 0.2s;}
+        .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: none; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900; font-size: 14px;}
         
-        /* TOMBOL UTAMA */
-        .btn-add { background-color: var(--primary); color: white; padding: 16px; border: none; border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; letter-spacing: 0.5px;}
+        .btn-add { background-color: var(--primary); color: white; padding: 16px; border: none; border-radius: 30px; width: 100%; font-weight: 900; cursor: pointer; font-size: 14px; transition: 0.2s; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);}
+        .btn-add:active { transform: scale(0.98); }
         
         /* PIVOT HEADER */
-        .pivot-group-header { background-color: var(--surface); color: var(--text-main); padding: 16px 20px; font-size: 14px; margin-top: 10px; margin-bottom: 15px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); cursor: pointer; font-weight: 900;}
-        .pivot-count { background-color: var(--box-bg); color: var(--text-main); padding: 4px 10px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border);}
+        .pivot-group-header { background-color: var(--surface); color: var(--text-main); padding: 15px 18px; font-size: 14px; margin-top: 10px; margin-bottom: 15px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); cursor: pointer; font-weight: 800;}
+        .pivot-count { background-color: var(--input-bg); color: var(--text-main); padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 900; border: 1px solid var(--border);}
         .btn-delete-so { background: var(--danger-bg); color: var(--danger-text); border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; margin-left: 8px; }
 
-        /* ========================================= */
-        /* DESAIN KARTU SPESIFIK SESUAI GAMBAR REFERENSI */
-        /* ========================================= */
-        .grouped-grid { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;}
-        .grouped-grid.grid-view { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;} 
+        /* ==============================================
+           GRID KARTU ITEM (MEMAKSIMALKAN LAYAR HP)
+           ============================================== */
+        .grouped-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px;}
+        .grouped-grid.single-col { grid-template-columns: 1fr; } 
         
-        .mini-card { background: var(--surface); border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; flex-direction: column;}
+        .mini-card { background: var(--surface); border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; position: relative;}
+        .chk-select { accent-color: var(--primary);}
         
-        .chk-select { transform: scale(1.4); margin-right: 12px; accent-color: var(--primary);}
+        .label-sm { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px;}
+        .badge-jenis { padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 9px; text-transform: uppercase;}
+        .badge-jenis-solid { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);}
+        .badge-jenis-mix { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(253, 224, 71, 0.3);}
         
-        /* Box Full Width */
-        .full-box { background: var(--box-bg); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .size-text { font-weight: 900; font-size: 16px; color: var(--text-main); }
-        
-        /* Label Kecil & Teks Bold */
-        .label-sm { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .val-text { font-size: 15px; font-weight: 900; color: var(--text-main); margin-left: 6px; }
-        
-        /* Artikel Merah */
-        .artikel-val { font-size: 16px; font-weight: 900; color: var(--primary); }
-        
-        /* Keterangan & Garis Putus */
-        .ket-box { background: var(--box-bg); padding: 10px 15px; border-radius: 8px; font-size: 12px; color: var(--text-muted); font-style: italic; border: 1px solid var(--border); margin-bottom: 18px;}
-        .dotted-divider { border-top: 1px dashed var(--border); padding-top: 15px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;}
-        
-        /* Badge Jenis Solid/Mix */
-        .badge-solid { background: var(--surface); color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; border: 1px solid var(--border);}
-        .badge-mix { background: #fef9c3; color: #854d0e; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 900; border: 1px solid #fde047;}
-
-        .action-row { display: flex; gap: 10px; margin-top: 15px; }
-        .action-row button { flex: 1; padding: 10px 0; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; transition: 0.2s;}
-        .btn-edit { background: var(--box-bg); color: var(--text-main); border: 1px solid var(--border);}
+        .btn-edit { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);}
         .btn-out { background: var(--text-main); color: var(--surface); border: none;}
 
+        .alert-multi { background: var(--danger-bg); color: var(--danger-text); font-size: 9px; font-weight: 900; padding: 4px; text-align: center; border-radius: 6px; margin-bottom: 10px; border: 1px dashed var(--danger-text); }
+
+        /* KARTU LOKASI BESAR */
+        .lokasi-besar { background: #fef9c3; padding: 15px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 1px solid rgba(250, 204, 21, 0.3);}
+        body.dark-mode .lokasi-besar { background: #422006; border-color: rgba(253, 224, 71, 0.2); }
+        .lokasi-besar .info-label { color: #854d0e; }
+        body.dark-mode .lokasi-besar .info-label { color: #fde047; }
+        .lokasi-besar .info-value { color: #854d0e; font-size: 20px; font-weight: 900; letter-spacing: 1px;}
+        body.dark-mode .lokasi-besar .info-value { color: #fde047; }
+
         /* RINGKASAN STOK */
-        .summary-panel { text-align:center; padding: 25px; background: var(--surface); border: 2px solid var(--secondary); border-radius: var(--radius-lg); margin-bottom: 25px; box-shadow: var(--shadow-sm);}
-        .summary-panel h2 { margin:0; font-size: 40px; color: var(--secondary); font-weight: 900;}
+        .summary-panel { text-align:center; padding: 25px; background: var(--surface); border: 2px solid var(--secondary); border-radius: var(--radius-lg); margin-bottom: 20px; box-shadow: var(--shadow-sm);}
+        .summary-panel h2 { margin:0; font-size: 46px; color: var(--secondary); font-weight: 900;}
         .summary-panel span { font-size:11px; color:var(--text-muted); font-weight:900; letter-spacing: 1px;}
         
-        /* CARD KECIL UNTUK TAB STOK & LOKASI */
-        .card-grid-item { background:var(--surface); border-radius: 12px; padding: 15px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; gap: 12px;}
-        .card-grid-item .so-badge { font-weight: 900; font-size: 14px; color: var(--text-main); }
-        .card-grid-item .size-badge { background: var(--box-bg); padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 13px; color: var(--text-main); border: 1px solid var(--border);}
+        .list-row-item { background:var(--surface); border-left: 6px solid var(--secondary); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);}
+        .list-row-size { background: var(--input-bg); color: var(--text-main); font-weight: 900; font-size: 15px; padding: 8px; border-radius: 8px; min-width: 40px; text-align: center; border: 1px solid var(--border);}
+        .list-row-so { background: var(--text-main); color: var(--surface); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 900;}
 
         /* FLOATING BULK BAR */
-        .bulk-action-bar { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--text-main); padding: 12px 18px; border-radius: 30px; display: none; align-items: center; gap: 15px; box-shadow: var(--shadow-md); z-index: 100;}
-        .bulk-action-bar span { font-weight: 900; font-size: 13px; color: var(--bg-color); padding: 0 5px;}
+        .bulk-action-bar { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: var(--text-main); padding: 10px 16px; border-radius: 30px; display: none; align-items: center; gap: 12px; box-shadow: var(--shadow-md); z-index: 100;}
+        .bulk-action-bar span { font-weight: 900; font-size: 13px; color: var(--surface); padding: 0 5px;}
         .bulk-btn { padding: 8px 16px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 12px; border: none;}
         .bulk-btn-out { background: var(--secondary); color: white; }
         .bulk-btn-del { background: var(--primary); color: white; }
@@ -175,13 +173,13 @@
         <!-- TAB 1: FORM INPUT -->
         <div id="tabInput" class="content active">
             
-            <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-lg); border: 1px dashed var(--text-muted); margin-bottom: 25px;">
-                <span style="font-size: 12px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 12px; letter-spacing: 0.5px;">⚡ TARIK DATA STOK OTOMATIS</span>
-                <div style="display: flex; gap: 10px;">
+            <div style="background: var(--surface); padding: 18px; border-radius: var(--radius-lg); border: 1px dashed var(--text-muted); margin-bottom: 20px;">
+                <span style="font-size: 11px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 10px; letter-spacing: 0.5px;">⚡ TARIK DATA STOK OTOMATIS</span>
+                <div style="display: flex; gap: 8px;">
                     <input type="text" id="soTarikExcel" class="form-input" style="flex: 2; border-radius: var(--radius-md);" placeholder="Masukkan SO...">
                     <button id="btnTarikSO" style="flex: 1; background: var(--text-main); color: var(--surface); border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer;">SINKRON</button>
                 </div>
-                <div id="statusTarik" style="font-size: 12px; font-weight: 800; margin-top: 10px; color: var(--primary);"></div>
+                <div id="statusTarik" style="font-size: 11px; font-weight: 800; margin-top: 10px; color: var(--primary);"></div>
             </div>
 
             <div class="form-card" id="formSmart">
@@ -205,7 +203,7 @@
                 <div class="dynamic-box">
                     <div class="dynamic-header">Detail Karton</div>
                     <div id="kartonList">
-                        <div class="form-row karton-item" style="margin-bottom: 12px;">
+                        <div class="form-row karton-item" style="margin-bottom: 10px;">
                             <input type="text" class="form-input size-input" placeholder="Ukuran">
                             <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton">
                             <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
@@ -233,24 +231,24 @@
 
         <!-- TAB 3: RIWAYAT OUT -->
         <div id="tabRiwayat" class="content">
-            <div class="sticky-filter" style="display: flex; gap: 10px;">
+            <div class="sticky-filter" style="display: flex; gap: 8px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; padding: 14px; font-size: 13px;">
                 <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO / Nama...">
             </div>
             <div id="gridRiwayatOut"></div> 
         </div>
 
-        <!-- TAB 4: LOKASI SO (BENTUK KARTU GRID) -->
+        <!-- TAB 4: LOKASI SO -->
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
             </div>
             <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 20px; background: var(--text-main); color: var(--surface);">🔄 Unduh Data Lokasi Excel</button>
             <div id="statusLokasi" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
-            <div id="gridLokasi" class="grouped-grid grid-view"></div>
+            <div id="gridLokasi" class="grouped-grid single-col"></div>
         </div>
 
-        <!-- TAB 5: LIST STOK SO (BENTUK KARTU GRID) -->
+        <!-- TAB 5: LIST STOK SO -->
         <div id="tabListStok" class="content">
             <div class="sticky-filter">
                 <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -259,10 +257,10 @@
             <div id="statusListStok" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
             
             <div id="summaryStokContainer"></div>
-            <div id="gridListStok" class="grouped-grid grid-view"></div>
+            <div id="gridListStok" class="grouped-grid single-col"></div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR -->
+        <!-- BOTTOM NAVIGATION BAR (FLOATING) -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
@@ -330,17 +328,14 @@
         window.selectedIds = new Set();
 
         // ====================================================
-        // TAUTAN GOOGLE APPS SCRIPT ANDA
+        // TAUTAN GOOGLE APPS SCRIPT
         // ====================================================
-        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbx8L2vRZpk-Snzso7zoaJTjSTXojRmNDFcVedFqB-aZM3g0-qMPyTzShmn4qc9Lv52c/exec"; 
-        const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbybzDGzNTQu4XJxxGHAvWTv0lFF_W7RsFNrFvo_a8wPadknNphzFTGBPtvS8cbjckxB/exec"; 
+        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbxWa2dRkUnKqfq7EQNsk2NWsAqhCcDKI2IZ7O3LGnjDokb2uxkjmmG8Ad9jfLcr2A4/exec"; 
+        const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        // ====================================================
-        // SINKRONISASI STOK EXCEL (TAB INPUT)
-        // ====================================================
         document.getElementById('btnTarikSO').addEventListener('click', async () => {
             const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusTarik');
@@ -369,7 +364,7 @@
                 }
 
                 document.getElementById('lokasiInput').value = "";
-                statusDiv.innerText = `✅ BERHASIL! ${dataStokExcel.length} Karton berhasil dimuat.`;
+                statusDiv.innerText = `✅ BERHASIL! ${dataStokExcel.length} Karton dimuat.`;
                 statusDiv.style.color = "var(--secondary)"; 
                 
             } catch (err) {
@@ -378,9 +373,6 @@
             }
         });
 
-        // ====================================================
-        // TAB LOKASI SO (GRID CARDS)
-        // ====================================================
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
             statusDiv.innerText = '⏳ Sedang mengunduh data lokasi dari Spreadsheet...';
@@ -407,27 +399,26 @@
             const filter = document.getElementById('filterCariLokasi').value.toUpperCase().trim();
             grid.innerHTML = '';
 
-            if(dataLokasiExcel.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Klik tombol Unduh di atas terlebih dahulu.</p>';
-            if(!filter) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Ketikkan nomor SO pada kolom pencarian 👆</p>';
+            if(dataLokasiExcel.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted);">Klik tombol Unduh di atas terlebih dahulu.</p>';
+            if(!filter) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted);">Ketikkan nomor SO pada kolom pencarian 👆</p>';
 
             let filtered = dataLokasiExcel.filter(d => (d.so || "").toUpperCase().includes(filter));
-            if (filtered.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--primary); grid-column: 1 / -1;">❌ SO tidak ditemukan.</p>';
+            if (filtered.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--primary);">❌ SO tidak ditemukan.</p>';
 
             filtered.forEach(d => {
                 grid.innerHTML += `
-                    <div class="card-grid-item">
-                        <div class="so-badge">${d.so}</div>
-                        <div>
-                            <div class="label-sm">LOKASI RAK</div>
-                            <div style="font-size: 18px; font-weight: 900; color: #eab308; margin-top: 4px;">📍 ${d.lokasi}</div>
+                    <div class="mini-card" style="border-left: 5px solid #facc15;">
+                        <div class="info-grid" style="grid-template-columns: 1fr; margin-bottom:0;">
+                            <div class="info-item"><span class="info-label">Sales Order</span><span class="info-value" style="font-size:16px;">${d.so}</span></div>
+                        </div>
+                        <div class="lokasi-besar">
+                            <span class="info-label">LOKASI RAK</span>
+                            <span class="info-value">📍 ${d.lokasi}</span>
                         </div>
                     </div>`;
             });
         }
 
-        // ====================================================
-        // TAB DAFTAR STOK SO (GRID CARDS)
-        // ====================================================
         document.getElementById('btnCariListStok').addEventListener('click', async () => {
             const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusListStok');
@@ -468,18 +459,16 @@
                     
                     data.forEach(d => {
                         grid.innerHTML += `
-                            <div class="card-grid-item">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span class="so-badge">${d.so}</span>
-                                    <span class="size-badge">${d.size}</span>
+                            <div class="list-row-item">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="list-row-size">${d.size}</div>
+                                    <div>
+                                        <div style="font-weight: 900; font-size: 15px; color: var(--text-main);">${d.karton}</div>
+                                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 2px;">${d.artikel}</div>
+                                    </div>
                                 </div>
-                                <div style="display: flex; flex-direction: column;">
-                                    <span class="label-sm">KARTON</span>
-                                    <span class="val-text" style="margin-left: 0; font-size:16px;">${d.karton}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border); padding-top: 8px;">
-                                    <span class="label-sm">ARTIKEL</span>
-                                    <span class="artikel-val" style="font-size: 13px;">${d.artikel}</span>
+                                <div>
+                                    <span class="list-row-so">${d.so}</span>
                                 </div>
                             </div>
                         `;
@@ -491,9 +480,6 @@
             }
         });
 
-        // ====================================================
-        // LOGIKA FORM & LISTENER
-        // ====================================================
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 if(!input.hasAttribute('data-upper')) {
@@ -539,7 +525,7 @@
             const list = document.getElementById('kartonList');
             const row = document.createElement('div');
             row.className = 'form-row karton-item';
-            row.style.marginBottom = '12px';
+            row.style.marginBottom = '10px';
             row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
             list.appendChild(row);
             applyUppercaseListener(); applyKartonFormatListener();
@@ -556,7 +542,7 @@
             document.getElementById('tanggalInput').valueAsDate = new Date();
             ['soInput','artikelInput','lokasiInput','keteranganInput'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('jenisInput').value = 'SOLID'; 
-            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 10px;"><input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
             applyUppercaseListener(); applyKartonFormatListener();
         }
 
@@ -564,7 +550,7 @@
             const grid = headerEl.nextElementSibling;
             const icon = headerEl.querySelector('.toggle-icon');
             if (grid.style.display === 'none') {
-                grid.style.display = 'flex'; 
+                grid.style.display = 'grid'; 
                 icon.innerText = '▼';
             } else {
                 grid.style.display = 'none'; 
@@ -656,7 +642,7 @@
             document.getElementById('artikelInput').value = item.artikel;
             document.getElementById('lokasiInput').value = item.lokasi;
             document.getElementById('keteranganInput').value = item.keterangan || '';
-            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" value="${item.size}"><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 10px;"><input type="text" class="form-input size-input" value="${item.size}"><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
             applyUppercaseListener(); applyKartonFormatListener();
             window.currentEditId = id;
             document.getElementById('btnTambah').innerHTML = "Perbarui Data";
@@ -798,11 +784,17 @@
                         </div>
                         <div class="grouped-grid">
                     `;
+                    
+                    // ==========================================
+                    // DESAIN GRID KARTU (2 KOLOM LEGA & MODERN)
+                    // ==========================================
                     group.items.forEach(data => {
-                        let htmlKeterangan = data.keterangan ? `<div class="ket-box">📝 ${data.keterangan}</div>` : '';
-                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis badge-mix">MIX</span>` : `<span class="badge-jenis badge-solid">SOLID</span>`;
+                        let htmlKeterangan = data.keterangan ? `<div style="font-size: 10px; color: var(--text-muted); font-style: italic; margin-bottom: 8px;">📝 ${data.keterangan}</div>` : '';
+                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-jenis badge-jenis-mix">MIX</span>` : `<span class="badge-jenis badge-jenis-solid">SOLID</span>`;
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
-                        
+                        let isMultiArtikel = !isHistory && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
+                        let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">BEDA ARTIKEL!</div>` : '';
+
                         let tglTampil = data.tanggal;
                         if (isHistory) {
                             tglTampil = data.tanggal_out;
@@ -812,51 +804,52 @@
                             }
                         }
 
-                        // DESAIN KARTU PERSIS SEPERTI GAMBAR REFERENSI
                         htmlOutput += `
                             <div class="mini-card">
-                                <div style="display: flex; align-items: center; margin-bottom: 12px;">
-                                    <input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
-                                    <span style="font-weight: 900; font-size: 16px; color:var(--text-main);">${data.so_number}</span>
-                                </div>
+                                ${!isHistory ? htmlPeringatanMulti : ''}
                                 
-                                <div class="full-box">
-                                    <span class="size-text">${data.size}</span>
-                                </div>
-                                
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                    <span class="label-sm" style="color:var(--text-muted);">${isHistory ? 'KELUAR : ' : ''}${tglTampil}</span>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+                                        <input type="checkbox" class="chk-select" style="margin:0; transform: scale(1.3);" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>
+                                        <span style="font-weight: 900; font-size: 14px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${data.so_number}</span>
+                                    </div>
                                     ${badgeJenis}
                                 </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: var(--input-bg); padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);">
+                                    <span style="font-weight: 900; font-size: 15px; color: var(--primary);">${data.size}</span>
+                                    <span style="font-size: 10px; font-weight: 800; color: var(--text-muted);">${isHistory ? 'OUT: ' : ''}${tglTampil}</span>
+                                </div>
                                 
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-                                    <div style="display: flex; align-items: baseline; gap: 6px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <div style="display: flex; flex-direction: column;">
                                         <span class="label-sm">KARTON</span>
-                                        <span class="val-text">${data.nomor_karton}</span>
+                                        <span style="font-size: 15px; font-weight: 900; color: var(--text-main);">${data.nomor_karton}</span>
                                     </div>
-                                    <div style="display: flex; align-items: baseline; gap: 6px;">
+                                    <div style="display: flex; flex-direction: column; text-align: right;">
                                         <span class="label-sm">LOKASI</span>
-                                        <span class="val-text">${data.lokasi}</span>
+                                        <span style="font-size: 15px; font-weight: 900; color: #eab308;">${data.lokasi}</span>
                                     </div>
                                 </div>
                                 
-                                <div class="full-box" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span class="label-sm">ARTIKEL</span>
-                                    <span class="artikel-val">${data.artikel}</span>
+                                <div style="background: var(--bg-color); padding: 8px; border-radius: 8px; border: 1px dashed var(--border); margin-bottom: 10px;">
+                                    <span class="label-sm">ARTIKEL</span><br>
+                                    <span style="font-size: 13px; font-weight: 900; color: var(--text-main);">${data.artikel}</span>
                                 </div>
                                 
                                 ${htmlKeterangan}
                                 
-                                <div class="dotted-divider">
-                                    <span class="label-sm" style="color:var(--text-main); text-transform:none;">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                                <div style="margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 9px; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Oleh: ${data.diinput_oleh || 'Sistem'}</span>
                                 </div>
                                 
                                 ${!isHistory ? `
-                                <div class="action-row">
-                                    <button class="btn-edit" onclick="editSemuanya('${data.id}')">UBAH</button>
-                                    <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
+                                <div style="display: flex; gap: 6px; margin-top: 10px;">
+                                    <button class="btn-edit" style="flex: 1; padding: 6px 0; font-size: 10px; border-radius: 6px;" onclick="editSemuanya('${data.id}')">UBAH</button>
+                                    <button class="btn-out" style="flex: 1; padding: 6px 0; font-size: 10px; border-radius: 6px;" onclick="pindahKeRiwayat('${data.id}')">OUT</button>
                                 </div>` : ''}
-                            </div>`;
+                            </div>
+                        `;
                     });
                     htmlOutput += `</div>`; 
                 });
