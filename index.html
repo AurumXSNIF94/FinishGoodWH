@@ -564,7 +564,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
             }
         });
 
-        function renderPickList() {
+function renderPickList() {
             const container = document.getElementById('gridPickList');
             
             if(!window.currentPickList || window.currentPickList.length === 0) {
@@ -583,9 +583,15 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
                         <span class="card-so" style="font-size: 16px;">${d.so}</span>
                         <span class="badge-tipe badge-solid" style="background:var(--secondary); color:white; font-size:11px; padding:6px 10px;">📍 ${d.lokasi}</span>
                     </div>
+                    
+                    <!-- 🌟 TAMBAHAN: KETERANGAN ARTIKEL/STYLE -->
+                    <div class="card-artikel" style="margin-top: 5px; margin-bottom: 5px; font-size: 12px; padding: 6px 10px; background: var(--bg-color); border: 1px dashed var(--border); border-radius: 8px;">
+                        ${d.artikel}
+                    </div>
+
                     <div class="card-mid" style="margin-top:10px;">
                         <div style="display:flex; flex-direction:column;">
-                            <span class="lbl-sm">UKURAN</span>
+                            <span class="lbl-sm">SIZE</span>
                             <span class="card-size">${d.size}</span>
                         </div>
                         <div style="display:flex; flex-direction:column; text-align:right;">
@@ -602,7 +608,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
             html += '</div>';
             container.innerHTML = html;
         }
-
+        
         // FUNGSI EKSEKUSI KLIK PADA CHECKLIST (HANYA SEKALI KLIK)
         window.prosesPick = async (index, action) => {
             let item = window.currentPickList[index];
