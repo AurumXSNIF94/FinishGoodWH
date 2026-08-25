@@ -194,8 +194,17 @@
         </div>
 
         <div id="tabInput" class="content active">
-            <!-- WADAH FORM INPUT TETAP SAMA -->
-            <div class="form-card" id="formSmart" style="margin-top: 10px;">
+            
+            <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
+                <span style="font-size: 11px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 12px; letter-spacing: 0.5px;">⚡ TARIK DATA STOK OTOMATIS</span>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="soTarikExcel" class="form-input" style="flex: 2; border-radius: var(--radius-md);" placeholder="Masukkan SO...">
+                    <button id="btnTarikSO" style="flex: 1; background: var(--text-main); color: var(--surface); border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer;">SINKRON</button>
+                </div>
+                <div id="statusTarik" style="font-size: 11px; font-weight: 800; margin-top: 12px; color: var(--primary);"></div>
+            </div>
+
+            <div class="form-card" id="formSmart">
                 <h3><span style="font-size:22px;">📝</span> Form Input AQL</h3>
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
@@ -351,7 +360,42 @@
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        // FUNGSI LOKASI
+        document.getElementById('btnTarikSO').addEventListener('click', async () => {
+            const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
+            const statusDiv = document.getElementById('statusTarik');
+            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO terlebih dahulu.";
+
+            statusDiv.innerText = "⏳ Memuat data Stok...";
+            statusDiv.style.color = "var(--text-main)";
+
+            try {
+                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
+                const dataStok = await responseStok.json();
+
+                if(dataStok.error) {
+                    statusDiv.innerText = dataStok.error;
+                    statusDiv.style.color = "var(--primary)";
+                    return;
+                }
+                dataStokExcel = dataStok; 
+
+                if(dataStokExcel.length > 0) {
+                    document.getElementById('soInput').value = dataStokExcel[0].so || soTarget;
+                    document.getElementById('artikelInput').value = dataStokExcel[0].artikel || "";
+                } else {
+                    document.getElementById('soInput').value = soTarget; 
+                }
+
+                document.getElementById('lokasiInput').value = "";
+                statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat.`;
+                statusDiv.style.color = "var(--secondary)"; 
+            } catch (err) {
+                statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
+                statusDiv.style.color = 'var(--primary)';
+            }
+        });
+
+        // TAB LOKASI
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
             statusDiv.innerText = '⏳ Mengunduh data lokasi...';
@@ -399,7 +443,7 @@
         }
 
         // =========================================================
-        // 🌟 FITUR BARU: CARI STOK LALU BISA DIPILIH (CHECKBOX)
+        // 🌟 FITUR BARU: CARI STOK + LOKASI OTOMATIS (TAB STOK FG)
         // =========================================================
         document.getElementById('btnCariListStok').addEventListener('click', async () => {
             const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
@@ -412,12 +456,18 @@
             
             if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO.";
 
-            statusDiv.innerText = "⏳ Mencari data stok SO " + soTarget + "...";
+            statusDiv.innerText = "⏳ Mencari data stok & lokasi SO " + soTarget + "...";
             statusDiv.style.color = "var(--text-main)";
 
             try {
-                const response = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
-                const data = await response.json();
+                // TARIK DATA STOK DAN LOKASI SECARA BERSAMAAN
+                const [responseStok, responseLokasi] = await Promise.all([
+                    fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget)),
+                    fetch(URL_GAS_LOKASI)
+                ]);
+                
+                const data = await responseStok.json();
+                const dataLokasi = await responseLokasi.json();
 
                 if(data.error) {
                     statusDiv.innerText = data.error;
@@ -428,6 +478,16 @@
                 } else {
                     statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input AQL.`;
                     statusDiv.style.color = "var(--secondary)"; 
+                    
+                    // Cari Lokasi Rak berdasarkan SO
+                    let lokasiSO = "TIDAK DITEMUKAN";
+                    if(Array.isArray(dataLokasi)) {
+                        let matchLoc = dataLokasi.find(l => (l.so || "").toUpperCase() === soTarget);
+                        if(matchLoc) lokasiSO = matchLoc.lokasi;
+                    }
+
+                    // Tambahkan data lokasi ke masing-masing karton agar ikut terlempar ke Form Input nanti
+                    data.forEach(d => { d.lokasi = lokasiSO; });
                     
                     // Simpan data di global memori untuk ditarik nanti
                     window.lastFetchedStok = data;
@@ -461,10 +521,11 @@
                                         <span class="val-md">${d.karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align:right;">
-                                        <span class="lbl-sm">ARTIKEL</span>
-                                        <span class="val-md" style="font-size:12px;">${d.artikel}</span>
+                                        <span class="lbl-sm">LOKASI RAK</span>
+                                        <span class="val-loc">${d.lokasi}</span>
                                     </div>
                                 </div>
+                                <div class="card-artikel">${d.artikel}</div>
                             </div>
                         `;
                     });
@@ -491,7 +552,7 @@
             }
         }
 
-        // 🌟 FUNGSI AJAIB: MELEMPAR KARTON TERPILIH KE FORM INPUT
+        // 🌟 FUNGSI AJAIB: MELEMPAR KARTON TERPILIH + LOKASI KE FORM INPUT
         window.pindahkanKeInput = () => {
             if(window.selectedStokKarton.size === 0) return;
             
@@ -501,9 +562,15 @@
 
             if(window.currentEditId) batalEdit();
 
-            // Isi header Form Otomatis
+            // Isi header Form Otomatis (Termasuk Lokasi)
             document.getElementById('soInput').value = selectedData[0].so || '';
             document.getElementById('artikelInput').value = selectedData[0].artikel || '';
+            
+            if(selectedData[0].lokasi && selectedData[0].lokasi !== "TIDAK DITEMUKAN") {
+                document.getElementById('lokasiInput').value = selectedData[0].lokasi;
+            } else {
+                document.getElementById('lokasiInput').value = '';
+            }
             
             // Generate baris karton sesuai yang dipilih
             const list = document.getElementById('kartonList');
