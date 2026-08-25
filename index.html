@@ -757,7 +757,7 @@
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
+                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Spreadsheet tersinkronisasi.` : "Data berhasil disimpan!");
                     batalEdit(); 
                     openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 }
@@ -841,7 +841,7 @@
         // 🌟 KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK VIA 'GET'
         // ========================================================
         window.outTerpilih = async () => {
-            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
+            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Spreadsheet?`)) {
                 
                 let syncPayload = []; 
                 for (let id of window.selectedIds) {
@@ -859,7 +859,7 @@
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
 
-                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Spreadsheet diperbarui.");
             }
         }
 
@@ -1044,7 +1044,7 @@
         // 🌟 KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK VIA 'GET'
         // ==========================================================
         window.pindahKeRiwayat = async (id) => {
-            if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
+            if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Spreadsheet?")) {
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
                     let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
