@@ -105,7 +105,7 @@
         
         .dynamic-box { background: var(--bg-color); border: 1px dashed var(--text-muted); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 25px;}
         .dynamic-header { color: var(--text-muted); font-size: 11px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
-        .btn-tambah-baris { background-color: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-md); width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; box-shadow: var(--shadow-card); transition: 0.2s;}
+        .btn-tambah-baris { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-md); width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; box-shadow: var(--shadow-card); transition: 0.2s;}
         .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: none; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900;}
         
         .btn-add { background: linear-gradient(135deg, var(--primary), #be123c); color: white; padding: 18px; border: none; border-radius: 100px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; letter-spacing: 0.5px; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); transition: 0.3s;}
@@ -175,7 +175,7 @@
 
     <div id="loginScreen">
         <div class="login-box">
-            <img src="cover.png" alt="Logo NB">
+            <img src="logo.png" alt="Logo NB">
             <h2>SI Monitoring</h2>
             <p>Production Planning Finish Goods WH</p>
             <button class="btn-google" id="btnGoogleLogin">
@@ -193,7 +193,6 @@
             <button class="btn-logout" id="btnLogout">Keluar</button>
         </div>
 
-        <!-- TAB 1: FORM INPUT -->
         <div id="tabInput" class="content active">
             
             <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
@@ -244,7 +243,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Artikel, atau Nama...">
@@ -252,7 +250,6 @@
             <div id="gridKartonAktif"></div> 
         </div>
 
-        <!-- TAB 3: RIWAYAT OUT -->
         <div id="tabRiwayat" class="content">
             <div class="sticky-filter" style="display: flex; gap: 12px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; font-size: 13px;">
@@ -261,7 +258,6 @@
             <div id="gridRiwayatOut"></div> 
         </div>
 
-        <!-- TAB 4: LOKASI SO -->
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -271,7 +267,6 @@
             <div id="gridLokasi" class="premium-grid single-col"></div>
         </div>
 
-        <!-- TAB 5: LIST STOK SO -->
         <div id="tabListStok" class="content">
             <div class="sticky-filter">
                 <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -283,7 +278,6 @@
             <div id="gridListStok" class="premium-grid"></div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktifTargetElement" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
@@ -360,7 +354,7 @@
         window.lastFetchedStok = [];
         window.selectedStokKarton = new Set();
 
-        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbxWa2dRkUnKqfq7EQNsk2NWsAqhCcDKI2IZ7O3LGnjDokb2uxkjmmG8Ad9jfLcr2A4/exec"; 
+        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         
         let dataLokasiExcel = [];
@@ -493,7 +487,6 @@
                     if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
                         let matchLoc = dataLokasiExcel.find(l => {
                             let lSo = (l.so || "").toString().toUpperCase().trim();
-                            // Cocokkan jika string SO mirip sebagian (mengakali perbedaan spasi/format)
                             return lSo === soTarget || lSo.includes(soTarget) || soTarget.includes(lSo);
                         });
                         if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
@@ -685,7 +678,6 @@
         window.openTab = (tabName, elmnt) => {
             if(tabName !== 'tabInput' && window.currentEditId !== null) batalEdit();
             
-            // Bersihkan seleksi Bulk di tab lain saat berpindah
             window.selectedIds.clear();
             
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -693,7 +685,6 @@
             document.getElementById(tabName).classList.add('active');
             elmnt.classList.add('active');
             
-            // Sembunyikan Bulk Bar sesuai tab
             if(tabName !== 'tabAktif' && tabName !== 'tabRiwayat') {
                 document.getElementById('bulkActionBar').style.display = 'none';
             } else {
@@ -710,7 +701,7 @@
         }
 
         // =========================================================
-        // 🌟 SIMPAN (INPUT AQL) & KIRIM PERINTAH UNCHECK KE SPREADSHEET
+        // 🌟 SIMPAN (INPUT AQL) & KIRIM PERINTAH UNCHECK VIA 'GET'
         // =========================================================
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
@@ -761,14 +752,10 @@
                     });
                     await Promise.all(promises);
 
-                    // Kirim Sinyal 'UNCHECK' ke Excel via mode no-cors
-                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, action: "UNCHECK" }));
-                    fetch(URL_GAS_STOK, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(syncPayload)
-                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+                    // 🌟 KIRIM PERINTAH UNCHECK PAKAI JALUR GET YANG ANTI-BOCOR (CORS SAFE)
+                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
                     alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
                     batalEdit(); 
@@ -823,7 +810,6 @@
             openTab('tabInput', document.getElementById('btnTabInput'));
         }
 
-        // PENGAMANAN DATA UNDEFINED PADA SAAT MEMUAT DARI FIREBASE
         onValue(kartonRef, (snapshot) => {
             rawData = [];
             snapshot.forEach((child) => {
@@ -852,7 +838,7 @@
         }
 
         // ========================================================
-        // 🌟 KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // 🌟 KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK VIA 'GET'
         // ========================================================
         window.outTerpilih = async () => {
             if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
@@ -861,7 +847,7 @@
                 for (let id of window.selectedIds) {
                     let itemData = rawData.find(d => d.id === id);
                     if(itemData) {
-                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, action: "CHECK" });
+                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
                     }
                     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                     let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
@@ -869,12 +855,8 @@
                 }
 
                 if(syncPayload.length > 0) {
-                    fetch(URL_GAS_STOK, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(syncPayload)
-                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
 
                 window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
@@ -941,7 +923,6 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
-            // MENCEGAH BUG LOCALECOMPARE JIKA DATA KOSONG
             const sorter = (a, b) => {
                 let soA = (a.so_number || "").toString();
                 let soB = (b.so_number || "").toString();
@@ -968,7 +949,6 @@
                     let group = groupedBySOArt[key];
                     let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${isHistory ? 'OUT' : 'AKTIF'}')" class="btn-delete-so">🗑️ Hapus</button>`;
 
-                    // HEADER PIVOT DENGAN ARTIKEL
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
@@ -1061,19 +1041,15 @@
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
         // ==========================================================
-        // 🌟 KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // 🌟 KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK VIA 'GET'
         // ==========================================================
         window.pindahKeRiwayat = async (id) => {
             if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
-                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, action: "CHECK" }];
-                    fetch(URL_GAS_STOK, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(syncPayload)
-                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
 
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
