@@ -293,7 +293,7 @@
 
         <!-- BOTTOM NAVIGATION BAR (FLOATING MAC-STYLE) -->
         <div class="tab-bar">
-            <div id="btnTabInput" class="tab-btn active" id="btnTabAktifTarget" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
+            <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktifTargetElement" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
             <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)"><span class="icon">⏱️</span> Riwayat</div>
             <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)"><span class="icon">📍</span> Lokasi</div>
@@ -603,7 +603,7 @@
         }
 
         // ====================================================
-        // 🌟 PERBAIKAN SIMPAN SERENTAK & PINDAH TAB OTOMATIS
+        // 🌟 FUNGSI SIMPAN (INPUT AQL) & KIRIM UNCHECK KE EXCEL
         // ====================================================
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
@@ -628,13 +628,12 @@
 
             const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
             
-            // UI Loading State
             const btnTambah = document.getElementById('btnTambah');
             const textAsli = btnTambah.innerHTML;
-            btnTambah.innerHTML = "⏳ Menyimpan...";
+            btnTambah.innerHTML = "⏳ Mengirim & Menyinkronkan...";
             btnTambah.style.pointerEvents = "none";
             btnTambah.style.opacity = "0.7";
-            
+
             try {
                 if (window.currentEditId) {
                     if(dataToPush.length > 1) {
@@ -646,22 +645,28 @@
                     });
                     alert("Data berhasil diperbarui!");
                     batalEdit(); 
-                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                    openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
                 } else {
-                    // Promise.all agar serentak dikirim tanpa delay
                     let promises = dataToPush.map(kData => {
                         return set(push(kartonRef), { 
                             tanggal, so_number: so, jenis, artikel, size: kData.size, nomor_karton: kData.noKarton, lokasi, keterangan, status: "AKTIF", diinput_oleh: userName, timestamp_in: serverTimestamp()
                         });
                     });
-                    
                     await Promise.all(promises);
-                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton disimpan.` : "Data berhasil disimpan!");
+
+                    // Kirim Sinyal 'UNCHECK' ke Excel
+                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, action: "UNCHECK" }));
+                    fetch(URL_GAS_STOK, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(syncPayload)
+                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+
+                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
                     batalEdit(); 
-                    // Pindah tab otomatis
-                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                    openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
                 }
-            } catch(err) {
+            } catch (err) {
                 alert("Terjadi kesalahan jaringan: " + err.message);
             } finally {
                 btnTambah.innerHTML = textAsli;
@@ -672,9 +677,9 @@
 
         window.hapusPermanen = async () => {
             if(!window.currentEditId) return;
-            if(confirm("Hapus data ini secara permanen?")) {
+            if(confirm("Apakah Anda yakin ingin menghapus data ini secara permanen dari sistem?")) {
                 await remove(ref(db, `stok_fg_wh/${window.currentEditId}`)); 
-                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
             }
         };
 
@@ -707,10 +712,10 @@
             document.getElementById('btnTambah').innerHTML = "Perbarui Data";
             document.getElementById('btnTambahBaris').style.display = "none";
             document.getElementById('editActionGroup').style.display = "flex";
-            openTab('tabInput', document.getElementById('btnTabAktifTarget'));
+            openTab('tabInput', document.querySelectorAll('.tab-btn')[0]);
         }
 
-        // 🌟 PERLINDUNGAN UNDEFINED DATA (MENCEGAH ERROR SAAT RENDER)
+        // 🌟 PENGAMANAN DATA UNDEFINED PADA SAAT MEMUAT DARI FIREBASE
         onValue(kartonRef, (snapshot) => {
             rawData = [];
             snapshot.forEach((child) => {
@@ -738,14 +743,32 @@
             }
         }
 
+        // ====================================================
+        // 🌟 FUNGSI KELUAR MASAL (OUT) & KIRIM CHECK KE EXCEL
+        // ====================================================
         window.outTerpilih = async () => {
-            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat?`)) {
+            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
+                
+                let syncPayload = []; 
                 for (let id of window.selectedIds) {
+                    let itemData = rawData.find(d => d.id === id);
+                    if(itemData) {
+                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, action: "CHECK" });
+                    }
                     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                     let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
                     await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() });
                 }
-                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan.");
+
+                if(syncPayload.length > 0) {
+                    fetch(URL_GAS_STOK, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(syncPayload)
+                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+                }
+
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
             }
         }
 
@@ -809,7 +832,7 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
-            // 🌟 PENGAMANAN SORTING JIKA DATA KOSONG
+            // 🌟 MENCEGAH BUG LOCALECOMPARE JIKA DATA KOSONG
             const sorter = (a, b) => {
                 let soA = (a.so_number || "").toString();
                 let soB = (b.so_number || "").toString();
@@ -836,6 +859,7 @@
                     let group = groupedBySOArt[key];
                     let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${isHistory ? 'OUT' : 'AKTIF'}')" class="btn-delete-so">🗑️ Hapus</button>`;
 
+                    // TAMPILKAN ARTIKEL DI HEADER
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
@@ -883,7 +907,7 @@
 
                                 <div class="card-mid">
                                     <span class="card-size">${data.size}</span>
-                                    <span class="card-date">${isHistory ? 'KELUAR : ' : ''}${tglTampil}</span>
+                                    <span class="card-date">${isHistory ? 'OUT: ' : ''}${tglTampil}</span>
                                 </div>
                                 
                                 <div class="card-info-grid">
@@ -927,8 +951,21 @@
         document.getElementById('filterSORiwayat').addEventListener('input', renderData);
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
+        // ====================================================
+        // 🌟 FUNGSI KELUAR SINGLE (OUT) & KIRIM CHECK KE EXCEL
+        // ====================================================
         window.pindahKeRiwayat = async (id) => {
-            if(confirm("Keluarkan data barang ini (OUT)?")) {
+            if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
+                let itemData = rawData.find(d => d.id === id);
+                if(itemData) {
+                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, action: "CHECK" }];
+                    fetch(URL_GAS_STOK, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify(syncPayload)
+                    }).catch(e => console.error("Gagal sync ke Excel:", e));
+                }
+
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                 let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
                 await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() }); 
