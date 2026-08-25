@@ -111,20 +111,16 @@
         .btn-add { background: linear-gradient(135deg, var(--primary), #be123c); color: white; padding: 18px; border: none; border-radius: 100px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; letter-spacing: 0.5px; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); transition: 0.3s;}
         .btn-add:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2); }
         
-        /* ==============================================
-           🌟 PREMIUM GRID CARDS (UNTUK TAB STOK, AKTIF, RIWAYAT)
-           ============================================== */
+        /* PREMIUM GRID CARDS */
         .pivot-group-header { background-color: var(--surface); color: var(--text-main); padding: 16px 20px; font-size: 15px; margin-top: 15px; margin-bottom: 20px; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: var(--shadow-card); cursor: pointer; font-weight: 900; transition: 0.3s;}
         .pivot-count { background-color: var(--input-bg); color: var(--text-main); padding: 6px 12px; border-radius: 10px; font-size: 12px; border: 1px solid var(--border);}
         .btn-delete-so { background: var(--danger-bg); color: var(--danger-text); border: none; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 900; cursor: pointer; margin-left: 10px; flex-shrink: 0;}
 
-        /* GRID 2 KOLOM YANG SANGAT RAPI */
         .premium-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 30px;}
         .premium-grid.single-col { grid-template-columns: 1fr; }
         
         .premium-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-card); display: flex; flex-direction: column; position: relative; transition: 0.3s;}
         
-        /* Elemen dalam Kartu */
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-so-wrap { display: flex; align-items: center; gap: 8px; overflow: hidden;}
         .chk-select { transform: scale(1.3); margin: 0; accent-color: var(--primary);}
@@ -134,12 +130,10 @@
         .badge-solid { background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border);}
         .badge-mix { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(251, 191, 36, 0.3);}
         
-        /* Middle Section: Size & Keterangan */
         .card-mid { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 14px;}
         .card-size { font-weight: 900; font-size: 18px; color: var(--primary); line-height: 1;}
         .card-date { font-size: 10px; font-weight: 800; color: var(--text-muted);}
 
-        /* Info Grid di dalam kartu */
         .card-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
         .info-col { display: flex; flex-direction: column; gap: 2px;}
         .lbl-sm { font-size: 9px; color: var(--text-muted); font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;}
@@ -147,13 +141,11 @@
         .val-loc { font-size: 14px; font-weight: 900; color: #d97706;}
         body.dark-mode .val-loc { color: #fde047; }
 
-        /* Artikel & Footer */
         .card-artikel { font-size: 13px; font-weight: 900; color: var(--text-main); background: var(--bg-color); padding: 8px 10px; border-radius: 8px; border: 1px dashed var(--border); margin-bottom: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
         .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px dashed var(--border); margin-top: auto;}
         .card-user { font-size: 9px; color: var(--text-muted); font-weight: 800; text-transform: uppercase;}
         
-        /* Action Buttons */
         .action-row { display: flex; gap: 8px; margin-top: 14px; }
         .action-row button { flex: 1; padding: 10px 0; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; transition: 0.2s;}
         .btn-edit { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);}
@@ -167,7 +159,6 @@
         .summary-panel h2 { margin:0; font-size: 48px; color: var(--secondary); font-weight: 900; line-height: 1;}
         .summary-panel span { font-size:11px; color:var(--text-muted); font-weight:900; letter-spacing: 1px;}
 
-        /* KARTU LOKASI BESAR */
         .lokasi-besar-card { background: var(--warning-bg); border: 1px solid rgba(251, 191, 36, 0.3); padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); display: flex; flex-direction: column; gap: 15px;}
         body.dark-mode .lokasi-besar-card { border-color: rgba(253, 224, 71, 0.1); }
         
@@ -201,7 +192,6 @@
             <button class="btn-logout" id="btnLogout">Keluar</button>
         </div>
 
-        <!-- TAB 1: FORM INPUT -->
         <div id="tabInput" class="content active">
             
             <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
@@ -252,7 +242,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Artikel, atau Nama...">
@@ -260,7 +249,6 @@
             <div id="gridKartonAktif"></div> 
         </div>
 
-        <!-- TAB 3: RIWAYAT OUT -->
         <div id="tabRiwayat" class="content">
             <div class="sticky-filter" style="display: flex; gap: 12px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; font-size: 13px;">
@@ -269,7 +257,6 @@
             <div id="gridRiwayatOut"></div> 
         </div>
 
-        <!-- TAB 4: LOKASI SO (GRID) -->
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -279,7 +266,6 @@
             <div id="gridLokasi" class="premium-grid single-col"></div>
         </div>
 
-        <!-- TAB 5: LIST STOK SO (GRID) -->
         <div id="tabListStok" class="content">
             <div class="sticky-filter">
                 <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -291,7 +277,6 @@
             <div id="gridListStok" class="premium-grid"></div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR (FLOATING MAC-STYLE) -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktifTargetElement" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
@@ -301,7 +286,6 @@
         </div>
     </div>
 
-    <!-- FLOATING BULK BAR -->
     <div class="bulk-action-bar" id="bulkActionBar">
         <span id="bulkCount">0 Dipilih</span>
         <button class="bulk-btn bulk-btn-out" id="btnBulkOut" onclick="outTerpilih()">Keluarkan</button>
@@ -358,10 +342,11 @@
         window.currentEditId = null; 
         window.selectedIds = new Set();
 
-        // ====================================================
-        // TAUTAN GOOGLE APPS SCRIPT
-        // ====================================================
-        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbxVnFNNjxout8q6g6J20ICcngi3QPYu0_mnhHJXHwt7id6rHTB3jyjEViVnWofzrAri/exec"; 
+        // =========================================================================
+        // GANTI DENGAN URL WEB APP BARU HASIL DEPLOYMENT LENGKAH 1 DI SINI 👇
+        // =========================================================================
+        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
+        
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         
         let dataLokasiExcel = [];
@@ -402,7 +387,6 @@
             }
         });
 
-        // TAB LOKASI
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
             statusDiv.innerText = '⏳ Mengunduh data lokasi...';
@@ -449,7 +433,6 @@
             });
         }
 
-        // TAB LIST STOK
         document.getElementById('btnCariListStok').addEventListener('click', async () => {
             const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusListStok');
@@ -514,7 +497,6 @@
             }
         });
 
-        // FORM LOGIC
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 if(!input.hasAttribute('data-upper')) {
@@ -602,9 +584,9 @@
             if (tabName === 'tabAktif' || tabName === 'tabRiwayat') renderData();
         }
 
-        // ====================================================
-        // 🌟 FUNGSI SIMPAN (INPUT AQL) & KIRIM UNCHECK KE EXCEL
-        // ====================================================
+        // =========================================================
+        // SIMPAN (INPUT AQL) & KIRIM PERINTAH UNCHECK KE SPREADSHEET
+        // =========================================================
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
             const tanggal = document.getElementById('tanggalInput').value; 
@@ -645,7 +627,7 @@
                     });
                     alert("Data berhasil diperbarui!");
                     batalEdit(); 
-                    openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 } else {
                     let promises = dataToPush.map(kData => {
                         return set(push(kartonRef), { 
@@ -654,17 +636,18 @@
                     });
                     await Promise.all(promises);
 
-                    // Kirim Sinyal 'UNCHECK' ke Excel
+                    // Kirim Sinyal 'UNCHECK' ke Excel via mode no-cors
                     let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, action: "UNCHECK" }));
                     fetch(URL_GAS_STOK, {
                         method: "POST",
+                        mode: "no-cors",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(syncPayload)
                     }).catch(e => console.error("Gagal sync ke Excel:", e));
 
                     alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
                     batalEdit(); 
-                    openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 }
             } catch (err) {
                 alert("Terjadi kesalahan jaringan: " + err.message);
@@ -679,7 +662,7 @@
             if(!window.currentEditId) return;
             if(confirm("Apakah Anda yakin ingin menghapus data ini secara permanen dari sistem?")) {
                 await remove(ref(db, `stok_fg_wh/${window.currentEditId}`)); 
-                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
+                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
             }
         };
 
@@ -712,10 +695,9 @@
             document.getElementById('btnTambah').innerHTML = "Perbarui Data";
             document.getElementById('btnTambahBaris').style.display = "none";
             document.getElementById('editActionGroup').style.display = "flex";
-            openTab('tabInput', document.querySelectorAll('.tab-btn')[0]);
+            openTab('tabInput', document.getElementById('btnTabInput'));
         }
 
-        // 🌟 PENGAMANAN DATA UNDEFINED PADA SAAT MEMUAT DARI FIREBASE
         onValue(kartonRef, (snapshot) => {
             rawData = [];
             snapshot.forEach((child) => {
@@ -743,9 +725,9 @@
             }
         }
 
-        // ====================================================
-        // 🌟 FUNGSI KELUAR MASAL (OUT) & KIRIM CHECK KE EXCEL
-        // ====================================================
+        // ========================================================
+        // KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // ========================================================
         window.outTerpilih = async () => {
             if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
                 
@@ -763,6 +745,7 @@
                 if(syncPayload.length > 0) {
                     fetch(URL_GAS_STOK, {
                         method: "POST",
+                        mode: "no-cors",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(syncPayload)
                     }).catch(e => console.error("Gagal sync ke Excel:", e));
@@ -832,7 +815,6 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
-            // 🌟 MENCEGAH BUG LOCALECOMPARE JIKA DATA KOSONG
             const sorter = (a, b) => {
                 let soA = (a.so_number || "").toString();
                 let soB = (b.so_number || "").toString();
@@ -859,7 +841,6 @@
                     let group = groupedBySOArt[key];
                     let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${isHistory ? 'OUT' : 'AKTIF'}')" class="btn-delete-so">🗑️ Hapus</button>`;
 
-                    // TAMPILKAN ARTIKEL DI HEADER
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
@@ -951,9 +932,9 @@
         document.getElementById('filterSORiwayat').addEventListener('input', renderData);
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
-        // ====================================================
-        // 🌟 FUNGSI KELUAR SINGLE (OUT) & KIRIM CHECK KE EXCEL
-        // ====================================================
+        // ==========================================================
+        // KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // ==========================================================
         window.pindahKeRiwayat = async (id) => {
             if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
                 let itemData = rawData.find(d => d.id === id);
@@ -961,6 +942,7 @@
                     let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, action: "CHECK" }];
                     fetch(URL_GAS_STOK, {
                         method: "POST",
+                        mode: "no-cors",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(syncPayload)
                     }).catch(e => console.error("Gagal sync ke Excel:", e));
