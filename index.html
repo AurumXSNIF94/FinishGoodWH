@@ -184,8 +184,8 @@
     <div id="loginScreen">
         <div class="login-box">
             <img src="logo.png" alt="Logo NB">
-            <h2>Sistem Monitoring</h2>
-            <p>PP FG WH Warehouse</p>
+            <h2>SI Monitoring</h2>
+            <p>Production Planning Finish Goods WH</p>
             <button class="btn-google" id="btnGoogleLogin">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
                 Masuk dengan Google
@@ -274,7 +274,7 @@
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
             </div>
-            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Unduh Data Lokasi Excel</button>
+            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Unduh Data Lokasi Spreadsheet</button>
             <div id="statusLokasi" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
             <div id="gridLokasi" class="premium-grid single-col"></div>
         </div>
@@ -284,7 +284,7 @@
             <div class="sticky-filter">
                 <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
             </div>
-            <button class="btn-add" id="btnCariListStok" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Cari Data Stok Excel</button>
+            <button class="btn-add" id="btnCariListStok" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Cari Data Stok Spreadsheet</button>
             <div id="statusListStok" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
             
             <div id="summaryStokContainer"></div>
@@ -297,7 +297,7 @@
             <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
             <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)"><span class="icon">⏱️</span> Riwayat</div>
             <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)"><span class="icon">📍</span> Lokasi</div>
-            <div id="btnTabListStok" class="tab-btn" onclick="openTab('tabListStok', this)"><span class="icon">📋</span> Stok</div>
+            <div id="btnTabListStok" class="tab-btn" onclick="openTab('tabListStok', this)"><span class="icon">📋</span> Stok FG</div>
         </div>
     </div>
 
@@ -397,7 +397,7 @@
                 statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat.`;
                 statusDiv.style.color = "var(--secondary)"; 
             } catch (err) {
-                statusDiv.innerText = '❌ Gagal terhubung ke server Excel.';
+                statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
                 statusDiv.style.color = 'var(--primary)';
             }
         });
@@ -416,7 +416,7 @@
                 statusDiv.style.color = 'var(--secondary)'; 
                 renderDataLokasi();
             } catch (error) {
-                statusDiv.innerText = '❌ Gagal terhubung ke peladen lokasi.';
+                statusDiv.innerText = '❌ Gagal terhubung ke Spreadsheet Lokasi.';
                 statusDiv.style.color = 'var(--primary)';
             }
         });
@@ -442,7 +442,7 @@
                             <div style="font-weight: 900; font-size: 18px; color: var(--warning-text);">${d.so}</div>
                         </div>
                         <div>
-                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">LOKASI RAK</div>
+                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">LOKASI KARTON</div>
                             <div style="font-size: 24px; font-weight: 900; color: var(--warning-text);">📍 ${d.lokasi}</div>
                         </div>
                     </div>`;
@@ -481,7 +481,7 @@
                     summaryContainer.innerHTML = `
                         <div class="summary-panel">
                             <h2>${data.length}</h2>
-                            <span>TOTAL KARTON SIAP PRODUKSI</span>
+                            <span>TOTAL KARTON YANG ADA DI FG WH</span>
                         </div>
                     `;
                     
@@ -496,7 +496,7 @@
                                 </div>
                                 <div class="card-info-grid">
                                     <div class="info-col">
-                                        <span class="lbl-sm">KARTON</span>
+                                        <span class="lbl-sm">NO KARTON</span>
                                         <span class="val-md">${d.karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align:right;">
