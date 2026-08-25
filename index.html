@@ -123,7 +123,8 @@
         
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-so-wrap { display: flex; align-items: center; gap: 8px; overflow: hidden;}
-        .chk-select { transform: scale(1.3); margin: 0; accent-color: var(--primary);}
+        .chk-select, .chk-select-stok { transform: scale(1.3); margin: 0; accent-color: var(--primary);}
+        .chk-select-stok { accent-color: var(--secondary); }
         .card-so { font-weight: 900; font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
         .badge-tipe { padding: 4px 8px; border-radius: 6px; font-weight: 900; font-size: 9px; text-transform: uppercase;}
@@ -163,7 +164,7 @@
         body.dark-mode .lokasi-besar-card { border-color: rgba(253, 224, 71, 0.1); }
         
         /* BULK BAR */
-        .bulk-action-bar { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 100px; display: none; align-items: center; gap: 15px; box-shadow: var(--shadow-float); z-index: 100; border: 1px solid rgba(255,255,255,0.1);}
+        .bulk-action-bar { position: fixed; bottom: 95px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 100px; display: none; align-items: center; gap: 15px; box-shadow: var(--shadow-float); z-index: 100; border: 1px solid rgba(255,255,255,0.1); width:max-content; white-space:nowrap;}
         .bulk-action-bar span { font-weight: 900; font-size: 13px; color: #ffffff; padding: 0 5px;}
         .bulk-btn { padding: 8px 16px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 12px; border: none;}
         .bulk-btn-out { background: var(--secondary); color: white; }
@@ -193,17 +194,8 @@
         </div>
 
         <div id="tabInput" class="content active">
-            
-            <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
-                <span style="font-size: 11px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 12px; letter-spacing: 0.5px;">⚡ TARIK DATA STOK OTOMATIS</span>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="soTarikExcel" class="form-input" style="flex: 2; border-radius: var(--radius-md);" placeholder="Masukkan SO...">
-                    <button id="btnTarikSO" style="flex: 1; background: var(--text-main); color: var(--surface); border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer;">SINKRON</button>
-                </div>
-                <div id="statusTarik" style="font-size: 11px; font-weight: 800; margin-top: 12px; color: var(--primary);"></div>
-            </div>
-
-            <div class="form-card" id="formSmart">
+            <!-- WADAH FORM INPUT TETAP SAMA -->
+            <div class="form-card" id="formSmart" style="margin-top: 10px;">
                 <h3><span style="font-size:22px;">📝</span> Form Input AQL</h3>
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
@@ -286,10 +278,17 @@
         </div>
     </div>
 
+    <!-- BULK BAR AKTIF/RIWAYAT -->
     <div class="bulk-action-bar" id="bulkActionBar">
         <span id="bulkCount">0 Dipilih</span>
         <button class="bulk-btn bulk-btn-out" id="btnBulkOut" onclick="outTerpilih()">Keluarkan</button>
         <button class="bulk-btn bulk-btn-del" onclick="hapusTerpilih()">Hapus</button>
+    </div>
+
+    <!-- BULK BAR BARU KHUSUS UNTUK STOK FG -->
+    <div class="bulk-action-bar" id="bulkActionStokBar" style="background: rgba(16, 185, 129, 0.95); bottom: 95px; border-color: rgba(255,255,255,0.2);">
+        <span id="bulkStokCount">0 Dipilih</span>
+        <button class="bulk-btn" style="background: white; color: var(--secondary);" onclick="pindahkanKeInput()">✨ Input AQL</button>
     </div>
 
     <script type="module">
@@ -341,52 +340,18 @@
         let rawData = [];
         window.currentEditId = null; 
         window.selectedIds = new Set();
-
-        // =========================================================================
-        // GANTI DENGAN URL WEB APP BARU HASIL DEPLOYMENT LENGKAH 1 DI SINI 👇
-        // =========================================================================
-        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
         
+        // VARIABLE BARU UNTUK FITUR PILIH DARI STOK
+        window.lastFetchedStok = [];
+        window.selectedStokKarton = new Set();
+
+        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbxWa2dRkUnKqfq7EQNsk2NWsAqhCcDKI2IZ7O3LGnjDokb2uxkjmmG8Ad9jfLcr2A4/exec"; 
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        document.getElementById('btnTarikSO').addEventListener('click', async () => {
-            const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
-            const statusDiv = document.getElementById('statusTarik');
-            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO terlebih dahulu.";
-
-            statusDiv.innerText = "⏳ Memuat data Stok...";
-            statusDiv.style.color = "var(--text-main)";
-
-            try {
-                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
-                const dataStok = await responseStok.json();
-
-                if(dataStok.error) {
-                    statusDiv.innerText = dataStok.error;
-                    statusDiv.style.color = "var(--primary)";
-                    return;
-                }
-                dataStokExcel = dataStok; 
-
-                if(dataStokExcel.length > 0) {
-                    document.getElementById('soInput').value = dataStokExcel[0].so || soTarget;
-                    document.getElementById('artikelInput').value = dataStokExcel[0].artikel || "";
-                } else {
-                    document.getElementById('soInput').value = soTarget; 
-                }
-
-                document.getElementById('lokasiInput').value = "";
-                statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat.`;
-                statusDiv.style.color = "var(--secondary)"; 
-            } catch (err) {
-                statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
-                statusDiv.style.color = 'var(--primary)';
-            }
-        });
-
+        // FUNGSI LOKASI
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
             statusDiv.innerText = '⏳ Mengunduh data lokasi...';
@@ -433,6 +398,9 @@
             });
         }
 
+        // =========================================================
+        // 🌟 FITUR BARU: CARI STOK LALU BISA DIPILIH (CHECKBOX)
+        // =========================================================
         document.getElementById('btnCariListStok').addEventListener('click', async () => {
             const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusListStok');
@@ -455,24 +423,34 @@
                     statusDiv.innerText = data.error;
                     statusDiv.style.color = "var(--primary)";
                 } else if(data.length === 0) {
-                    statusDiv.innerText = "❌ Tidak ada karton yang ditandai untuk SO ini.";
+                    statusDiv.innerText = "❌ Tidak ada karton yang ditandai untuk SO ini di Spreadsheet.";
                     statusDiv.style.color = "var(--primary)";
                 } else {
-                    statusDiv.innerText = `✅ Data berhasil dimuat.`;
+                    statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input AQL.`;
                     statusDiv.style.color = "var(--secondary)"; 
+                    
+                    // Simpan data di global memori untuk ditarik nanti
+                    window.lastFetchedStok = data;
+                    window.selectedStokKarton.clear();
+                    updateBulkStokUI();
                     
                     summaryContainer.innerHTML = `
                         <div class="summary-panel">
                             <h2>${data.length}</h2>
-                            <span>TOTAL KARTON YANG ADA DI FG WH</span>
+                            <span>KARTON TERSEDIA DI SPREADSHEET</span>
                         </div>
                     `;
                     
                     data.forEach(d => {
+                        let isChecked = window.selectedStokKarton.has(d.karton) ? 'checked' : '';
+                        
                         grid.innerHTML += `
                             <div class="premium-card">
                                 <div class="card-top">
-                                    <span class="card-so" style="font-size:16px;">${d.so}</span>
+                                    <div class="card-so-wrap">
+                                        <input type="checkbox" class="chk-select-stok" value="${d.karton}" onchange="toggleSelectStok(this)" ${isChecked}>
+                                        <span class="card-so" style="font-size:16px;">${d.so}</span>
+                                    </div>
                                 </div>
                                 <div class="card-mid" style="justify-content:center; padding:15px;">
                                     <span class="card-size" style="font-size:24px;">${d.size}</span>
@@ -497,6 +475,67 @@
             }
         });
 
+        // FUNGSI KENDALI CHECKBOX TAB STOK FG
+        window.toggleSelectStok = (cb) => {
+            cb.checked ? window.selectedStokKarton.add(cb.value) : window.selectedStokKarton.delete(cb.value);
+            updateBulkStokUI();
+        }
+
+        window.updateBulkStokUI = () => {
+            const bar = document.getElementById('bulkActionStokBar');
+            if (window.selectedStokKarton.size > 0 && document.getElementById('tabListStok').classList.contains('active')) {
+                bar.style.display = 'flex';
+                document.getElementById('bulkStokCount').innerText = `${window.selectedStokKarton.size} Terpilih`;
+            } else {
+                bar.style.display = 'none';
+            }
+        }
+
+        // 🌟 FUNGSI AJAIB: MELEMPAR KARTON TERPILIH KE FORM INPUT
+        window.pindahkanKeInput = () => {
+            if(window.selectedStokKarton.size === 0) return;
+            
+            // Ambil detail data dari karton yang dicentang
+            let selectedData = window.lastFetchedStok.filter(d => window.selectedStokKarton.has(d.karton));
+            if(selectedData.length === 0) return;
+
+            if(window.currentEditId) batalEdit();
+
+            // Isi header Form Otomatis
+            document.getElementById('soInput').value = selectedData[0].so || '';
+            document.getElementById('artikelInput').value = selectedData[0].artikel || '';
+            
+            // Generate baris karton sesuai yang dipilih
+            const list = document.getElementById('kartonList');
+            list.innerHTML = ''; 
+
+            selectedData.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'form-row karton-item';
+                row.style.marginBottom = '12px';
+                row.innerHTML = `
+                    <input type="text" class="form-input size-input" value="${d.size}" placeholder="Ukuran">
+                    <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${d.karton}" placeholder="No. Karton">
+                    <button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>
+                `;
+                list.appendChild(row);
+            });
+            
+            applyUppercaseListener(); 
+            applyKartonFormatListener();
+
+            // Bersihkan seleksi dan matikan pop-up bar hijau
+            window.selectedStokKarton.clear();
+            updateBulkStokUI();
+            document.querySelectorAll('.chk-select-stok').forEach(cb => cb.checked = false);
+
+            // Lompat Otomatis ke Tab Input
+            openTab('tabInput', document.getElementById('btnTabInput'));
+        }
+
+        // =========================================================
+        // FORM LOGIC
+        // =========================================================
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
                 if(!input.hasAttribute('data-upper')) {
@@ -514,16 +553,6 @@
                         this.value = this.value.replace(/[^0-9#]/g, ''); 
                         let val = this.value.trim();
                         if(val !== '' && !val.startsWith('#')) val = '#' + val;
-
-                        if (val && dataStokExcel && dataStokExcel.length > 0) {
-                            let match = dataStokExcel.find(m => m.karton === val);
-                            if (match) {
-                                let row = this.closest('.karton-item');
-                                row.querySelector('.size-input').value = match.size;
-                                if(!document.getElementById('soInput').value) document.getElementById('soInput').value = match.so;
-                                if(!document.getElementById('artikelInput').value) document.getElementById('artikelInput').value = match.artikel;
-                            }
-                        }
                     });
                     input.addEventListener('blur', function() {
                         let val = this.value.trim();
@@ -574,12 +603,27 @@
 
         window.openTab = (tabName, elmnt) => {
             if(tabName !== 'tabInput' && window.currentEditId !== null) batalEdit();
+            
+            // Bersihkan seleksi Bulk di tab lain saat berpindah
             window.selectedIds.clear();
-            updateBulkDeleteUI();
+            
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             elmnt.classList.add('active');
+            
+            // Sembunyikan Bulk Bar sesuai tab
+            if(tabName !== 'tabAktif' && tabName !== 'tabRiwayat') {
+                document.getElementById('bulkActionBar').style.display = 'none';
+            } else {
+                updateBulkDeleteUI();
+            }
+
+            if(tabName !== 'tabListStok') {
+                document.getElementById('bulkActionStokBar').style.display = 'none';
+            } else {
+                updateBulkStokUI();
+            }
             
             if (tabName === 'tabAktif' || tabName === 'tabRiwayat') renderData();
         }
@@ -716,7 +760,7 @@
 
         window.updateBulkDeleteUI = () => {
             const bar = document.getElementById('bulkActionBar');
-            if (window.selectedIds.size > 0) {
+            if (window.selectedIds.size > 0 && (document.getElementById('tabAktif').classList.contains('active') || document.getElementById('tabRiwayat').classList.contains('active'))) {
                 bar.style.display = 'flex';
                 document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Dipilih`;
                 document.getElementById('btnBulkOut').style.display = document.getElementById('tabRiwayat').classList.contains('active') ? 'none' : 'flex';
