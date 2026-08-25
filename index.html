@@ -75,54 +75,54 @@
         .login-box img { height: 97px; margin-bottom: 0px; object-fit: contain; }
         .login-box h2 { color: var(--text-main); margin: 0 0 10px 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;}
         .login-box p { color: var(--text-muted); font-size: 14px; margin: 0 0 40px 0;}
-        .btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 15px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: var(--shadow-card); transition: 0.3s;}
+        .btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 15px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: gap: 12px; width: 100%; box-shadow: var(--shadow-card); transition: 0.3s;}
         .btn-google:active { transform: scale(0.97); }
         .btn-google img { height: 22px; margin: 0; }
 
-/* FLOATING BOTTOM NAV (RESPONSIF & RATA 8 MENU) */
-.tab-bar { 
-    display: flex; 
-    background: rgba(255, 255, 255, 0.9); 
-    backdrop-filter: blur(15px); 
-    -webkit-backdrop-filter: blur(15px); 
-    position: fixed; 
-    bottom: 25px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 95%; 
-    max-width: 680px; 
-    z-index: 40; 
-    box-shadow: var(--shadow-float); 
-    border-radius: 100px; 
-    border: 1px solid var(--border); 
-    padding: 6px 8px; 
-    justify-content: space-between; 
-    gap: 4px; 
-    transition: 0.4s ease; 
-}
-body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
+        /* FLOATING BOTTOM NAV (RESPONSIF & RATA 8 MENU) */
+        .tab-bar { 
+            display: flex; 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); 
+            position: fixed; 
+            bottom: 25px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 95%; 
+            max-width: 680px; 
+            z-index: 40; 
+            box-shadow: var(--shadow-float); 
+            border-radius: 100px; 
+            border: 1px solid var(--border); 
+            padding: 6px 8px; 
+            justify-content: space-between; 
+            gap: 4px; 
+            transition: 0.4s ease; 
+        }
+        body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
 
-.tab-btn { 
-    flex: 1; 
-    min-width: 0; 
-    padding: 8px 2px; 
-    text-align: center; 
-    font-weight: 800; 
-    font-size: 8.5px; 
-    color: var(--text-muted); 
-    cursor: pointer; 
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 3px; 
-    border-radius: 20px; 
-    white-space: nowrap; 
-}
-.tab-btn span.icon { font-size: 16px; transition: 0.3s; }
-.tab-btn.active { color: var(--primary); background: var(--danger-bg); } 
-.tab-btn.active span.icon { transform: translateY(-2px) scale(1.1); }
-.tab-btn.warning-tab.active { color: var(--warning-text); background: var(--warning-bg); }
+        .tab-btn { 
+            flex: 1; 
+            min-width: 0; 
+            padding: 8px 2px; 
+            text-align: center; 
+            font-weight: 800; 
+            font-size: 8.5px; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 3px; 
+            border-radius: 20px; 
+            white-space: nowrap; 
+        }
+        .tab-btn span.icon { font-size: 16px; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); background: var(--danger-bg); } 
+        .tab-btn.active span.icon { transform: translateY(-2px) scale(1.1); }
+        .tab-btn.warning-tab.active { color: var(--warning-text); background: var(--warning-bg); }
         
         .content { padding: 25px 20px; display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .content.active { display: block; }
@@ -238,7 +238,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
         <div id="tabPickList" class="content">
             <div class="form-card">
                 <h3><span style="font-size:22px;">🎯</span> Mode Target AQL</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin-top:-15px; margin-bottom:15px; font-weight:700;">Masukkan SO dan target Karton. Web akan menyusun jalur pencarian (routing) secara berurutan sesuai No Karton.</p>
+                <p style="font-size:12px; color:var(--text-muted); margin-top:-15px; margin-bottom:15px; font-weight:700;">Masukkan SO dan target Karton. Web akan menyusun jalur pencarian (routing) secara berurutan sesuai Karton.</p>
                 <div class="form-row">
                     <input type="text" id="pickSOInput" class="form-input" placeholder="Nomor SO (Cth: 2026PYN)">
                 </div>
@@ -308,7 +308,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
 
         <div id="tabAktif" class="content active">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Artikel, atau Nama...">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridKartonAktif"></div> 
         </div>
@@ -316,7 +316,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
         <div id="tabRiwayat" class="content">
             <div class="sticky-filter" style="display: flex; gap: 12px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; font-size: 13px;">
-                <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO / Nama...">
+                <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridRiwayatOut"></div> 
         </div>
@@ -344,7 +344,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
         <!-- 🌟 TAB BARU: KEKURANGAN AQL -->
         <div id="tabKurang" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOKurang" class="search-box" placeholder="🔍 Cari data kekurangan...">
+                <input type="text" id="filterSOKurang" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridKartonKurang"></div> 
         </div>
@@ -352,13 +352,12 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
         <!-- 🌟 TAB BARU: TONG SAMPAH (HANYA ADMIN) -->
         <div id="tabSampah" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterSOSampah" class="search-box" placeholder="🔍 Cari data terhapus...">
+                <input type="text" id="filterSOSampah" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridKartonSampah"></div> 
         </div>
 
         <div class="tab-bar">
-            <!-- Pindahkan Target ke posisi paling kiri biar enak buat operasional -->
             <div id="btnTabPickList" class="tab-btn" onclick="openTab('tabPickList', this)"><span class="icon">🎯</span> Target</div>
             <div id="btnTabInput" class="tab-btn" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktifTargetElement" class="tab-btn active" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
@@ -462,7 +461,6 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
         // 🎯 FITUR BARU: MODE TARGET AQL (PICK-LIST)
         // =========================================================
         
-        // Fungsi untuk mengurai inputan rentang angka (misal: "1, 2, 5-8")
         function parseCartonInput(input) {
             let result = [];
             let parts = input.split(',');
@@ -501,7 +499,6 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
             statusDiv.style.color = "var(--text-main)";
 
             try {
-                // Tarik Data Excel
                 const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
                 const data = await responseStok.json();
 
@@ -516,7 +513,6 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
                     statusDiv.innerText = data.error;
                     statusDiv.style.color = "var(--primary)";
                 } else {
-                    // Cari Lokasi
                     let lokasiSO = "TIDAK DITEMUKAN";
                     if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
                         let matchLoc = dataLokasiExcel.find(l => {
@@ -526,7 +522,6 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
                         if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
                     }
 
-                    // Filter dan gabungkan data sesuai inputan user
                     let foundItems = [];
                     let notFoundCount = 0;
 
@@ -544,7 +539,6 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
                         return statusDiv.innerText = "❌ Semua karton target tidak ada di data Excel!";
                     }
 
-                    // 🌟 SMART ROUTING: Urutkan berdasarkan lokasi rak secara alfabet agar tidak bolak-balik
                     foundItems.sort((a, b) => a.lokasi.localeCompare(b.lokasi));
                     
                     window.currentPickList = foundItems;
@@ -564,7 +558,7 @@ body.dark-mode .tab-bar { background: rgba(20, 27, 45, 0.9); }
             }
         });
 
-function renderPickList() {
+        function renderPickList() {
             const container = document.getElementById('gridPickList');
             
             if(!window.currentPickList || window.currentPickList.length === 0) {
@@ -591,7 +585,7 @@ function renderPickList() {
 
                     <div class="card-mid" style="margin-top:10px;">
                         <div style="display:flex; flex-direction:column;">
-                            <span class="lbl-sm">SIZE</span>
+                            <span class="lbl-sm">UKURAN</span>
                             <span class="card-size">${d.size}</span>
                         </div>
                         <div style="display:flex; flex-direction:column; text-align:right;">
@@ -609,31 +603,26 @@ function renderPickList() {
             container.innerHTML = html;
         }
         
-        // FUNGSI EKSEKUSI KLIK PADA CHECKLIST (HANYA SEKALI KLIK)
         window.prosesPick = async (index, action) => {
             let item = window.currentPickList[index];
             const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
             let tzoffset = (new Date()).getTimezoneOffset() * 60000;
             let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
 
-            // Jika DAPAT -> Masuk Stok Aktif, Jika KOSONG -> Masuk Kekurangan (Tab Kurang)
             let status = action === 'DAPAT' ? 'AKTIF' : 'KURANG';
             let ket = action === 'DAPAT' ? 'Ditarik via Target AQL' : '⚠️ Dilaporkan kurang dari mode Target AQL';
 
             try {
-                // 1. Simpan ke Firebase tanpa nunggu lama
                 set(push(kartonRef), {
                     tanggal: localISOTime, so_number: item.so, jenis: 'SOLID',
                     artikel: item.artikel, size: item.size, nomor_karton: item.karton, lokasi: item.lokasi,
                     keterangan: ket, status: status, diinput_oleh: userName, timestamp_in: serverTimestamp()
                 });
 
-                // 2. UNCHECK di Excel via Background (Agar tim Produksi terputus dari kartu ini)
                 let syncPayload = [{ so: item.so, karton: item.karton, actionType: "UNCHECK" }];
                 let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                 fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-                // 3. Hapus item dari layar & update progres dengan efek visual mulus
                 window.currentPickList.splice(index, 1);
                 renderPickList();
             } catch(e) {
@@ -805,7 +794,7 @@ function renderPickList() {
                                         <span class="val-md">${d.karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align:right;">
-                                        <span class="lbl-sm">LOKASI RAK</span>
+                                        <span class="lbl-sm">LOKASI KARTON</span>
                                         <span class="val-loc">${d.lokasi}</span>
                                     </div>
                                 </div>
@@ -1250,7 +1239,10 @@ function renderPickList() {
             let dataAktif = rawData.filter(d => {
                 if (d.status !== "AKTIF") return false;
                 if (!fAktif) return true;
-                return (d.so_number || "").toUpperCase().includes(fAktif) || (d.artikel || "").toUpperCase().includes(fAktif) || (d.diinput_oleh || "").toUpperCase().includes(fAktif);
+                return (d.so_number || "").toUpperCase().includes(fAktif) || 
+                       (d.artikel || "").toUpperCase().includes(fAktif) || 
+                       (d.diinput_oleh || "").toUpperCase().includes(fAktif) || 
+                       (d.keterangan || "").toUpperCase().includes(fAktif);
             });
 
             let dataOut = rawData.filter(d => {
@@ -1262,7 +1254,11 @@ function renderPickList() {
                 }
                 let matchText = true;
                 if(fRiwayat) {
-                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || (d.artikel || "").toUpperCase().includes(fRiwayat) || (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || tglLokal.includes(fRiwayat); 
+                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || 
+                                (d.artikel || "").toUpperCase().includes(fRiwayat) || 
+                                (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || 
+                                (d.keterangan || "").toUpperCase().includes(fRiwayat) || 
+                                tglLokal.includes(fRiwayat); 
                 }
                 let matchKalender = true;
                 if(fTglRiwayatInput) matchKalender = (d.tanggal_out === fTglRiwayatInput);
@@ -1272,13 +1268,19 @@ function renderPickList() {
             let dataSampah = rawData.filter(d => {
                 if (d.status !== "DELETED") return false;
                 if (!fSampah) return true;
-                return (d.so_number || "").toUpperCase().includes(fSampah) || (d.artikel || "").toUpperCase().includes(fSampah) || (d.deleted_by || "").toUpperCase().includes(fSampah);
+                return (d.so_number || "").toUpperCase().includes(fSampah) || 
+                       (d.artikel || "").toUpperCase().includes(fSampah) || 
+                       (d.deleted_by || "").toUpperCase().includes(fSampah) || 
+                       (d.keterangan || "").toUpperCase().includes(fSampah);
             });
 
             let dataKurang = rawData.filter(d => {
                 if (d.status !== "KURANG") return false;
                 if (!fKurang) return true;
-                return (d.so_number || "").toUpperCase().includes(fKurang) || (d.artikel || "").toUpperCase().includes(fKurang);
+                return (d.so_number || "").toUpperCase().includes(fKurang) || 
+                       (d.artikel || "").toUpperCase().includes(fKurang) || 
+                       (d.diinput_oleh || "").toUpperCase().includes(fKurang) || 
+                       (d.keterangan || "").toUpperCase().includes(fKurang);
             });
 
             let soArtikelMap = {};
@@ -1324,7 +1326,7 @@ function renderPickList() {
                                 </span>
                             </div>
                             <div style="display:flex; align-items:center; flex-shrink: 0;">
-                                <span class="pivot-count">${group.items.length} Karton</span>
+                                <span class="pivot-count">${group.items.length} Box</span>
                                 ${btnHapusSO}
                             </div>
                         </div>
