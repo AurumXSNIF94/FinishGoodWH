@@ -175,7 +175,7 @@
 
     <div id="loginScreen">
         <div class="login-box">
-            <img src="logo.png" alt="Logo NB">
+            <img src="cover.png" alt="Logo NB">
             <h2>SI Monitoring</h2>
             <p>Production Planning Finish Goods WH</p>
             <button class="btn-google" id="btnGoogleLogin">
@@ -193,6 +193,7 @@
             <button class="btn-logout" id="btnLogout">Keluar</button>
         </div>
 
+        <!-- TAB 1: FORM INPUT -->
         <div id="tabInput" class="content active">
             
             <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
@@ -243,6 +244,7 @@
             </div>
         </div>
 
+        <!-- TAB 2: STOK AKTIF -->
         <div id="tabAktif" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Artikel, atau Nama...">
@@ -250,6 +252,7 @@
             <div id="gridKartonAktif"></div> 
         </div>
 
+        <!-- TAB 3: RIWAYAT OUT -->
         <div id="tabRiwayat" class="content">
             <div class="sticky-filter" style="display: flex; gap: 12px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; font-size: 13px;">
@@ -258,6 +261,7 @@
             <div id="gridRiwayatOut"></div> 
         </div>
 
+        <!-- TAB 4: LOKASI SO -->
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
                 <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -267,6 +271,7 @@
             <div id="gridLokasi" class="premium-grid single-col"></div>
         </div>
 
+        <!-- TAB 5: LIST STOK SO -->
         <div id="tabListStok" class="content">
             <div class="sticky-filter">
                 <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
@@ -278,6 +283,7 @@
             <div id="gridListStok" class="premium-grid"></div>
         </div>
 
+        <!-- BOTTOM NAVIGATION BAR -->
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
             <div id="btnTabAktifTargetElement" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
@@ -443,7 +449,7 @@
         }
 
         // =========================================================
-        // 🌟 FITUR BARU: CARI STOK + LOKASI OTOMATIS (TAB STOK FG)
+        // 🌟 FITUR PENCARIAN PINTAR STOK FG (STOK + LOKASI + SO BADGE)
         // =========================================================
         document.getElementById('btnCariListStok').addEventListener('click', async () => {
             const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
@@ -460,14 +466,17 @@
             statusDiv.style.color = "var(--text-main)";
 
             try {
-                // TARIK DATA STOK DAN LOKASI SECARA BERSAMAAN
-                const [responseStok, responseLokasi] = await Promise.all([
-                    fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget)),
-                    fetch(URL_GAS_LOKASI)
-                ]);
-                
+                // 1. Tarik Data Stok dari Spreadsheet Utama
+                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
                 const data = await responseStok.json();
-                const dataLokasi = await responseLokasi.json();
+
+                // 2. Tarik Data Lokasi (Hanya ditarik jika memori lokasi masih kosong biar web nggak lemot)
+                if(dataLokasiExcel.length === 0) {
+                    try {
+                        const responseLokasi = await fetch(URL_GAS_LOKASI);
+                        dataLokasiExcel = await responseLokasi.json();
+                    } catch(e) { console.log("Gagal menarik data lokasi"); }
+                }
 
                 if(data.error) {
                     statusDiv.innerText = data.error;
@@ -479,25 +488,30 @@
                     statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input AQL.`;
                     statusDiv.style.color = "var(--secondary)"; 
                     
-                    // Cari Lokasi Rak berdasarkan SO
+                    // 3. LOGIKA PENCARIAN LOKASI LUWES (ANTI-GAGAL)
                     let lokasiSO = "TIDAK DITEMUKAN";
-                    if(Array.isArray(dataLokasi)) {
-                        let matchLoc = dataLokasi.find(l => (l.so || "").toUpperCase() === soTarget);
-                        if(matchLoc) lokasiSO = matchLoc.lokasi;
+                    if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
+                        let matchLoc = dataLokasiExcel.find(l => {
+                            let lSo = (l.so || "").toString().toUpperCase().trim();
+                            // Cocokkan jika string SO mirip sebagian (mengakali perbedaan spasi/format)
+                            return lSo === soTarget || lSo.includes(soTarget) || soTarget.includes(lSo);
+                        });
+                        if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
                     }
 
-                    // Tambahkan data lokasi ke masing-masing karton agar ikut terlempar ke Form Input nanti
+                    // Tanamkan lokasi ke masing-masing karton
                     data.forEach(d => { d.lokasi = lokasiSO; });
                     
-                    // Simpan data di global memori untuk ditarik nanti
                     window.lastFetchedStok = data;
                     window.selectedStokKarton.clear();
                     updateBulkStokUI();
                     
+                    // 4. MUNCULKAN SO DENGAN GAYA PREMIUM DI PANEL ATAS
                     summaryContainer.innerHTML = `
                         <div class="summary-panel">
                             <h2>${data.length}</h2>
-                            <span>KARTON TERSEDIA DI SPREADSHEET</span>
+                            <span style="display:block; margin-bottom:8px;">KARTON TERSEDIA DI SPREADSHEET</span>
+                            <span style="font-size:15px; color:var(--primary); background:var(--danger-bg); padding:6px 14px; border-radius:12px; display:inline-block; border:1px solid var(--danger-text);">SO: <b>${soTarget}</b></span>
                         </div>
                     `;
                     
@@ -521,7 +535,7 @@
                                         <span class="val-md">${d.karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align:right;">
-                                        <span class="lbl-sm">LOKASI RAK</span>
+                                        <span class="lbl-sm">LOKASI KARTON</span>
                                         <span class="val-loc">${d.lokasi}</span>
                                     </div>
                                 </div>
@@ -601,7 +615,7 @@
         }
 
         // =========================================================
-        // FORM LOGIC
+        // FORM LOGIC UMUM
         // =========================================================
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
@@ -696,7 +710,7 @@
         }
 
         // =========================================================
-        // SIMPAN (INPUT AQL) & KIRIM PERINTAH UNCHECK KE SPREADSHEET
+        // 🌟 SIMPAN (INPUT AQL) & KIRIM PERINTAH UNCHECK KE SPREADSHEET
         // =========================================================
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
@@ -809,6 +823,7 @@
             openTab('tabInput', document.getElementById('btnTabInput'));
         }
 
+        // PENGAMANAN DATA UNDEFINED PADA SAAT MEMUAT DARI FIREBASE
         onValue(kartonRef, (snapshot) => {
             rawData = [];
             snapshot.forEach((child) => {
@@ -837,7 +852,7 @@
         }
 
         // ========================================================
-        // KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // 🌟 KELUAR MASAL (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
         // ========================================================
         window.outTerpilih = async () => {
             if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
@@ -926,6 +941,7 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
+            // MENCEGAH BUG LOCALECOMPARE JIKA DATA KOSONG
             const sorter = (a, b) => {
                 let soA = (a.so_number || "").toString();
                 let soB = (b.so_number || "").toString();
@@ -952,6 +968,7 @@
                     let group = groupedBySOArt[key];
                     let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${isHistory ? 'OUT' : 'AKTIF'}')" class="btn-delete-so">🗑️ Hapus</button>`;
 
+                    // HEADER PIVOT DENGAN ARTIKEL
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
@@ -1044,7 +1061,7 @@
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
         // ==========================================================
-        // KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
+        // 🌟 KELUAR SINGLE (OUT) & KIRIM PERINTAH CHECK KE SPREADSHEET
         // ==========================================================
         window.pindahKeRiwayat = async (id) => {
             if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
