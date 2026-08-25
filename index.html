@@ -293,8 +293,8 @@
 
         <!-- BOTTOM NAVIGATION BAR (FLOATING MAC-STYLE) -->
         <div class="tab-bar">
-            <div id="btnTabInput" class="tab-btn active" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
-            <div id="btnTabAktif" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
+            <div id="btnTabInput" class="tab-btn active" id="btnTabAktifTarget" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
+            <div id="btnTabAktifTargetElement" class="tab-btn" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
             <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)"><span class="icon">⏱️</span> Riwayat</div>
             <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)"><span class="icon">📍</span> Lokasi</div>
             <div id="btnTabListStok" class="tab-btn" onclick="openTab('tabListStok', this)"><span class="icon">📋</span> Stok FG</div>
@@ -602,6 +602,9 @@
             if (tabName === 'tabAktif' || tabName === 'tabRiwayat') renderData();
         }
 
+        // ====================================================
+        // 🌟 PERBAIKAN SIMPAN SERENTAK & PINDAH TAB OTOMATIS
+        // ====================================================
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
             const tanggal = document.getElementById('tanggalInput').value; 
@@ -625,21 +628,45 @@
 
             const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
             
-            if (window.currentEditId) {
-                if(dataToPush.length > 1) return alert("Mode Ubah hanya dapat menyimpan 1 karton.");
-                await update(ref(db, `stok_fg_wh/${window.currentEditId}`), {
-                    tanggal, so_number: so, jenis, artikel, size: dataToPush[0].size, nomor_karton: dataToPush[0].noKarton, lokasi, keterangan, diinput_oleh: userName 
-                });
-                alert("Data berhasil diperbarui!");
-                batalEdit(); openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
-            } else {
-                for(let kData of dataToPush) {
-                    await set(push(kartonRef), { 
-                        tanggal, so_number: so, jenis, artikel, size: kData.size, nomor_karton: kData.noKarton, lokasi, keterangan, status: "AKTIF", diinput_oleh: userName, timestamp_in: serverTimestamp()
+            // UI Loading State
+            const btnTambah = document.getElementById('btnTambah');
+            const textAsli = btnTambah.innerHTML;
+            btnTambah.innerHTML = "⏳ Menyimpan...";
+            btnTambah.style.pointerEvents = "none";
+            btnTambah.style.opacity = "0.7";
+            
+            try {
+                if (window.currentEditId) {
+                    if(dataToPush.length > 1) {
+                        alert("Mode Ubah hanya dapat menyimpan 1 karton.");
+                        return;
+                    }
+                    await update(ref(db, `stok_fg_wh/${window.currentEditId}`), {
+                        tanggal, so_number: so, jenis, artikel, size: dataToPush[0].size, nomor_karton: dataToPush[0].noKarton, lokasi, keterangan, diinput_oleh: userName 
                     });
+                    alert("Data berhasil diperbarui!");
+                    batalEdit(); 
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                } else {
+                    // Promise.all agar serentak dikirim tanpa delay
+                    let promises = dataToPush.map(kData => {
+                        return set(push(kartonRef), { 
+                            tanggal, so_number: so, jenis, artikel, size: kData.size, nomor_karton: kData.noKarton, lokasi, keterangan, status: "AKTIF", diinput_oleh: userName, timestamp_in: serverTimestamp()
+                        });
+                    });
+                    
+                    await Promise.all(promises);
+                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton disimpan.` : "Data berhasil disimpan!");
+                    batalEdit(); 
+                    // Pindah tab otomatis
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 }
-                alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton disimpan.` : "Data berhasil disimpan!");
-                batalEdit(); 
+            } catch(err) {
+                alert("Terjadi kesalahan jaringan: " + err.message);
+            } finally {
+                btnTambah.innerHTML = textAsli;
+                btnTambah.style.pointerEvents = "auto";
+                btnTambah.style.opacity = "1";
             }
         });
 
@@ -647,7 +674,7 @@
             if(!window.currentEditId) return;
             if(confirm("Hapus data ini secara permanen?")) {
                 await remove(ref(db, `stok_fg_wh/${window.currentEditId}`)); 
-                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.querySelectorAll('.tab-btn')[1]); 
+                alert("Data dihapus!"); batalEdit(); openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
             }
         };
 
@@ -680,15 +707,16 @@
             document.getElementById('btnTambah').innerHTML = "Perbarui Data";
             document.getElementById('btnTambahBaris').style.display = "none";
             document.getElementById('editActionGroup').style.display = "flex";
-            openTab('tabInput', document.getElementById('btnTabInput'));
+            openTab('tabInput', document.getElementById('btnTabAktifTarget'));
         }
 
+        // 🌟 PERLINDUNGAN UNDEFINED DATA (MENCEGAH ERROR SAAT RENDER)
         onValue(kartonRef, (snapshot) => {
             rawData = [];
             snapshot.forEach((child) => {
                 let data = child.val(); data.id = child.key;
-                let sizeStr = data.size.toString().toUpperCase();
-                data.sizeValue = parseFloat(sizeStr.replace('T', '.5')); 
+                let sizeStr = (data.size || "").toString().toUpperCase();
+                data.sizeValue = parseFloat(sizeStr.replace('T', '.5')) || 0; 
                 rawData.push(data);
             });
             renderData();
@@ -781,10 +809,15 @@
                 if (art) soArtikelMap[so].add(art);
             });
 
+            // 🌟 PENGAMANAN SORTING JIKA DATA KOSONG
             const sorter = (a, b) => {
-                if (a.so_number !== b.so_number) return a.so_number.localeCompare(b.so_number);
-                if (a.sizeValue !== b.sizeValue) return a.sizeValue - b.sizeValue;
-                return a.nomor_karton.localeCompare(b.nomor_karton);
+                let soA = (a.so_number || "").toString();
+                let soB = (b.so_number || "").toString();
+                if (soA !== soB) return soA.localeCompare(soB);
+                if (a.sizeValue !== b.sizeValue) return (a.sizeValue || 0) - (b.sizeValue || 0);
+                let kA = (a.nomor_karton || "").toString();
+                let kB = (b.nomor_karton || "").toString();
+                return kA.localeCompare(kB);
             };
             dataAktif.sort(sorter); dataOut.sort(sorter);
 
@@ -803,7 +836,6 @@
                     let group = groupedBySOArt[key];
                     let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${isHistory ? 'OUT' : 'AKTIF'}')" class="btn-delete-so">🗑️ Hapus</button>`;
 
-                    // PERBAIKAN HEADER: MENAMPILKAN ARTIKEL BERSANDING DENGAN SO
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
