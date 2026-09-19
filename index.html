@@ -412,12 +412,18 @@
         // =========================================================
         async function kirimKeRekap(rowsData) {
             try {
-                await fetch(URL_GAS_REKAP, {
+                const res = await fetch(URL_GAS_REKAP, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ action: "insertRekap", data: rowsData })
                 });
+                const result = await res.json();
+                if (result.status !== "success") {
+                    alert("⚠️ Gagal sinkron ke Rekap Input Manual:\n" + result.message);
+                }
+                console.log("Rekap sync result:", result);
             } catch(e) {
+                alert("⚠️ Gagal terhubung ke spreadsheet Rekap Input Manual:\n" + e.message);
                 console.log("Gagal sinkron ke Rekap Input Manual: " + e.message);
             }
         }
