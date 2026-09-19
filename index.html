@@ -385,664 +385,1076 @@
         <button class="bulk-btn" style="background: var(--warning-bg); color: var(--warning-text);" onclick="tandaiKurang()">⚠️ Lapor Kurang</button>
     </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-    const ADMIN_EMAILS = ["manoramasnif@gmail.com"]; 
+        // ==============================================================================
+        // 🛡️ LEVEL 1 PENGAMANAN: MASUKKAN EMAIL GOOGLE LO DI SINI (BISA LEBIH DARI SATU)
+        // ==============================================================================
+        const ADMIN_EMAILS = [
+            "manoramasnif@gmail.com" 
+        ]; 
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDSaLtB4b2XyuisVAJ-Djf1RQDtXyOy5_U",
-        authDomain: "bizsight-33tbg.firebaseapp.com",
-        databaseURL: "https://bizsight-33tbg-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "bizsight-33tbg",
-        storageBucket: "bizsight-33tbg.firebasestorage.app",
-        messagingSenderId: "333910528874",
-        appId: "1:333910528874:web:c6632d3517a157a3584b13"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSaLtB4b2XyuisVAJ-Djf1RQDtXyOy5_U",
+            authDomain: "bizsight-33tbg.firebaseapp.com",
+            databaseURL: "https://bizsight-33tbg-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "bizsight-33tbg",
+            storageBucket: "bizsight-33tbg.firebasestorage.app",
+            messagingSenderId: "333910528874",
+            appId: "1:333910528874:web:c6632d3517a157a3584b13"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const kartonRef = ref(db, 'stok_fg_wh');
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const kartonRef = ref(db, 'stok_fg_wh');
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-    // 🔗 3 URL GAS UTAMA (STOK, LOKASI, & SO MASTER)
-    const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
-    const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
-    const URL_GAS_SO = "URL_GAS_MASTER_SO_LO_DISINI"; // TODO: Masukkan URL GAS Master SO di sini
-
-    let dataLokasiExcel = [];
-    let dataStokExcel = []; 
-    let rawData = [];
-    window.currentEditId = null; 
-    window.selectedIds = new Set();
-    window.lastFetchedStok = [];
-    window.selectedStokKarton = new Set();
-    window.currentPickList = [];
-
-    // ==========================================
-    // 1. AUTENTIKASI & UI TOGGLE
-    // ==========================================
-    onAuthStateChanged(auth, (user) => {
-        document.getElementById('loginScreen').style.display = user ? "none" : "flex";
-        document.getElementById('mainApp').style.display = user ? "block" : "none";
-        if (user && ADMIN_EMAILS.includes(user.email)) {
-            const btnSampah = document.getElementById('btnTabSampah');
-            if(btnSampah) btnSampah.style.display = 'flex';
-        }
-    });
-
-    document.getElementById('btnGoogleLogin').addEventListener('click', () => signInWithPopup(auth, provider));
-    document.getElementById('btnLogout').addEventListener('click', () => { if(confirm("Keluar dari sistem?")) signOut(auth); });
-
-    // ==========================================
-    // 2. FUNGSI TARIK SO OTOMATIS & VALIDASI LOKASI
-    // ==========================================
-    document.getElementById('btnTarikSO').addEventListener('click', async () => {
-        const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
-        const statusDiv = document.getElementById('statusTarik');
-        if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO terlebih dahulu.";
-
-        statusDiv.innerText = "⏳ Memuat data Stok & Validasi Lokasi...";
-        statusDiv.style.color = "var(--text-main)";
-
-        try {
-            const [resStok, resLokasi] = await Promise.all([
-                fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget)),
-                dataLokasiExcel.length === 0 ? fetch(URL_GAS_LOKASI).then(r => r.json()) : Promise.resolve(dataLokasiExcel)
-            ]);
+        onAuthStateChanged(auth, (user) => {
+            document.getElementById('loginScreen').style.display = user ? "none" : "flex";
+            document.getElementById('mainApp').style.display = user ? "block" : "none";
             
-            const dataStok = await resStok.json();
-            dataLokasiExcel = resLokasi; 
+            if (user && ADMIN_EMAILS.includes(user.email)) {
+                document.getElementById('btnTabSampah').style.display = 'flex';
+            }
+        });
 
-            if(dataStok.error) {
-                statusDiv.innerText = dataStok.error;
+        document.getElementById('btnGoogleLogin').addEventListener('click', () => signInWithPopup(auth, provider));
+        document.getElementById('btnLogout').addEventListener('click', () => { if(confirm("Keluar dari sistem?")) signOut(auth); });
+
+        const btnDarkMode = document.getElementById('btnDarkMode');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            btnDarkMode.innerHTML = '☀️';
+        }
+        btnDarkMode.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                btnDarkMode.innerHTML = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                btnDarkMode.innerHTML = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        document.getElementById('tanggalInput').valueAsDate = new Date();
+        let rawData = [];
+        window.currentEditId = null; 
+        window.selectedIds = new Set();
+        
+        window.lastFetchedStok = [];
+        window.selectedStokKarton = new Set();
+        
+        window.currentPickList = []; // Array untuk menyimpan checklist
+
+        const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
+        const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
+        
+        let dataLokasiExcel = [];
+        let dataStokExcel = []; 
+
+        // =========================================================
+        // 🎯 FITUR BARU: MODE TARGET AQL (PICK-LIST)
+        // =========================================================
+        
+        function parseCartonInput(input) {
+            let result = [];
+            let parts = input.split(',');
+            for(let part of parts) {
+                part = part.trim();
+                if(part.includes('-')) {
+                    let range = part.split('-');
+                    let start = parseInt(range[0].replace(/[^0-9]/g, ''));
+                    let end = parseInt(range[1].replace(/[^0-9]/g, ''));
+                    if(!isNaN(start) && !isNaN(end)) {
+                        let min = Math.min(start, end);
+                        let max = Math.max(start, end);
+                        for(let i = min; i <= max; i++) {
+                            result.push("#" + i);
+                        }
+                    }
+                } else {
+                    let num = parseInt(part.replace(/[^0-9]/g, ''));
+                    if(!isNaN(num)) result.push("#" + num);
+                }
+            }
+            return result;
+        }
+
+        document.getElementById('btnBuatChecklist').addEventListener('click', async () => {
+            const soTarget = document.getElementById('pickSOInput').value.toUpperCase().trim();
+            const cartonInput = document.getElementById('pickCartonInput').value.trim();
+            const statusDiv = document.getElementById('pickStatus');
+            
+            if(!soTarget || !cartonInput) return statusDiv.innerText = "❌ Harap masukkan SO dan target Karton.";
+
+            let targetCartons = parseCartonInput(cartonInput);
+            if(targetCartons.length === 0) return statusDiv.innerText = "❌ Format Karton tidak valid.";
+
+            statusDiv.innerText = "⏳ Memuat jalur pencarian...";
+            statusDiv.style.color = "var(--text-main)";
+
+            try {
+                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
+                const data = await responseStok.json();
+
+                if(dataLokasiExcel.length === 0) {
+                    try {
+                        const responseLokasi = await fetch(URL_GAS_LOKASI);
+                        dataLokasiExcel = await responseLokasi.json();
+                    } catch(e) {}
+                }
+
+                if(data.error) {
+                    statusDiv.innerText = data.error;
+                    statusDiv.style.color = "var(--primary)";
+                } else {
+                    let lokasiSO = "TIDAK DITEMUKAN";
+                    if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
+                        let matchLoc = dataLokasiExcel.find(l => {
+                            let lSo = (l.so || "").toString().toUpperCase().trim();
+                            return lSo === soTarget || lSo.includes(soTarget) || soTarget.includes(lSo);
+                        });
+                        if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
+                    }
+
+                    let foundItems = [];
+                    let notFoundCount = 0;
+
+                    targetCartons.forEach(tC => {
+                        let match = data.find(d => d.karton === tC);
+                        if(match) {
+                            match.lokasi = lokasiSO;
+                            foundItems.push(match);
+                        } else {
+                            notFoundCount++;
+                        }
+                    });
+
+                    if(foundItems.length === 0) {
+                        return statusDiv.innerText = "❌ Semua karton target tidak ada di data Excel!";
+                    }
+
+                    foundItems.sort((a, b) => a.lokasi.localeCompare(b.lokasi));
+                    
+                    window.currentPickList = foundItems;
+                    renderPickList();
+
+                    if(notFoundCount > 0) {
+                        statusDiv.innerText = `✅ Checklist dibuat. (⚠️ ${notFoundCount} karton target tidak terdaftar di Excel)`;
+                        statusDiv.style.color = "var(--warning-text)";
+                    } else {
+                        statusDiv.innerText = `✅ Checklist dibuat! Mulai ambil sesuai urutan lokasi di bawah.`;
+                        statusDiv.style.color = "var(--secondary)";
+                    }
+                }
+            } catch (err) {
+                statusDiv.innerText = "❌ Gagal terhubung ke server!";
                 statusDiv.style.color = "var(--primary)";
+            }
+        });
+
+        function renderPickList() {
+            const container = document.getElementById('gridPickList');
+            
+            if(!window.currentPickList || window.currentPickList.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding: 40px;"><span style="font-size:40px;">🏆</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Selesai! Tidak ada target karton.</p></div>';
+                document.getElementById('pickProgress').innerText = "0 Tersisa";
                 return;
             }
 
-            let lokasiSO = "";
-            let matchLoc = dataLokasiExcel.find(l => {
-                let lSo = (l.so || "").toString().toUpperCase().trim();
-                return lSo === soTarget || lSo.includes(soTarget);
+            document.getElementById('pickProgress').innerText = `${window.currentPickList.length} Tersisa`;
+
+            let html = '<div class="premium-grid single-col">';
+            window.currentPickList.forEach((d, index) => {
+                html += `
+                <div class="premium-card" style="border-left: 5px solid var(--secondary);">
+                    <div class="card-top">
+                        <span class="card-so" style="font-size: 16px;">${d.so}</span>
+                        <span class="badge-tipe badge-solid" style="background:var(--secondary); color:white; font-size:11px; padding:6px 10px;">📍 ${d.lokasi}</span>
+                    </div>
+                    
+                    <!-- 🌟 TAMBAHAN: KETERANGAN ARTIKEL/STYLE -->
+                    <div class="card-artikel" style="margin-top: 5px; margin-bottom: 5px; font-size: 12px; padding: 6px 10px; background: var(--bg-color); border: 1px dashed var(--border); border-radius: 8px;">
+                        ${d.artikel}
+                    </div>
+
+                    <div class="card-mid" style="margin-top:10px;">
+                        <div style="display:flex; flex-direction:column;">
+                            <span class="lbl-sm">SIZE</span>
+                            <span class="card-size">${d.size}</span>
+                        </div>
+                        <div style="display:flex; flex-direction:column; text-align:right;">
+                            <span class="lbl-sm">KARTON</span>
+                            <span style="font-size:22px; font-weight:900; color:var(--text-main);">${d.karton}</span>
+                        </div>
+                    </div>
+                    <div class="action-row" style="margin-top:15px; gap:10px;">
+                        <button style="flex: 2; background:var(--secondary); color:white; font-size:14px; font-weight:900; border:none; padding:12px 0; border-radius:12px; cursor:pointer;" onclick="prosesPick(${index}, 'DAPAT')">✔️ DAPAT</button>
+                        <button style="flex: 1; background:var(--danger-bg); color:var(--danger-text); font-size:12px; font-weight:900; border:1px solid var(--primary); padding:12px 0; border-radius:12px; cursor:pointer;" onclick="prosesPick(${index}, 'KOSONG')">❌ KOSONG</button>
+                    </div>
+                </div>`;
             });
-            if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
-
-            dataStokExcel = dataStok; 
-            if(dataStokExcel.length > 0) {
-                document.getElementById('soInput').value = dataStokExcel[0].so || soTarget;
-                document.getElementById('artikelInput').value = dataStokExcel[0].artikel || "";
-            } else {
-                document.getElementById('soInput').value = soTarget; 
-            }
-
-            document.getElementById('lokasiInput').value = lokasiSO;
-            statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat. Lokasi: ${lokasiSO || 'Tidak Terdaftar'}`;
-            statusDiv.style.color = "var(--secondary)"; 
-        } catch (err) {
-            statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
-            statusDiv.style.color = 'var(--primary)';
+            html += '</div>';
+            container.innerHTML = html;
         }
-    });
-
-    // ==========================================
-    // 3. SISTEM NAVIGASI TAB & FORM
-    // ==========================================
-    window.openTab = (tabName, elmnt) => {
-        if(tabName !== 'tabInput' && window.currentEditId !== null) window.batalEdit();
-        window.selectedIds.clear();
         
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-        
-        document.getElementById(tabName).classList.add('active');
-        if(elmnt) elmnt.classList.add('active');
-        
-        const bulkBar = document.getElementById('bulkActionBar');
-        if(bulkBar) bulkBar.style.display = ['tabAktif', 'tabRiwayat', 'tabSampah'].includes(tabName) ? 'flex' : 'none';
-        
-        const bulkStok = document.getElementById('bulkActionStokBar');
-        if(bulkStok) bulkStok.style.display = (tabName === 'tabListStok' && window.selectedStokKarton.size > 0) ? 'flex' : 'none';
-    };
+        window.prosesPick = async (index, action) => {
+            let item = window.currentPickList[index];
+            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
 
-    window.batalEdit = () => {
-        window.currentEditId = null;
-        document.getElementById('soInput').value = '';
-        document.getElementById('artikelInput').value = '';
-        document.getElementById('lokasiInput').value = '';
-        document.getElementById('keteranganInput').value = '';
-        document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
-        document.getElementById('btnTambah').innerHTML = "Simpan Data";
-        document.getElementById('btnTambahBaris').style.display = "block";
-        const editGroup = document.getElementById('editActionGroup');
-        if(editGroup) editGroup.style.display = "none";
-    };
+            let status = action === 'DAPAT' ? 'AKTIF' : 'KURANG';
+            let ket = action === 'DAPAT' ? 'Ditarik via Target AQL' : '⚠️ Dilaporkan kurang dari mode Target AQL';
 
-    // ==========================================
-    // 4. SIMPAN & SINKRONISASI DATA
-    // ==========================================
-    document.getElementById('btnTambah').addEventListener('click', async () => {
-        const val = (id) => document.getElementById(id).value.toUpperCase().trim();
-        const tanggal = document.getElementById('tanggalInput').value; 
-        const jenis = document.getElementById('jenisInput').value; 
-        const so = val('soInput'), artikel = val('artikelInput'), lokasi = val('lokasiInput'), keterangan = val('keteranganInput');
-
-        if(!so || !artikel || !lokasi) return alert("Nomor SO, Artikel, dan Lokasi wajib diisi.");
-
-        let dataToPush = [], isErrorPartial = false;
-        document.querySelectorAll('.karton-item').forEach(item => {
-            const sizeInput = item.querySelector('.size-input').value.toUpperCase().trim();
-            let noKartonInput = item.querySelector('.nokarton-input').value.toUpperCase().trim();
-            if(noKartonInput && !noKartonInput.startsWith('#')) noKartonInput = '#' + noKartonInput;
-
-            if(sizeInput && noKartonInput) dataToPush.push({ size: sizeInput, noKarton: noKartonInput });
-            else if (sizeInput || noKartonInput) isErrorPartial = true; 
-        });
-
-        if(isErrorPartial) return alert("Terdapat baris isian yang belum lengkap.");
-        if(dataToPush.length === 0) return alert("Harap isi minimal 1 pasang Ukuran dan No. Karton!");
-
-        const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
-        const btnTambah = document.getElementById('btnTambah');
-        const textAsli = btnTambah.innerHTML;
-        btnTambah.innerHTML = "⏳ Mengirim & Menyinkronkan...";
-        btnTambah.style.pointerEvents = "none";
-        btnTambah.style.opacity = "0.7";
-
-        try {
-            if (window.currentEditId) {
-                if(dataToPush.length > 1) {
-                    alert("Mode Ubah hanya dapat menyimpan 1 karton.");
-                    return;
-                }
-                await update(ref(db, `stok_fg_wh/${window.currentEditId}`), {
-                    tanggal, so_number: so, jenis, artikel, size: dataToPush[0].size, nomor_karton: dataToPush[0].noKarton, lokasi, keterangan, diinput_oleh: userName 
+            try {
+                set(push(kartonRef), {
+                    tanggal: localISOTime, so_number: item.so, jenis: 'SOLID',
+                    artikel: item.artikel, size: item.size, nomor_karton: item.karton, lokasi: item.lokasi,
+                    keterangan: ket, status: status, diinput_oleh: userName, timestamp_in: serverTimestamp()
                 });
-                alert("Data berhasil diperbarui!");
-                window.batalEdit(); 
-                openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
-            } else {
-                let promises = dataToPush.map(kData => {
-                    return set(push(kartonRef), { 
-                        tanggal, so_number: so, jenis, artikel, size: kData.size, nomor_karton: kData.noKarton, lokasi, keterangan, status: "AKTIF", diinput_oleh: userName, timestamp_in: serverTimestamp()
-                    });
-                });
-                await Promise.all(promises);
 
-                let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
+                let syncPayload = [{ so: item.so, karton: item.karton, actionType: "UNCHECK" }];
                 let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                 fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-                alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
-                window.batalEdit(); 
-                openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                window.currentPickList.splice(index, 1);
+                renderPickList();
+            } catch(e) {
+                alert("Gagal memproses jaringan: " + e.message);
             }
-        } catch (err) {
-            alert("Terjadi kesalahan jaringan: " + err.message);
-        } finally {
-            btnTambah.innerHTML = textAsli;
-            btnTambah.style.pointerEvents = "auto";
-            btnTambah.style.opacity = "1";
         }
-    });
 
-    // ==========================================
-    // 5. MANAJEMEN AKSI & DATA KARTON
-    // ==========================================
-    window.hapusPermanen = async () => {
-        if(!window.currentEditId) return;
-        if(confirm("Pindahkan data ini ke Tong Sampah?")) {
-            const now = new Date();
-            const waktuHapus = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
-            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+
+        // =========================================================
+        // SCRIPT LAINNYA TETAP SEPERTI SEBELUMNYA
+        // =========================================================
+
+        document.getElementById('btnTarikSO').addEventListener('click', async () => {
+            const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
+            const statusDiv = document.getElementById('statusTarik');
+            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO terlebih dahulu.";
+
+            statusDiv.innerText = "⏳ Memuat data Stok...";
+            statusDiv.style.color = "var(--text-main)";
+
+            try {
+                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
+                const dataStok = await responseStok.json();
+
+                if(dataStok.error) {
+                    statusDiv.innerText = dataStok.error;
+                    statusDiv.style.color = "var(--primary)";
+                    return;
+                }
+                dataStokExcel = dataStok; 
+
+                if(dataStokExcel.length > 0) {
+                    document.getElementById('soInput').value = dataStokExcel[0].so || soTarget;
+                    document.getElementById('artikelInput').value = dataStokExcel[0].artikel || "";
+                } else {
+                    document.getElementById('soInput').value = soTarget; 
+                }
+
+                document.getElementById('lokasiInput').value = "";
+                statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat.`;
+                statusDiv.style.color = "var(--secondary)"; 
+            } catch (err) {
+                statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
+                statusDiv.style.color = 'var(--primary)';
+            }
+        });
+
+        document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
+            const statusDiv = document.getElementById('statusLokasi');
+            statusDiv.innerText = '⏳ Mengunduh data lokasi...';
+            statusDiv.style.color = 'var(--text-main)';
+            try {
+                const response = await fetch(URL_GAS_LOKASI);
+                dataLokasiExcel = await response.json();
+                if (!Array.isArray(dataLokasiExcel)) throw new Error("Format respons tidak valid.");
+
+                statusDiv.innerText = `✅ Berhasil memuat ${dataLokasiExcel.length} lokasi!`;
+                statusDiv.style.color = 'var(--secondary)'; 
+                renderDataLokasi();
+            } catch (error) {
+                statusDiv.innerText = '❌ Gagal terhubung ke Spreadsheet Lokasi.';
+                statusDiv.style.color = 'var(--primary)';
+            }
+        });
+
+        document.getElementById('filterCariLokasi').addEventListener('input', renderDataLokasi);
+
+        function renderDataLokasi() {
+            const grid = document.getElementById('gridLokasi');
+            const filter = document.getElementById('filterCariLokasi').value.toUpperCase().trim();
+            grid.innerHTML = '';
+
+            if(dataLokasiExcel.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Klik tombol Unduh di atas terlebih dahulu.</p>';
+            if(!filter) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Ketikkan nomor SO pada kolom pencarian 👆</p>';
+
+            let filtered = dataLokasiExcel.filter(d => (d.so || "").toUpperCase().includes(filter));
+            if (filtered.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--primary); grid-column: 1 / -1;">❌ SO tidak ditemukan.</p>';
+
+            filtered.forEach(d => {
+                grid.innerHTML += `
+                    <div class="lokasi-besar-card">
+                        <div>
+                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">SALES ORDER</div>
+                            <div style="font-weight: 900; font-size: 18px; color: var(--warning-text);">${d.so}</div>
+                        </div>
+                        <div>
+                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">LOKASI KARTON</div>
+                            <div style="font-size: 24px; font-weight: 900; color: var(--warning-text);">📍 ${d.lokasi}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        document.getElementById('btnCariListStok').addEventListener('click', async () => {
+            const soTarget = document.getElementById('inputCariListStok').value.toUpperCase().trim();
+            const statusDiv = document.getElementById('statusListStok');
+            const summaryContainer = document.getElementById('summaryStokContainer');
+            const grid = document.getElementById('gridListStok');
             
-            await update(ref(db, `stok_fg_wh/${window.currentEditId}`), { 
-                status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus 
-            }); 
-            alert("Data dipindah ke Tong Sampah!"); 
-            window.batalEdit(); 
-            openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
-        }
-    };
+            grid.innerHTML = '';
+            summaryContainer.innerHTML = '';
+            
+            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO.";
 
-    window.hapusSemuaSO = async (e, soTarget, statusFilter) => {
-        e.stopPropagation();
-        const dataToDelete = rawData.filter(d => (d.so_number || "").toUpperCase() === soTarget && d.status === statusFilter);
-        if(dataToDelete.length === 0) return alert('Data tidak ditemukan.');
-        if (!confirm(`⚠️ Pindahkan ${dataToDelete.length} karton untuk SO ${soTarget} ke Tong Sampah?`)) return;
+            statusDiv.innerText = "⏳ Mencari data stok & lokasi SO " + soTarget + "...";
+            statusDiv.style.color = "var(--text-main)";
+
+            try {
+                const responseStok = await fetch(URL_GAS_STOK + "?so=" + encodeURIComponent(soTarget));
+                const data = await responseStok.json();
+
+                if(dataLokasiExcel.length === 0) {
+                    try {
+                        const responseLokasi = await fetch(URL_GAS_LOKASI);
+                        dataLokasiExcel = await responseLokasi.json();
+                    } catch(e) {}
+                }
+
+                if(data.error) {
+                    statusDiv.innerText = data.error;
+                    statusDiv.style.color = "var(--primary)";
+                } else if(data.length === 0) {
+                    statusDiv.innerText = "❌ Tidak ada karton yang ditandai untuk SO ini di Spreadsheet.";
+                    statusDiv.style.color = "var(--primary)";
+                } else {
+                    statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input AQL manual.`;
+                    statusDiv.style.color = "var(--secondary)"; 
+                    
+                    let lokasiSO = "TIDAK DITEMUKAN";
+                    if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
+                        let matchLoc = dataLokasiExcel.find(l => {
+                            let lSo = (l.so || "").toString().toUpperCase().trim();
+                            return lSo === soTarget || lSo.includes(soTarget) || soTarget.includes(lSo);
+                        });
+                        if(matchLoc && matchLoc.lokasi) lokasiSO = matchLoc.lokasi;
+                    }
+
+                    data.forEach(d => { d.lokasi = lokasiSO; });
+                    
+                    window.lastFetchedStok = data;
+                    window.selectedStokKarton.clear();
+                    updateBulkStokUI();
+                    
+                    summaryContainer.innerHTML = `
+                        <div class="summary-panel">
+                            <h2>${data.length}</h2>
+                            <span style="display:block; margin-bottom:8px;">KARTON TERSEDIA DI SPREADSHEET</span>
+                            <span style="font-size:15px; color:var(--primary); background:var(--danger-bg); padding:6px 14px; border-radius:12px; display:inline-block; border:1px solid var(--danger-text);">SO: <b>${soTarget}</b></span>
+                        </div>
+                    `;
+                    
+                    data.forEach(d => {
+                        let isChecked = window.selectedStokKarton.has(d.karton) ? 'checked' : '';
+                        
+                        grid.innerHTML += `
+                            <div class="premium-card">
+                                <div class="card-top">
+                                    <div class="card-so-wrap">
+                                        <input type="checkbox" class="chk-select-stok" value="${d.karton}" onchange="toggleSelectStok(this)" ${isChecked}>
+                                        <span class="card-so" style="font-size:16px;">${d.so}</span>
+                                    </div>
+                                </div>
+                                <div class="card-mid" style="justify-content:center; padding:15px;">
+                                    <span class="card-size" style="font-size:24px;">${d.size}</span>
+                                </div>
+                                <div class="card-info-grid">
+                                    <div class="info-col">
+                                        <span class="lbl-sm">NO KARTON</span>
+                                        <span class="val-md">${d.karton}</span>
+                                    </div>
+                                    <div class="info-col" style="text-align:right;">
+                                        <span class="lbl-sm">LOKASI KARTON</span>
+                                        <span class="val-loc">${d.lokasi}</span>
+                                    </div>
+                                </div>
+                                <div class="card-artikel">${d.artikel}</div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                statusDiv.innerText = "❌ Gagal terhubung ke server!";
+                statusDiv.style.color = "var(--primary)";
+            }
+        });
+
+        window.toggleSelectStok = (cb) => {
+            cb.checked ? window.selectedStokKarton.add(cb.value) : window.selectedStokKarton.delete(cb.value);
+            updateBulkStokUI();
+        }
+
+        window.updateBulkStokUI = () => {
+            const bar = document.getElementById('bulkActionStokBar');
+            if (window.selectedStokKarton.size > 0 && document.getElementById('tabListStok').classList.contains('active')) {
+                bar.style.display = 'flex';
+                document.getElementById('bulkStokCount').innerText = `${window.selectedStokKarton.size} Terpilih`;
+            } else {
+                bar.style.display = 'none';
+            }
+        }
+
+        window.pindahkanKeInput = () => {
+            if(window.selectedStokKarton.size === 0) return;
+            let selectedData = window.lastFetchedStok.filter(d => window.selectedStokKarton.has(d.karton));
+            if(selectedData.length === 0) return;
+
+            if(window.currentEditId) batalEdit();
+
+            document.getElementById('soInput').value = selectedData[0].so || '';
+            document.getElementById('artikelInput').value = selectedData[0].artikel || '';
+            if(selectedData[0].lokasi && selectedData[0].lokasi !== "TIDAK DITEMUKAN") {
+                document.getElementById('lokasiInput').value = selectedData[0].lokasi;
+            } else {
+                document.getElementById('lokasiInput').value = '';
+            }
+            
+            const list = document.getElementById('kartonList');
+            list.innerHTML = ''; 
+
+            selectedData.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'form-row karton-item';
+                row.style.marginBottom = '12px';
+                row.innerHTML = `
+                    <input type="text" class="form-input size-input" value="${d.size}" placeholder="Ukuran">
+                    <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${d.karton}" placeholder="No. Karton">
+                    <button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>
+                `;
+                list.appendChild(row);
+            });
+            
+            applyUppercaseListener(); 
+            applyKartonFormatListener();
+            window.selectedStokKarton.clear();
+            updateBulkStokUI();
+            document.querySelectorAll('.chk-select-stok').forEach(cb => cb.checked = false);
+            openTab('tabInput', document.getElementById('btnTabInput'));
+        }
+
+        window.tandaiKurang = async () => {
+            if(window.selectedStokKarton.size === 0) return;
+            let selectedData = window.lastFetchedStok.filter(d => window.selectedStokKarton.has(d.karton));
+            if(selectedData.length === 0) return;
+
+            if(!confirm(`Lapor ${selectedData.length} karton ini sebagai KEKURANGAN (Hilang / Belum Turun dari Produksi)?`)) return;
+
+            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+
+            let promises = selectedData.map(d => {
+                return set(push(kartonRef), {
+                    tanggal: localISOTime, so_number: d.so, jenis: 'SOLID',
+                    artikel: d.artikel, size: d.size, nomor_karton: d.karton, lokasi: d.lokasi,
+                    keterangan: "⚠️ Dilaporkan kurang saat pengambilan fisik", status: "KURANG", diinput_oleh: userName, timestamp_in: serverTimestamp()
+                });
+            });
+            await Promise.all(promises);
+
+            let syncPayload = selectedData.map(k => ({ so: k.so, karton: k.karton, actionType: "UNCHECK" }));
+            let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+            fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
+
+            window.selectedStokKarton.clear(); 
+            updateBulkStokUI();
+            document.querySelectorAll('.chk-select-stok').forEach(cb => cb.checked = false);
+            
+            alert("Berhasil dicatat sebagai Kekurangan AQL!");
+            openTab('tabKurang', document.getElementById('btnTabKurang'));
+        }
+
+        function applyUppercaseListener() {
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                if(!input.hasAttribute('data-upper')) {
+                    input.setAttribute('data-upper', 'true');
+                    input.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+                }
+            });
+        }
         
-        const now = new Date();
-        const waktuHapus = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
-        const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
-
-        for(let item of dataToDelete) {
-            await update(ref(db, `stok_fg_wh/${item.id}`), { status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus });
+        function applyKartonFormatListener() {
+            document.querySelectorAll('.nokarton-input').forEach(input => {
+                if(!input.hasAttribute('data-format')) {
+                    input.setAttribute('data-format', 'true');
+                    input.addEventListener('input', function() { 
+                        this.value = this.value.replace(/[^0-9#]/g, ''); 
+                        let val = this.value.trim();
+                        if(val !== '' && !val.startsWith('#')) val = '#' + val;
+                    });
+                    input.addEventListener('blur', function() {
+                        let val = this.value.trim();
+                        if(val !== '' && !val.startsWith('#')) this.value = '#' + val;
+                    });
+                }
+            });
         }
-        alert(`Sukses! ${dataToDelete.length} karton dipindah ke Tong Sampah.`);
-        renderData();
-    }
 
-    window.hapusTerpilih = async () => {
-        if(confirm(`Pindahkan ${window.selectedIds.size} kardus yang dipilih ke Tong Sampah?`)) {
+        applyUppercaseListener(); applyKartonFormatListener();
+
+        document.getElementById('btnTambahBaris').addEventListener('click', () => {
+            const list = document.getElementById('kartonList');
+            const row = document.createElement('div');
+            row.className = 'form-row karton-item';
+            row.style.marginBottom = '12px';
+            row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
+            list.appendChild(row);
+            applyUppercaseListener(); applyKartonFormatListener();
+        });
+
+        window.hapusBaris = (btn) => btn.parentElement.remove();
+
+        window.batalEdit = () => {
+            window.currentEditId = null; 
+            const btnTbh = document.getElementById('btnTambah');
+            btnTbh.innerHTML = "Simpan Data Stok"; 
+            document.getElementById('editActionGroup').style.display = "none";
+            document.getElementById('btnTambahBaris').style.display = "block"; 
+            document.getElementById('tanggalInput').valueAsDate = new Date();
+            ['soInput','artikelInput','lokasiInput','keteranganInput'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('jenisInput').value = 'SOLID'; 
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
+            applyUppercaseListener(); applyKartonFormatListener();
+        }
+
+        window.toggleDropdown = (headerEl) => {
+            const grid = headerEl.nextElementSibling;
+            const icon = headerEl.querySelector('.toggle-icon');
+            if (grid.style.display === 'none') {
+                grid.style.display = 'grid'; 
+                icon.innerText = '▼';
+            } else {
+                grid.style.display = 'none'; 
+                icon.innerText = '▶';
+            }
+        };
+
+        window.openTab = (tabName, elmnt) => {
+            if(tabName !== 'tabInput' && window.currentEditId !== null) batalEdit();
+            window.selectedIds.clear();
+            
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            elmnt.classList.add('active');
+            
+            if(tabName !== 'tabAktif' && tabName !== 'tabRiwayat' && tabName !== 'tabSampah') {
+                document.getElementById('bulkActionBar').style.display = 'none';
+            } else {
+                updateBulkDeleteUI();
+            }
+
+            if(tabName !== 'tabListStok') {
+                document.getElementById('bulkActionStokBar').style.display = 'none';
+            } else {
+                updateBulkStokUI();
+            }
+            
+            if (tabName === 'tabAktif' || tabName === 'tabRiwayat' || tabName === 'tabSampah' || tabName === 'tabKurang') renderData();
+        }
+
+        document.getElementById('btnTambah').addEventListener('click', async () => {
+            const val = (id) => document.getElementById(id).value.toUpperCase().trim();
+            const tanggal = document.getElementById('tanggalInput').value; 
+            const jenis = document.getElementById('jenisInput').value; 
+            const so = val('soInput'), artikel = val('artikelInput'), lokasi = val('lokasiInput'), keterangan = val('keteranganInput');
+
+            if(!so || !artikel || !lokasi) return alert("Nomor SO, Artikel, dan Lokasi wajib diisi.");
+
+            let dataToPush = [], isErrorPartial = false;
+            document.querySelectorAll('.karton-item').forEach(item => {
+                const sizeInput = item.querySelector('.size-input').value.toUpperCase().trim();
+                let noKartonInput = item.querySelector('.nokarton-input').value.toUpperCase().trim();
+                if(noKartonInput && !noKartonInput.startsWith('#')) noKartonInput = '#' + noKartonInput;
+
+                if(sizeInput && noKartonInput) dataToPush.push({ size: sizeInput, noKarton: noKartonInput });
+                else if (sizeInput || noKartonInput) isErrorPartial = true; 
+            });
+
+            if(isErrorPartial) return alert("Terdapat baris isian yang belum lengkap.");
+            if(dataToPush.length === 0) return alert("Harap isi minimal 1 pasang Ukuran dan No. Karton!");
+
+            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+            const btnTambah = document.getElementById('btnTambah');
+            const textAsli = btnTambah.innerHTML;
+            btnTambah.innerHTML = "⏳ Mengirim & Menyinkronkan...";
+            btnTambah.style.pointerEvents = "none";
+            btnTambah.style.opacity = "0.7";
+
+            try {
+                if (window.currentEditId) {
+                    if(dataToPush.length > 1) {
+                        alert("Mode Ubah hanya dapat menyimpan 1 karton.");
+                        return;
+                    }
+                    await update(ref(db, `stok_fg_wh/${window.currentEditId}`), {
+                        tanggal, so_number: so, jenis, artikel, size: dataToPush[0].size, nomor_karton: dataToPush[0].noKarton, lokasi, keterangan, diinput_oleh: userName 
+                    });
+                    alert("Data berhasil diperbarui!");
+                    batalEdit(); 
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                } else {
+                    let promises = dataToPush.map(kData => {
+                        return set(push(kartonRef), { 
+                            tanggal, so_number: so, jenis, artikel, size: kData.size, nomor_karton: kData.noKarton, lokasi, keterangan, status: "AKTIF", diinput_oleh: userName, timestamp_in: serverTimestamp()
+                        });
+                    });
+                    await Promise.all(promises);
+
+                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
+
+                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
+                    batalEdit(); 
+                    openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+                }
+            } catch (err) {
+                alert("Terjadi kesalahan jaringan: " + err.message);
+            } finally {
+                btnTambah.innerHTML = textAsli;
+                btnTambah.style.pointerEvents = "auto";
+                btnTambah.style.opacity = "1";
+            }
+        });
+
+        window.hapusPermanen = async () => {
+            if(!window.currentEditId) return;
+            if(confirm("Pindahkan data ini ke Tong Sampah?")) {
+                const now = new Date();
+                const waktuHapus = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
+                const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+                
+                await update(ref(db, `stok_fg_wh/${window.currentEditId}`), { 
+                    status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus 
+                }); 
+                alert("Data dipindah ke Tong Sampah!"); batalEdit(); openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
+            }
+        };
+
+        window.hapusSemuaSO = async (e, soTarget, statusFilter) => {
+            e.stopPropagation();
+            const dataToDelete = rawData.filter(d => (d.so_number || "").toUpperCase() === soTarget && d.status === statusFilter);
+            if(dataToDelete.length === 0) return alert('Data tidak ditemukan.');
+            if (!confirm(`⚠️ Pindahkan ${dataToDelete.length} karton untuk SO ${soTarget} ke Tong Sampah?`)) return;
+            
             const now = new Date();
             const waktuHapus = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
             const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
 
-            for (let id of window.selectedIds) { 
-                await update(ref(db, `stok_fg_wh/${id}`), { status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus }); 
+            for(let item of dataToDelete) {
+                await update(ref(db, `stok_fg_wh/${item.id}`), { status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus });
             }
-            window.selectedIds.clear(); window.updateBulkDeleteUI(); alert("Berhasil dipindahkan ke Tong Sampah.");
-        }
-    }
-
-    window.pulihkanData = async (id) => {
-        if(confirm("Pulihkan karton ini kembali ke Stok Aktif?")) {
-            await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", deleted_by: null, waktu_hapus: null });
-            alert("Karton berhasil dipulihkan!");
-        }
-    };
-
-    window.musnahkanData = async (id) => {
-        if(confirm("⚠️ PERINGATAN!\nHapus data ini dari Database Server untuk selamanya?")) {
-            await remove(ref(db, `stok_fg_wh/${id}`));
-            alert("Data berhasil dimusnahkan.");
-        }
-    };
-
-    window.pulihkanTerpilih = async () => {
-        if(confirm(`Pulihkan ${window.selectedIds.size} kardus kembali ke Stok Aktif?`)) {
-            for (let id of window.selectedIds) { 
-                await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", deleted_by: null, waktu_hapus: null }); 
-            }
-            window.selectedIds.clear(); window.updateBulkDeleteUI(); alert("Berhasil dipulihkan.");
-        }
-    };
-
-    window.musnahkanTerpilih = async () => {
-        if(confirm(`⚠️ PERINGATAN!\nMusnahkan ${window.selectedIds.size} kardus ini selamanya?`)) {
-            for (let id of window.selectedIds) { await remove(ref(db, `stok_fg_wh/${id}`)); }
-            window.selectedIds.clear(); window.updateBulkDeleteUI(); alert("Data berhasil dimusnahkan.");
-        }
-    };
-
-    window.ditemukanData = async (id) => {
-        if(confirm("Karton ini sudah ditemukan dan akan dimasukkan ke Stok Aktif?")) {
-            await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", keterangan: "✅ Ditemukan setelah dilaporkan kurang." });
-            alert("Mantap! Karton masuk ke Stok Aktif.");
-        }
-    }
-
-    window.hapusPermanenLangsung = async (id) => {
-        if(confirm("Hapus catatan kekurangan ini secara permanen dari sistem?")) {
-            await remove(ref(db, `stok_fg_wh/${id}`));
-        }
-    }
-
-    window.editSemuanya = (id) => {
-        let item = rawData.find(d => d.id === id);
-        if(!item) return;
-        document.getElementById('tanggalInput').value = item.tanggal;
-        document.getElementById('soInput').value = item.so_number;
-        document.getElementById('jenisInput').value = item.jenis || 'SOLID'; 
-        document.getElementById('artikelInput').value = item.artikel;
-        document.getElementById('lokasiInput').value = item.lokasi;
-        document.getElementById('keteranganInput').value = item.keterangan || '';
-        document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" value="${item.size}"><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
-        
-        document.querySelectorAll('input[type="text"]').forEach(input => {
-            if(!input.hasAttribute('data-upper')) {
-                input.setAttribute('data-upper', 'true');
-                input.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-            }
-        });
-        document.querySelectorAll('.nokarton-input').forEach(input => {
-            if(!input.hasAttribute('data-format')) {
-                input.setAttribute('data-format', 'true');
-                input.addEventListener('input', function() { 
-                    this.value = this.value.replace(/[^0-9#]/g, ''); 
-                    let val = this.value.trim();
-                    if(val !== '' && !val.startsWith('#')) val = '#' + val;
-                });
-                input.addEventListener('blur', function() {
-                    let val = this.value.trim();
-                    if(val !== '' && !val.startsWith('#')) this.value = '#' + val;
-                });
-            }
-        });
-
-        window.currentEditId = id;
-        document.getElementById('btnTambah').innerHTML = "Perbarui Data";
-        document.getElementById('btnTambahBaris').style.display = "none";
-        document.getElementById('editActionGroup').style.display = "flex";
-        
-        let tabInputBtn = document.getElementById('btnTabInput');
-        if(!tabInputBtn) tabInputBtn = document.querySelector('[onclick="openTab(\'tabInput\', this)"]');
-        openTab('tabInput', tabInputBtn);
-    }
-
-    // ==========================================
-    // 6. FIREBASE LISTENER & UI RENDERER
-    // ==========================================
-    onValue(kartonRef, (snapshot) => {
-        rawData = [];
-        snapshot.forEach((child) => {
-            let data = child.val(); data.id = child.key;
-            let sizeStr = (data.size || "").toString().toUpperCase();
-            data.sizeValue = parseFloat(sizeStr.replace('T', '.5')) || 0; 
-            rawData.push(data);
-        });
-        if(document.getElementById('tabAktif').classList.contains('active') || 
-           document.getElementById('tabRiwayat').classList.contains('active') ||
-           document.getElementById('tabSampah').classList.contains('active') ||
-           document.getElementById('tabKurang').classList.contains('active')) {
+            alert(`Sukses! ${dataToDelete.length} karton dipindah ke Tong Sampah.`);
             renderData();
         }
-    });
 
-    window.toggleSelect = (cb) => {
-        cb.checked ? window.selectedIds.add(cb.value) : window.selectedIds.delete(cb.value);
-        window.updateBulkDeleteUI();
-    }
+        window.hapusTerpilih = async () => {
+            if(confirm(`Pindahkan ${window.selectedIds.size} kardus yang dipilih ke Tong Sampah?`)) {
+                const now = new Date();
+                const waktuHapus = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
+                const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
 
-    window.updateBulkDeleteUI = () => {
-        const bar = document.getElementById('bulkActionBar');
-        if(!bar) return;
-        
-        const isTabSampah = document.getElementById('tabSampah').classList.contains('active');
-        const isTabAktif = document.getElementById('tabAktif').classList.contains('active');
-        const isTabRiwayat = document.getElementById('tabRiwayat').classList.contains('active');
-
-        if (window.selectedIds.size > 0 && (isTabAktif || isTabRiwayat || isTabSampah)) {
-            bar.style.display = 'flex';
-            document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Dipilih`;
-            
-            if (isTabSampah) {
-                document.getElementById('btnBulkOut').style.display = 'none';
-                document.getElementById('btnBulkDel').style.display = 'none';
-                document.getElementById('btnBulkRestore').style.display = 'block';
-                document.getElementById('btnBulkDestroy').style.display = 'block';
-            } else {
-                document.getElementById('btnBulkRestore').style.display = 'none';
-                document.getElementById('btnBulkDestroy').style.display = 'none';
-                document.getElementById('btnBulkDel').style.display = 'block';
-                document.getElementById('btnBulkOut').style.display = isTabRiwayat ? 'none' : 'block';
+                for (let id of window.selectedIds) { 
+                    await update(ref(db, `stok_fg_wh/${id}`), { status: "DELETED", deleted_by: userName, waktu_hapus: waktuHapus }); 
+                }
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dipindahkan ke Tong Sampah.");
             }
-        } else {
-            bar.style.display = 'none';
         }
-    }
 
-    window.outTerpilih = async () => {
-        if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
-            let syncPayload = []; 
-            for (let id of window.selectedIds) {
+        window.pulihkanData = async (id) => {
+            if(confirm("Pulihkan karton ini kembali ke Stok Aktif?")) {
+                await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", deleted_by: null, waktu_hapus: null });
+                alert("Karton berhasil dipulihkan!");
+            }
+        };
+
+        window.musnahkanData = async (id) => {
+            if(confirm("⚠️ PERINGATAN!\nHapus data ini dari Database Server untuk selamanya?")) {
+                await remove(ref(db, `stok_fg_wh/${id}`));
+                alert("Data berhasil dimusnahkan.");
+            }
+        };
+
+        window.pulihkanTerpilih = async () => {
+            if(confirm(`Pulihkan ${window.selectedIds.size} kardus kembali ke Stok Aktif?`)) {
+                for (let id of window.selectedIds) { 
+                    await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", deleted_by: null, waktu_hapus: null }); 
+                }
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dipulihkan.");
+            }
+        };
+
+        window.musnahkanTerpilih = async () => {
+            if(confirm(`⚠️ PERINGATAN!\nMusnahkan ${window.selectedIds.size} kardus ini selamanya?`)) {
+                for (let id of window.selectedIds) { await remove(ref(db, `stok_fg_wh/${id}`)); }
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Data berhasil dimusnahkan.");
+            }
+        };
+
+        window.ditemukanData = async (id) => {
+            if(confirm("Karton ini sudah ditemukan dan akan dimasukkan ke Stok Aktif?")) {
+                await update(ref(db, `stok_fg_wh/${id}`), { status: "AKTIF", keterangan: "✅ Ditemukan setelah dilaporkan kurang." });
+                alert("Mantap! Karton masuk ke Stok Aktif.");
+            }
+        }
+
+        window.hapusPermanenLangsung = async (id) => {
+            if(confirm("Hapus catatan kekurangan ini secara permanen dari sistem?")) {
+                await remove(ref(db, `stok_fg_wh/${id}`));
+            }
+        }
+
+        window.editSemuanya = (id) => {
+            let item = rawData.find(d => d.id === id);
+            if(!item) return;
+            document.getElementById('tanggalInput').value = item.tanggal;
+            document.getElementById('soInput').value = item.so_number;
+            document.getElementById('jenisInput').value = item.jenis || 'SOLID'; 
+            document.getElementById('artikelInput').value = item.artikel;
+            document.getElementById('lokasiInput').value = item.lokasi;
+            document.getElementById('keteranganInput').value = item.keterangan || '';
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" value="${item.size}"><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
+            applyUppercaseListener(); applyKartonFormatListener();
+            window.currentEditId = id;
+            document.getElementById('btnTambah').innerHTML = "Perbarui Data";
+            document.getElementById('btnTambahBaris').style.display = "none";
+            document.getElementById('editActionGroup').style.display = "flex";
+            openTab('tabInput', document.getElementById('btnTabInput'));
+        }
+
+        onValue(kartonRef, (snapshot) => {
+            rawData = [];
+            snapshot.forEach((child) => {
+                let data = child.val(); data.id = child.key;
+                let sizeStr = (data.size || "").toString().toUpperCase();
+                data.sizeValue = parseFloat(sizeStr.replace('T', '.5')) || 0; 
+                rawData.push(data);
+            });
+            if(document.getElementById('tabAktif').classList.contains('active') || 
+               document.getElementById('tabRiwayat').classList.contains('active') ||
+               document.getElementById('tabSampah').classList.contains('active') ||
+               document.getElementById('tabKurang').classList.contains('active')) {
+                renderData();
+            }
+        });
+
+        window.toggleSelect = (cb) => {
+            cb.checked ? window.selectedIds.add(cb.value) : window.selectedIds.delete(cb.value);
+            updateBulkDeleteUI();
+        }
+
+        window.updateBulkDeleteUI = () => {
+            const bar = document.getElementById('bulkActionBar');
+            const isTabSampah = document.getElementById('tabSampah').classList.contains('active');
+            const isTabAktif = document.getElementById('tabAktif').classList.contains('active');
+            const isTabRiwayat = document.getElementById('tabRiwayat').classList.contains('active');
+
+            if (window.selectedIds.size > 0 && (isTabAktif || isTabRiwayat || isTabSampah)) {
+                bar.style.display = 'flex';
+                document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Dipilih`;
+                
+                if (isTabSampah) {
+                    document.getElementById('btnBulkOut').style.display = 'none';
+                    document.getElementById('btnBulkDel').style.display = 'none';
+                    document.getElementById('btnBulkRestore').style.display = 'block';
+                    document.getElementById('btnBulkDestroy').style.display = 'block';
+                } else {
+                    document.getElementById('btnBulkRestore').style.display = 'none';
+                    document.getElementById('btnBulkDestroy').style.display = 'none';
+                    document.getElementById('btnBulkDel').style.display = 'block';
+                    document.getElementById('btnBulkOut').style.display = isTabRiwayat ? 'none' : 'block';
+                }
+            } else {
+                bar.style.display = 'none';
+            }
+        }
+
+        window.outTerpilih = async () => {
+            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
+                let syncPayload = []; 
+                for (let id of window.selectedIds) {
+                    let itemData = rawData.find(d => d.id === id);
+                    if(itemData) {
+                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
+                    }
+                    let tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                    let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+                    await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() });
+                }
+                if(syncPayload.length > 0) {
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
+                }
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
+            }
+        }
+
+        function renderData() {
+            const gridAktif = document.getElementById('gridKartonAktif');
+            const gridRiwayat = document.getElementById('gridRiwayatOut');
+            const gridSampah = document.getElementById('gridKartonSampah');
+            const gridKurang = document.getElementById('gridKartonKurang');
+            
+            const fAktif = document.getElementById('filterSOAktif').value.toUpperCase().trim();
+            const fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase().trim();
+            const fSampah = document.getElementById('filterSOSampah') ? document.getElementById('filterSOSampah').value.toUpperCase().trim() : '';
+            const fKurang = document.getElementById('filterSOKurang') ? document.getElementById('filterSOKurang').value.toUpperCase().trim() : '';
+            const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat').value;
+            
+            gridAktif.innerHTML = ''; gridRiwayat.innerHTML = ''; 
+            if(gridSampah) gridSampah.innerHTML = '';
+            if(gridKurang) gridKurang.innerHTML = '';
+
+            let dataAktif = rawData.filter(d => {
+                if (d.status !== "AKTIF") return false;
+                if (!fAktif) return true;
+                return (d.so_number || "").toUpperCase().includes(fAktif) || 
+                       (d.artikel || "").toUpperCase().includes(fAktif) || 
+                       (d.diinput_oleh || "").toUpperCase().includes(fAktif) || 
+                       (d.keterangan || "").toUpperCase().includes(fAktif);
+            });
+
+            let dataOut = rawData.filter(d => {
+                if (d.status !== "OUT") return false;
+                let tglLokal = "";
+                if (d.tanggal_out) {
+                    let [y, m, day] = d.tanggal_out.split('-');
+                    if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('id-ID').toUpperCase();
+                }
+                let matchText = true;
+                if(fRiwayat) {
+                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || 
+                                (d.artikel || "").toUpperCase().includes(fRiwayat) || 
+                                (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || 
+                                (d.keterangan || "").toUpperCase().includes(fRiwayat) || 
+                                tglLokal.includes(fRiwayat); 
+                }
+                let matchKalender = true;
+                if(fTglRiwayatInput) matchKalender = (d.tanggal_out === fTglRiwayatInput);
+                return matchText && matchKalender; 
+            });
+
+            let dataSampah = rawData.filter(d => {
+                if (d.status !== "DELETED") return false;
+                if (!fSampah) return true;
+                return (d.so_number || "").toUpperCase().includes(fSampah) || 
+                       (d.artikel || "").toUpperCase().includes(fSampah) || 
+                       (d.deleted_by || "").toUpperCase().includes(fSampah) || 
+                       (d.keterangan || "").toUpperCase().includes(fSampah);
+            });
+
+            let dataKurang = rawData.filter(d => {
+                if (d.status !== "KURANG") return false;
+                if (!fKurang) return true;
+                return (d.so_number || "").toUpperCase().includes(fKurang) || 
+                       (d.artikel || "").toUpperCase().includes(fKurang) || 
+                       (d.diinput_oleh || "").toUpperCase().includes(fKurang) || 
+                       (d.keterangan || "").toUpperCase().includes(fKurang);
+            });
+
+            let soArtikelMap = {};
+            rawData.filter(d => d.status === "AKTIF").forEach(d => {
+                let so = (d.so_number || "").toUpperCase(), art = (d.artikel || "").toUpperCase();
+                if (!soArtikelMap[so]) soArtikelMap[so] = new Set();
+                if (art) soArtikelMap[so].add(art);
+            });
+
+            const sorter = (a, b) => {
+                let soA = (a.so_number || "").toString();
+                let soB = (b.so_number || "").toString();
+                if (soA !== soB) return soA.localeCompare(soB);
+                if (a.sizeValue !== b.sizeValue) return (a.sizeValue || 0) - (b.sizeValue || 0);
+                let kA = (a.nomor_karton || "").toString();
+                let kB = (b.nomor_karton || "").toString();
+                return kA.localeCompare(kB);
+            };
+            dataAktif.sort(sorter); dataOut.sort(sorter); dataSampah.sort(sorter); dataKurang.sort(sorter);
+
+            function buildPivotHTML(dataArray, tabType) {
+                if (dataArray.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
+                let groupedBySOArt = {};
+                dataArray.forEach(d => {
+                    let so = (d.so_number || "TANPA SO").toUpperCase(), art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
+                    let key = so + "|||" + art; 
+                    if (!groupedBySOArt[key]) groupedBySOArt[key] = { so: so, art: art, items: [] };
+                    groupedBySOArt[key].items.push(d);
+                });
+
+                let htmlOutput = '';
+                Object.keys(groupedBySOArt).sort().forEach(key => {
+                    let group = groupedBySOArt[key];
+                    let btnHapusSO = (tabType !== 'DELETED' && tabType !== 'KURANG') ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
+
+                    htmlOutput += `
+                        <div class="pivot-group-header" onclick="toggleDropdown(this)">
+                            <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
+                                <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">
+                                    📦 <b style="color:var(--primary);">${group.so}</b> 
+                                    <span style="color:var(--text-muted); font-weight:700; margin-left:4px;">| ${group.art}</span>
+                                </span>
+                            </div>
+                            <div style="display:flex; align-items:center; flex-shrink: 0;">
+                                <span class="pivot-count">${group.items.length} Karton</span>
+                                ${btnHapusSO}
+                            </div>
+                        </div>
+                        <div class="premium-grid">
+                    `;
+                    
+                    group.items.forEach(data => {
+                        let htmlKeterangan = data.keterangan ? `<div class="ket-text">📝 ${data.keterangan}</div>` : '';
+                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
+                        let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
+                        let isMultiArtikel = tabType === 'AKTIF' && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
+                        let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
+
+                        let tglTampil = data.tanggal;
+                        if (tabType === 'OUT') {
+                            tglTampil = data.tanggal_out;
+                            if (tglTampil && tglTampil.includes('-')) {
+                                let [y, m, d] = tglTampil.split('-');
+                                tglTampil = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                            }
+                        }
+
+                        let cardClass = 'premium-card';
+                        if (tabType === 'DELETED') cardClass += ' deleted';
+                        if (tabType === 'KURANG') cardClass += ' missing';
+
+                        let auditHtml = tabType === 'DELETED' ? `
+                            <div class="alert-audit">
+                                <span>🗑️ <b>Terhapus Oleh:</b> ${data.deleted_by || 'Sistem'}</span>
+                                <span>⏳ <b>Waktu:</b> ${data.waktu_hapus || 'Tidak Diketahui'}</span>
+                            </div>` : '';
+
+                        let actionHtml = '';
+                        if (tabType === 'AKTIF') {
+                            actionHtml = `
+                                <div class="action-row">
+                                    <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
+                                    <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
+                                </div>`;
+                        } else if (tabType === 'DELETED') {
+                            actionHtml = `
+                                <div class="action-row">
+                                    <button class="btn-restore" onclick="pulihkanData('${data.id}')">♻️ PULIHKAN</button>
+                                    <button class="btn-out" onclick="musnahkanData('${data.id}')">❌ MUSNAHKAN</button>
+                                </div>`;
+                        } else if (tabType === 'KURANG') {
+                            actionHtml = `
+                                <div class="action-row">
+                                    <button class="btn-restore" onclick="ditemukanData('${data.id}')">✅ DITEMUKAN</button>
+                                    <button class="btn-out" onclick="hapusPermanenLangsung('${data.id}')">❌ BATAL</button>
+                                </div>`;
+                        }
+
+                        let chkHtml = (tabType !== 'KURANG') ? `<input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>` : '';
+
+                        htmlOutput += `
+                            <div class="${cardClass}">
+                                ${auditHtml}
+                                ${htmlPeringatanMulti}
+                                
+                                <div class="card-top">
+                                    <div class="card-so-wrap">
+                                        ${chkHtml}
+                                        <span class="card-so">${data.so_number}</span>
+                                    </div>
+                                    ${badgeJenis}
+                                </div>
+
+                                <div class="card-mid">
+                                    <span class="card-size">${data.size}</span>
+                                    <span class="card-date">${tabType === 'OUT' ? 'KELUAR : ' : ''}${tglTampil}</span>
+                                </div>
+                                
+                                <div class="card-info-grid">
+                                    <div class="info-col">
+                                        <span class="lbl-sm">NO KARTON</span>
+                                        <span class="val-md">${data.nomor_karton}</span>
+                                    </div>
+                                    <div class="info-col" style="text-align: right;">
+                                        <span class="lbl-sm">LOKASI</span>
+                                        <span class="val-loc">${data.lokasi}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-artikel">${data.artikel}</div>
+                                
+                                ${htmlKeterangan}
+                                
+                                <div class="card-footer">
+                                    <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                                </div>
+                                
+                                ${actionHtml}
+                            </div>
+                        `;
+                    });
+                    htmlOutput += `</div>`; 
+                });
+                return htmlOutput;
+            }
+
+            gridAktif.innerHTML = buildPivotHTML(dataAktif, 'AKTIF');
+            gridRiwayat.innerHTML = buildPivotHTML(dataOut, 'OUT');
+            if(gridSampah) gridSampah.innerHTML = buildPivotHTML(dataSampah, 'DELETED');
+            if(gridKurang) gridKurang.innerHTML = buildPivotHTML(dataKurang, 'KURANG');
+            
+            updateBulkDeleteUI();
+        }
+
+        document.getElementById('filterSOAktif').addEventListener('input', renderData);
+        document.getElementById('filterSORiwayat').addEventListener('input', renderData);
+        if(document.getElementById('filterSOSampah')) document.getElementById('filterSOSampah').addEventListener('input', renderData);
+        if(document.getElementById('filterSOKurang')) document.getElementById('filterSOKurang').addEventListener('input', renderData);
+        document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
+
+        window.pindahKeRiwayat = async (id) => {
+            if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
-                    syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
+                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                 let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
-                await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() });
+                await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() }); 
             }
-            if(syncPayload.length > 0) {
-                let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
-                fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
-            }
-            window.selectedIds.clear(); window.updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
-        }
-    }
-
-    function renderData() {
-        const gridAktif = document.getElementById('gridKartonAktif');
-        const gridRiwayat = document.getElementById('gridRiwayatOut');
-        const gridSampah = document.getElementById('gridKartonSampah');
-        const gridKurang = document.getElementById('gridKartonKurang');
-        
-        const fAktif = document.getElementById('filterSOAktif') ? document.getElementById('filterSOAktif').value.toUpperCase().trim() : '';
-        const fRiwayat = document.getElementById('filterSORiwayat') ? document.getElementById('filterSORiwayat').value.toUpperCase().trim() : '';
-        const fSampah = document.getElementById('filterSOSampah') ? document.getElementById('filterSOSampah').value.toUpperCase().trim() : '';
-        const fKurang = document.getElementById('filterSOKurang') ? document.getElementById('filterSOKurang').value.toUpperCase().trim() : '';
-        const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat') ? document.getElementById('filterTanggalRiwayat').value : '';
-        
-        if(gridAktif) gridAktif.innerHTML = ''; 
-        if(gridRiwayat) gridRiwayat.innerHTML = ''; 
-        if(gridSampah) gridSampah.innerHTML = '';
-        if(gridKurang) gridKurang.innerHTML = '';
-
-        let dataAktif = rawData.filter(d => {
-            if (d.status !== "AKTIF") return false;
-            if (!fAktif) return true;
-            return (d.so_number || "").toUpperCase().includes(fAktif) || 
-                   (d.artikel || "").toUpperCase().includes(fAktif) || 
-                   (d.diinput_oleh || "").toUpperCase().includes(fAktif) || 
-                   (d.keterangan || "").toUpperCase().includes(fAktif);
-        });
-
-        let dataOut = rawData.filter(d => {
-            if (d.status !== "OUT") return false;
-            let tglLokal = "";
-            if (d.tanggal_out) {
-                let [y, m, day] = d.tanggal_out.split('-');
-                if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('id-ID').toUpperCase();
-            }
-            let matchText = true;
-            if(fRiwayat) {
-                matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || 
-                            (d.artikel || "").toUpperCase().includes(fRiwayat) || 
-                            (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || 
-                            (d.keterangan || "").toUpperCase().includes(fRiwayat) || 
-                            tglLokal.includes(fRiwayat); 
-            }
-            let matchKalender = true;
-            if(fTglRiwayatInput) matchKalender = (d.tanggal_out === fTglRiwayatInput);
-            return matchText && matchKalender; 
-        });
-
-        let dataSampah = rawData.filter(d => {
-            if (d.status !== "DELETED") return false;
-            if (!fSampah) return true;
-            return (d.so_number || "").toUpperCase().includes(fSampah) || 
-                   (d.artikel || "").toUpperCase().includes(fSampah) || 
-                   (d.deleted_by || "").toUpperCase().includes(fSampah) || 
-                   (d.keterangan || "").toUpperCase().includes(fSampah);
-        });
-
-        let dataKurang = rawData.filter(d => {
-            if (d.status !== "KURANG") return false;
-            if (!fKurang) return true;
-            return (d.so_number || "").toUpperCase().includes(fKurang) || 
-                   (d.artikel || "").toUpperCase().includes(fKurang) || 
-                   (d.diinput_oleh || "").toUpperCase().includes(fKurang) || 
-                   (d.keterangan || "").toUpperCase().includes(fKurang);
-        });
-
-        let soArtikelMap = {};
-        rawData.filter(d => d.status === "AKTIF").forEach(d => {
-            let so = (d.so_number || "").toUpperCase(), art = (d.artikel || "").toUpperCase();
-            if (!soArtikelMap[so]) soArtikelMap[so] = new Set();
-            if (art) soArtikelMap[so].add(art);
-        });
-
-        const sorter = (a, b) => {
-            let soA = (a.so_number || "").toString();
-            let soB = (b.so_number || "").toString();
-            if (soA !== soB) return soA.localeCompare(soB);
-            if (a.sizeValue !== b.sizeValue) return (a.sizeValue || 0) - (b.sizeValue || 0);
-            let kA = (a.nomor_karton || "").toString();
-            let kB = (b.nomor_karton || "").toString();
-            return kA.localeCompare(kB);
         };
-        
-        dataAktif.sort(sorter); dataOut.sort(sorter); dataSampah.sort(sorter); dataKurang.sort(sorter);
-
-        function buildPivotHTML(dataArray, tabType) {
-            if (dataArray.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
-            let groupedBySOArt = {};
-            dataArray.forEach(d => {
-                let so = (d.so_number || "TANPA SO").toUpperCase(), art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
-                let key = so + "|||" + art; 
-                if (!groupedBySOArt[key]) groupedBySOArt[key] = { so: so, art: art, items: [] };
-                groupedBySOArt[key].items.push(d);
-            });
-
-            let htmlOutput = '';
-            Object.keys(groupedBySOArt).sort().forEach(key => {
-                let group = groupedBySOArt[key];
-                let btnHapusSO = (tabType !== 'DELETED' && tabType !== 'KURANG') ? `<button onclick="window.hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
-
-                htmlOutput += `
-                    <div class="pivot-group-header" onclick="window.toggleDropdown(this)">
-                        <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
-                            <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">
-                                📦 <b style="color:var(--primary);">${group.so}</b> 
-                                <span style="color:var(--text-muted); font-weight:700; margin-left:4px;">| ${group.art}</span>
-                            </span>
-                        </div>
-                        <div style="display:flex; align-items:center; flex-shrink: 0;">
-                            <span class="pivot-count">${group.items.length} Karton</span>
-                            ${btnHapusSO}
-                        </div>
-                    </div>
-                    <div class="premium-grid">
-                `;
-                
-                group.items.forEach(data => {
-                    let htmlKeterangan = data.keterangan ? `<div class="ket-text">📝 ${data.keterangan}</div>` : '';
-                    let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
-                    let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
-                    let isMultiArtikel = tabType === 'AKTIF' && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
-                    let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
-
-                    let tglTampil = data.tanggal;
-                    if (tabType === 'OUT') {
-                        tglTampil = data.tanggal_out;
-                        if (tglTampil && tglTampil.includes('-')) {
-                            let [y, m, d] = tglTampil.split('-');
-                            tglTampil = new Date(y, m-1, d).toLocaleDateString('id-ID');
-                        }
-                    }
-
-                    let cardClass = 'premium-card';
-                    if (tabType === 'DELETED') cardClass += ' deleted';
-                    if (tabType === 'KURANG') cardClass += ' missing';
-
-                    let auditHtml = tabType === 'DELETED' ? `
-                        <div class="alert-audit">
-                            <span>🗑️ <b>Terhapus Oleh:</b> ${data.deleted_by || 'Sistem'}</span>
-                            <span>⏳ <b>Waktu:</b> ${data.waktu_hapus || 'Tidak Diketahui'}</span>
-                        </div>` : '';
-
-                    let actionHtml = '';
-                    if (tabType === 'AKTIF') {
-                        actionHtml = `
-                            <div class="action-row">
-                                <button class="btn-edit" onclick="window.editSemuanya('${data.id}')">EDIT</button>
-                                <button class="btn-out" onclick="window.pindahKeRiwayat('${data.id}')">KELUAR</button>
-                            </div>`;
-                    } else if (tabType === 'DELETED') {
-                        actionHtml = `
-                            <div class="action-row">
-                                <button class="btn-restore" onclick="window.pulihkanData('${data.id}')">♻️ PULIHKAN</button>
-                                <button class="btn-out" onclick="window.musnahkanData('${data.id}')">❌ MUSNAHKAN</button>
-                            </div>`;
-                    } else if (tabType === 'KURANG') {
-                        actionHtml = `
-                            <div class="action-row">
-                                <button class="btn-restore" onclick="window.ditemukanData('${data.id}')">✅ DITEMUKAN</button>
-                                <button class="btn-out" onclick="window.hapusPermanenLangsung('${data.id}')">❌ BATAL</button>
-                            </div>`;
-                    }
-
-                    let chkHtml = (tabType !== 'KURANG') ? `<input type="checkbox" class="chk-select" value="${data.id}" onchange="window.toggleSelect(this)" ${isChecked}>` : '';
-
-                    htmlOutput += `
-                        <div class="${cardClass}">
-                            ${auditHtml}
-                            ${htmlPeringatanMulti}
-                            
-                            <div class="card-top">
-                                <div class="card-so-wrap">
-                                    ${chkHtml}
-                                    <span class="card-so">${data.so_number}</span>
-                                </div>
-                                ${badgeJenis}
-                            </div>
-
-                            <div class="card-mid">
-                                <span class="card-size">${data.size}</span>
-                                <span class="card-date">${tabType === 'OUT' ? 'KELUAR : ' : ''}${tglTampil}</span>
-                            </div>
-                            
-                            <div class="card-info-grid">
-                                <div class="info-col">
-                                    <span class="lbl-sm">NO KARTON</span>
-                                    <span class="val-md">${data.nomor_karton}</span>
-                                </div>
-                                <div class="info-col" style="text-align: right;">
-                                    <span class="lbl-sm">LOKASI</span>
-                                    <span class="val-loc">${data.lokasi}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="card-artikel">${data.artikel}</div>
-                            
-                            ${htmlKeterangan}
-                            
-                            <div class="card-footer">
-                                <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
-                            </div>
-                            
-                            ${actionHtml}
-                        </div>
-                    `;
-                });
-                htmlOutput += `</div>`; 
-            });
-            return htmlOutput;
-        }
-
-        if(gridAktif) gridAktif.innerHTML = buildPivotHTML(dataAktif, 'AKTIF');
-        if(gridRiwayat) gridRiwayat.innerHTML = buildPivotHTML(dataOut, 'OUT');
-        if(gridSampah) gridSampah.innerHTML = buildPivotHTML(dataSampah, 'DELETED');
-        if(gridKurang) gridKurang.innerHTML = buildPivotHTML(dataKurang, 'KURANG');
-        
-        window.updateBulkDeleteUI();
-    }
-
-    if(document.getElementById('filterSOAktif')) document.getElementById('filterSOAktif').addEventListener('input', renderData);
-    if(document.getElementById('filterSORiwayat')) document.getElementById('filterSORiwayat').addEventListener('input', renderData);
-    if(document.getElementById('filterSOSampah')) document.getElementById('filterSOSampah').addEventListener('input', renderData);
-    if(document.getElementById('filterSOKurang')) document.getElementById('filterSOKurang').addEventListener('input', renderData);
-    if(document.getElementById('filterTanggalRiwayat')) document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
-
-    window.toggleDropdown = (element) => {
-        const grid = element.nextElementSibling;
-        const icon = element.querySelector('.toggle-icon');
-        if (grid.style.display === "none") {
-            grid.style.display = "grid";
-            icon.innerText = "▼";
-        } else {
-            grid.style.display = "none";
-            icon.innerText = "▶";
-        }
-    };
-
-    window.pindahKeRiwayat = async (id) => {
-        if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
-            let itemData = rawData.find(d => d.id === id);
-            if(itemData) {
-                let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
-                let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
-                fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
-            }
-            let tzoffset = (new Date()).getTimezoneOffset() * 60000;
-            let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
-            await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() }); 
-        }
-    };
-</script>
+    </script>
 </body>
 </html>
