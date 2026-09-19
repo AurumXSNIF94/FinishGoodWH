@@ -402,18 +402,20 @@
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        // =========================================================
-        // 📤 KIRIM REKAP KE SPREADSHEET (DIPERBAIKI: no-cors)
+// =========================================================
+        // 📤 KIRIM REKAP KE SPREADSHEET (METODE FORM URL-ENCODED)
         // =========================================================
         async function kirimKeRekap(rowsData) {
             try {
-                fetch(URL_GAS_REKAP, {
+                // Bungkus data ke dalam parameter payload
+                let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
+                
+                await fetch(URL_GAS_REKAP, {
                     method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ action: "insertRekap", data: rowsData })
-                }).then(() => console.log("Berhasil trigger GAS Rekap"))
-                  .catch(e => console.log("Gagal fetch GAS Rekap", e));
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "payload=" + encodeURIComponent(payloadData)
+                });
+                console.log("Berhasil trigger GAS Rekap");
             } catch(e) {
                 console.log("Error fungsi kirimKeRekap: " + e.message);
             }
@@ -807,7 +809,7 @@
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-                    let rekapRows = dataToPush.map(k => ({
+let rekapRows = dataToPush.map(k => ({
                         so: so,
                         type_ctn: k.noKarton,
                         size: k.size,
@@ -816,8 +818,7 @@
                         room: ruangan,
                         note: keterangan,
                         fg_in: true,
-                        fg_out: false,
-                        status: "PROSES"
+                        fg_out: false
                     }));
                     kirimKeRekap(rekapRows);
 
