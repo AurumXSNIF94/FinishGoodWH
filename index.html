@@ -397,13 +397,13 @@
 
         const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
-        const URL_GAS_REKAP = "https://script.google.com/macros/s/AKfycbyIwabWs8H0ly5K8JAUlaIbKDNEqKPyPHNl1Vfcsgankn5CU524KDLoYdS5wn4-YYFVPA/exec";
+        const URL_GAS_REKAP = "https://script.google.com/macros/s/AKfycbweFYptqH8gUAlmuUDXXEE0vpvp9Gb44j840FQnJUaCxAPQCDC5QyML3gffUWqE8JKSow/exec";
         
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-// =========================================================
-        // 📤 KIRIM REKAP KE SPREADSHEET (METODE FORMDATA ANTI-CORS)
+        // =========================================================
+        // 📤 KIRIM REKAP KE SPREADSHEET (ANTI-CORS FORMDATA)
         // =========================================================
         function kirimKeRekap(rowsData) {
             try {
@@ -411,15 +411,34 @@
                 let formData = new FormData();
                 formData.append("payload", payloadData);
                 
-                // Biarkan browser yang mengatur header Content-Type otomatis
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
                     body: formData
-                }).then(() => console.log("Permintaan dikirim ke GAS Rekap!"))
+                }).then(() => console.log("Berhasil trigger GAS Rekap (MASUK)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
                 console.log("Error fungsi kirimKeRekap: " + e.message);
+            }
+        }
+
+        // =========================================================
+        // 📤 UPDATE CENTANG KELUAR DI SPREADSHEET (ANTI-CORS FORMDATA)
+        // =========================================================
+        function updateRekapKeluar(rowsData) {
+            try {
+                let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
+                let formData = new FormData();
+                formData.append("payload", payloadData);
+                
+                fetch(URL_GAS_REKAP, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: formData
+                }).then(() => console.log("Berhasil trigger GAS Rekap (KELUAR)"))
+                  .catch(e => console.log("Gagal mengirim ke GAS:", e));
+            } catch(e) {
+                console.log("Error fungsi updateRekapKeluar: " + e.message);
             }
         }
 
@@ -759,7 +778,13 @@
 
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
-            const tanggal = document.getElementById('tanggalInput').value; 
+            
+            // Format Tanggal disesuaikan agar rapi di Excel
+            const rawTanggal = document.getElementById('tanggalInput').value; 
+            const dateObj = new Date(rawTanggal);
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const tanggal = dateObj.getDate() + " " + months[dateObj.getMonth()] + " " + dateObj.getFullYear();
+            
             const jenis = document.getElementById('jenisInput').value; 
             const so = val('soInput'), artikel = val('artikelInput'), lokasi = val('lokasiInput'), keterangan = val('keteranganInput');
             const ruangan = document.getElementById('ruanganInput').value;
@@ -811,16 +836,17 @@
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-let rekapRows = dataToPush.map(k => ({
+                    let rekapRows = dataToPush.map(k => ({
+                        tanggal: tanggal,
                         so: so,
                         type_ctn: k.noKarton,
                         size: k.size,
-                        qty: 1,
+                        type: jenis,
                         user: userName,
                         room: ruangan,
                         note: keterangan,
-                        fg_in: true,
-                        fg_out: false
+                        fg_in: true,  
+                        fg_out: false 
                     }));
                     kirimKeRekap(rekapRows);
 
@@ -870,7 +896,6 @@ let rekapRows = dataToPush.map(k => ({
         window.editSemuanya = (id) => {
             let item = rawData.find(d => d.id === id);
             if(!item) return;
-            document.getElementById('tanggalInput').value = item.tanggal;
             document.getElementById('soInput').value = item.so_number;
             document.getElementById('jenisInput').value = item.jenis || 'SOLID'; 
             document.getElementById('artikelInput').value = item.artikel;
@@ -923,19 +948,28 @@ let rekapRows = dataToPush.map(k => ({
         window.outTerpilih = async () => {
             if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
                 let syncPayload = []; 
+                let rekapOutPayload = [];
+                
                 for (let id of window.selectedIds) {
                     let itemData = rawData.find(d => d.id === id);
                     if(itemData) {
                         syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
+                        rekapOutPayload.push({ so: itemData.so_number, ctn: itemData.nomor_karton });
                     }
                     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                     let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
                     await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() });
                 }
+                
                 if(syncPayload.length > 0) {
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
+                
+                if(rekapOutPayload.length > 0) {
+                    updateRekapKeluar(rekapOutPayload);
+                }
+                
                 window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
             }
         }
@@ -1120,6 +1154,8 @@ let rekapRows = dataToPush.map(k => ({
                     let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
+                    
+                    updateRekapKeluar([{ so: itemData.so_number, ctn: itemData.nomor_karton }]);
                 }
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                 let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
