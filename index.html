@@ -395,26 +395,27 @@
         window.lastFetchedStok = [];
         window.selectedStokKarton = new Set();
 
+        // Spreadsheet FG WH dan Tracking Palet (Sekarang murni dibaca saja, tidak di-write)
         const URL_GAS_STOK = "https://script.google.com/macros/s/AKfycbw5o6XB4FNkmCD5KZ9cDYxNK7DrCsXJEgfJsV8FyUMK72A6OxWr5VV-h2qNbW6Dy9K8Fw/exec"; 
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
+        
+        // Spreadsheet Rekap SI
         const URL_GAS_REKAP = "https://script.google.com/macros/s/AKfycbweFYptqH8gUAlmuUDXXEE0vpvp9Gb44j840FQnJUaCxAPQCDC5QyML3gffUWqE8JKSow/exec";
         
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
         // =========================================================
-        // 📤 KIRIM REKAP KE SPREADSHEET (ANTI-CORS FORMDATA)
+        // 📤 KIRIM REKAP (INSERT BARU - KOLOM I DICENTANG)
         // =========================================================
         function kirimKeRekap(rowsData) {
             try {
                 let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
-                let formData = new FormData();
-                formData.append("payload", payloadData);
-                
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    body: formData
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "payload=" + encodeURIComponent(payloadData)
                 }).then(() => console.log("Berhasil trigger GAS Rekap (MASUK)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
@@ -423,18 +424,16 @@
         }
 
         // =========================================================
-        // 📤 UPDATE CENTANG KELUAR DI SPREADSHEET (ANTI-CORS FORMDATA)
+        // 📤 KIRIM REKAP (UPDATE KELUAR - KOLOM J DICENTANG)
         // =========================================================
         function updateRekapKeluar(rowsData) {
             try {
                 let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
-                let formData = new FormData();
-                formData.append("payload", payloadData);
-                
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    body: formData
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "payload=" + encodeURIComponent(payloadData)
                 }).then(() => console.log("Berhasil trigger GAS Rekap (KELUAR)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
@@ -779,7 +778,7 @@
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
             
-            // Format Tanggal disesuaikan agar rapi di Excel
+            // Format Tanggal disesuaikan
             const rawTanggal = document.getElementById('tanggalInput').value; 
             const dateObj = new Date(rawTanggal);
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -832,10 +831,7 @@
                     });
                     await Promise.all(promises);
 
-                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
-                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
-                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
-
+                    // Hanya kirim INSERT Rekap (Kolom I MASUK dicentang)
                     let rekapRows = dataToPush.map(k => ({
                         tanggal: tanggal,
                         so: so,
@@ -863,14 +859,6 @@
             }
         });
 
-        window.hapusPermanen = async () => {
-            if(!window.currentEditId) return;
-            if(confirm("⚠️ Hapus data ini secara PERMANEN dari database? Tindakan ini tidak bisa dibatalkan.")) {
-                await remove(ref(db, `stok_fg_wh/${window.currentEditId}`));
-                alert("Data berhasil dihapus permanen!"); batalEdit(); openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
-            }
-        };
-
         window.hapusSemuaSO = async (e, soTarget, statusFilter) => {
             e.stopPropagation();
             const dataToDelete = rawData.filter(d => (d.so_number || "").toUpperCase() === soTarget && d.status === statusFilter);
@@ -896,6 +884,13 @@
         window.editSemuanya = (id) => {
             let item = rawData.find(d => d.id === id);
             if(!item) return;
+            // Kembalikan format ke yyyy-mm-dd untuk input date HTML
+            let dateStr = "";
+            if (item.tanggal) {
+                let dDate = new Date(item.tanggal);
+                if (!isNaN(dDate)) dateStr = dDate.toISOString().split('T')[0];
+            }
+            document.getElementById('tanggalInput').value = dateStr;
             document.getElementById('soInput').value = item.so_number;
             document.getElementById('jenisInput').value = item.jenis || 'SOLID'; 
             document.getElementById('artikelInput').value = item.artikel;
@@ -946,24 +941,17 @@
         }
 
         window.outTerpilih = async () => {
-            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan kembalikan centang di Excel?`)) {
-                let syncPayload = []; 
+            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan catat di Rekap Excel?`)) {
                 let rekapOutPayload = [];
                 
                 for (let id of window.selectedIds) {
                     let itemData = rawData.find(d => d.id === id);
                     if(itemData) {
-                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
                         rekapOutPayload.push({ so: itemData.so_number, ctn: itemData.nomor_karton });
                     }
                     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                     let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
                     await update(ref(db, `stok_fg_wh/${id}`), { status: "OUT", tanggal_out: localISOTime, timestamp_out: serverTimestamp() });
-                }
-                
-                if(syncPayload.length > 0) {
-                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
-                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
                 
                 if(rekapOutPayload.length > 0) {
@@ -1148,13 +1136,9 @@
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
         window.pindahKeRiwayat = async (id) => {
-            if(confirm("Keluarkan data barang ini (OUT) dan kembalikan centang di Excel?")) {
+            if(confirm("Keluarkan data barang ini (OUT) dan catat di Rekap Excel?")) {
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
-                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
-                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
-                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
-                    
                     updateRekapKeluar([{ so: itemData.so_number, ctn: itemData.nomor_karton }]);
                 }
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
