@@ -75,11 +75,11 @@
         .login-box img { height: 97px; margin-bottom: 0px; object-fit: contain; }
         .login-box h2 { color: var(--text-main); margin: 0 0 10px 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;}
         .login-box p { color: var(--text-muted); font-size: 14px; margin: 0 0 40px 0;}
-.btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 15px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: var(--shadow-card); transition: 0.3s;}
+        .btn-google { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 15px 20px; font-size: 15px; font-weight: 800; border-radius: var(--radius-lg); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: var(--shadow-card); transition: 0.3s;}
         .btn-google:active { transform: scale(0.97); }
         .btn-google img { height: 22px; margin: 0; }
 
-        /* FLOATING BOTTOM NAV (RESPONSIF & RATA 8 MENU) */
+        /* FLOATING BOTTOM NAV */
         .tab-bar { 
             display: flex; 
             background: rgba(255, 255, 255, 0.9); 
@@ -122,7 +122,6 @@
         .tab-btn span.icon { font-size: 16px; transition: 0.3s; }
         .tab-btn.active { color: var(--primary); background: var(--danger-bg); } 
         .tab-btn.active span.icon { transform: translateY(-2px) scale(1.1); }
-        .tab-btn.warning-tab.active { color: var(--warning-text); background: var(--warning-bg); }
         
         .content { padding: 25px 20px; display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .content.active { display: block; }
@@ -157,8 +156,6 @@
         .premium-grid.single-col { grid-template-columns: 1fr; }
         
         .premium-card { background: var(--surface); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-card); display: flex; flex-direction: column; position: relative; transition: 0.3s;}
-        .premium-card.deleted { border-color: var(--primary); box-shadow: 0 4px 15px rgba(225, 29, 72, 0.1); }
-        .premium-card.missing { border-color: var(--warning-text); box-shadow: 0 4px 15px rgba(251, 191, 36, 0.1); background: var(--warning-bg);}
         
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-so-wrap { display: flex; align-items: center; gap: 8px; overflow: hidden;}
@@ -190,10 +187,8 @@
         .action-row button { flex: 1; padding: 10px 0; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; transition: 0.2s;}
         .btn-edit { background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);}
         .btn-out { background: var(--text-main); color: var(--surface); border: none;}
-        .btn-restore { background: var(--secondary); color: white; border: none; }
 
         .alert-multi { background: var(--danger-bg); color: var(--danger-text); font-size: 9px; font-weight: 900; padding: 6px; text-align: center; border-radius: 8px; margin-bottom: 12px; border: 1px dashed var(--danger-text); }
-        .alert-audit { background: var(--danger-bg); color: var(--danger-text); font-size: 10px; padding: 10px; border-radius: 8px; margin-bottom: 12px; border: 1px dashed var(--primary); display: flex; flex-direction: column; gap: 4px;}
         .ket-text { font-size: 10px; color: var(--text-muted); font-style: italic; margin-bottom: 10px;}
 
         /* RINGKASAN STOK */
@@ -408,23 +403,19 @@
         let dataStokExcel = []; 
 
         // =========================================================
-        // 📤 KIRIM REKAP KE SPREADSHEET "REKAP PENGAMBILAN KARTON SI"
+        // 📤 KIRIM REKAP KE SPREADSHEET (DIPERBAIKI: no-cors)
         // =========================================================
         async function kirimKeRekap(rowsData) {
             try {
-                const res = await fetch(URL_GAS_REKAP, {
+                fetch(URL_GAS_REKAP, {
                     method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    mode: "no-cors",
+                    headers: { "Content-Type": "text/plain" },
                     body: JSON.stringify({ action: "insertRekap", data: rowsData })
-                });
-                const result = await res.json();
-                if (result.status !== "success") {
-                    alert("⚠️ Gagal sinkron ke Rekap Input Manual:\n" + result.message);
-                }
-                console.log("Rekap sync result:", result);
+                }).then(() => console.log("Berhasil trigger GAS Rekap"))
+                  .catch(e => console.log("Gagal fetch GAS Rekap", e));
             } catch(e) {
-                alert("⚠️ Gagal terhubung ke spreadsheet Rekap Input Manual:\n" + e.message);
-                console.log("Gagal sinkron ke Rekap Input Manual: " + e.message);
+                console.log("Error fungsi kirimKeRekap: " + e.message);
             }
         }
 
@@ -557,7 +548,7 @@
                     statusDiv.innerText = "❌ Tidak ada karton yang ditandai untuk SO ini di Spreadsheet.";
                     statusDiv.style.color = "var(--primary)";
                 } else {
-                    statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input AQL manual.`;
+                    statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input manual.`;
                     statusDiv.style.color = "var(--secondary)"; 
                     
                     let lokasiSO = "TIDAK DITEMUKAN";
@@ -1053,8 +1044,6 @@
 
                         let cardClass = 'premium-card';
 
-                        let auditHtml = '';
-
                         let actionHtml = '';
                         if (tabType === 'AKTIF') {
                             actionHtml = `
@@ -1068,7 +1057,6 @@
 
                         htmlOutput += `
                             <div class="${cardClass}">
-                                ${auditHtml}
                                 ${htmlPeringatanMulti}
                                 
                                 <div class="card-top">
