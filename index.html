@@ -405,7 +405,7 @@
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        // =========================================================
+// =========================================================
         // 📤 KIRIM REKAP (INSERT BARU - KOLOM I DICENTANG)
         // =========================================================
         function kirimKeRekap(rowsData) {
@@ -414,8 +414,8 @@
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "payload=" + encodeURIComponent(payloadData)
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: payloadData
                 }).then(() => console.log("Berhasil trigger GAS Rekap (MASUK)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
@@ -424,7 +424,7 @@
         }
 
         // =========================================================
-        // 📤 KIRIM REKAP (UPDATE KELUAR - KOLOM J DICENTANG)
+        // 📤 UPDATE REKAP (BARANG KELUAR - KOLOM J DICENTANG)
         // =========================================================
         function updateRekapKeluar(rowsData) {
             try {
@@ -432,15 +432,14 @@
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "payload=" + encodeURIComponent(payloadData)
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: payloadData
                 }).then(() => console.log("Berhasil trigger GAS Rekap (KELUAR)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
                 console.log("Error fungsi updateRekapKeluar: " + e.message);
             }
         }
-
         document.getElementById('btnTarikSO').addEventListener('click', async () => {
             const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusTarik');
