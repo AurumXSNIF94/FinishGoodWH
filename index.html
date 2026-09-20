@@ -706,14 +706,47 @@
             document.querySelectorAll('.nokarton-input').forEach(input => {
                 if(!input.hasAttribute('data-format')) {
                     input.setAttribute('data-format', 'true');
+                    
+                    // Event saat mengetik No. Karton (Termasuk fitur Auto-Fill Size)
                     input.addEventListener('input', function() { 
                         this.value = this.value.replace(/[^0-9#]/g, ''); 
                         let val = this.value.trim();
-                        if(val !== '' && !val.startsWith('#')) val = '#' + val;
+                        if(val !== '' && !val.startsWith('#')) {
+                            val = '#' + val;
+                        }
+                        
+                        // Logika Auto-Fill Size dari memori dataStokExcel
+                        if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
+                            let match = dataStokExcel.find(d => d.karton === val);
+                            if (match) {
+                                let row = this.closest('.karton-item');
+                                if (row) {
+                                    let sizeInput = row.querySelector('.size-input');
+                                    if(sizeInput) sizeInput.value = match.size;
+                                }
+                            }
+                        }
                     });
+                    
+                    // Menambahkan '#' saat pengguna selesai fokus jika lupa
                     input.addEventListener('blur', function() {
                         let val = this.value.trim();
-                        if(val !== '' && !val.startsWith('#')) this.value = '#' + val;
+                        if(val !== '' && !val.startsWith('#')) {
+                            this.value = '#' + val;
+                        }
+                        
+                        // Validasi Auto-Fill Size lagi saat input blur
+                        val = this.value.trim();
+                        if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
+                            let match = dataStokExcel.find(d => d.karton === val);
+                            if (match) {
+                                let row = this.closest('.karton-item');
+                                if (row) {
+                                    let sizeInput = row.querySelector('.size-input');
+                                    if(sizeInput) sizeInput.value = match.size;
+                                }
+                            }
+                        }
                     });
                 }
             });
