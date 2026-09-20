@@ -406,17 +406,19 @@
         let dataStokExcel = []; 
 
 // =========================================================
-        // 📤 KIRIM REKAP (INSERT BARU - KOLOM I DICENTANG)
+        // 📤 KIRIM REKAP (INSERT BARU - KOLOM I / IN DICENTANG)
         // =========================================================
         function kirimKeRekap(rowsData) {
             try {
                 let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
+                let params = new URLSearchParams();
+                params.append("payload", payloadData);
+                
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: payloadData
-                }).then(() => console.log("Berhasil trigger GAS Rekap (MASUK)"))
+                    body: params
+                }).then(() => console.log("Berhasil trigger GAS Rekap (IN)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
                 console.log("Error fungsi kirimKeRekap: " + e.message);
@@ -424,17 +426,19 @@
         }
 
         // =========================================================
-        // 📤 UPDATE REKAP (BARANG KELUAR - KOLOM J DICENTANG)
+        // 📤 UPDATE REKAP (BARANG KELUAR - KOLOM J / OUT DICENTANG)
         // =========================================================
         function updateRekapKeluar(rowsData) {
             try {
                 let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
+                let params = new URLSearchParams();
+                params.append("payload", payloadData);
+                
                 fetch(URL_GAS_REKAP, {
                     method: "POST",
                     mode: "no-cors",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: payloadData
-                }).then(() => console.log("Berhasil trigger GAS Rekap (KELUAR)"))
+                    body: params
+                }).then(() => console.log("Berhasil trigger GAS Rekap (OUT)"))
                   .catch(e => console.log("Gagal mengirim ke GAS:", e));
             } catch(e) {
                 console.log("Error fungsi updateRekapKeluar: " + e.message);
