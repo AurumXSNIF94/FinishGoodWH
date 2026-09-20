@@ -406,43 +406,31 @@
         let dataStokExcel = []; 
 
 // =========================================================
-        // 📤 KIRIM REKAP (INSERT BARU - KOLOM I / IN DICENTANG)
+        // 📤 KIRIM REKAP (INSERT BARU)
         // =========================================================
         function kirimKeRekap(rowsData) {
-            try {
-                let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
-                let params = new URLSearchParams();
-                params.append("payload", payloadData);
-                
-                fetch(URL_GAS_REKAP, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: params
-                }).then(() => console.log("Berhasil trigger GAS Rekap (IN)"))
-                  .catch(e => console.log("Gagal mengirim ke GAS:", e));
-            } catch(e) {
-                console.log("Error fungsi kirimKeRekap: " + e.message);
-            }
+            let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
+            fetch(URL_GAS_REKAP, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: payloadData
+            }).then(() => console.log("Trigger GAS IN Terkirim"))
+              .catch(e => console.log("Gagal:", e));
         }
 
         // =========================================================
-        // 📤 UPDATE REKAP (BARANG KELUAR - KOLOM J / OUT DICENTANG)
+        // 📤 UPDATE REKAP (BARANG KELUAR)
         // =========================================================
         function updateRekapKeluar(rowsData) {
-            try {
-                let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
-                let params = new URLSearchParams();
-                params.append("payload", payloadData);
-                
-                fetch(URL_GAS_REKAP, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: params
-                }).then(() => console.log("Berhasil trigger GAS Rekap (OUT)"))
-                  .catch(e => console.log("Gagal mengirim ke GAS:", e));
-            } catch(e) {
-                console.log("Error fungsi updateRekapKeluar: " + e.message);
-            }
+            let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
+            fetch(URL_GAS_REKAP, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: payloadData
+            }).then(() => console.log("Trigger GAS OUT Terkirim"))
+              .catch(e => console.log("Gagal:", e));
         }
         document.getElementById('btnTarikSO').addEventListener('click', async () => {
             const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
