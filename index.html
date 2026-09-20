@@ -142,7 +142,7 @@
         .dynamic-box { background: var(--bg-color); border: 1px dashed var(--text-muted); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 25px;}
         .dynamic-header { color: var(--text-muted); font-size: 11px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;}
         .btn-tambah-baris { background: var(--surface); color: var(--text-main); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-md); width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; box-shadow: var(--shadow-card); transition: 0.2s;}
-        .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: none; border-radius: var(--radius-md); cursor: pointer; padding: 0 15px; font-weight: 900;}
+        .btn-hapus-baris { background-color: var(--danger-bg); color: var(--danger-text); border: none; border-radius: var(--radius-md); cursor: padding: 0 15px; font-weight: 900;}
         
         .btn-add { background: linear-gradient(135deg, var(--primary), #be123c); color: white; padding: 18px; border: none; border-radius: 100px; width: 100%; font-weight: 900; cursor: pointer; font-size: 15px; letter-spacing: 0.5px; box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3); transition: 0.3s;}
         .btn-add:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2); }
@@ -400,13 +400,13 @@
         const URL_GAS_LOKASI = "https://script.google.com/macros/s/AKfycbwNhXSfLc6OeeOr9nKF2K99iL07XK8qWn7cGjV_kNRC9uyN53OXftX9wbB5pZmVhC8q/exec"; 
         
         // Spreadsheet Rekap SI
-        const URL_GAS_REKAP = "https://script.google.com/macros/s/AKfycbwsFkl0I8UNYaKW9DOt5b6OZJIqw-TkwBfZZLWcslwuprzKvh_AKJvVgoLt1VlD1IaScQ/exec";
+        const URL_GAS_REKAP = "https://script.google.com/macros/s/AKfycbweFYptqH8gUAlmuUDXXEE0vpvp9Gb44j840FQnJUaCxAPQCDC5QyML3gffUWqE8JKSow/exec";
         
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-// =========================================================
-        // 📤 KIRIM REKAP (INSERT BARU)
+        // =========================================================
+        // 📤 KIRIM REKAP (INSERT BARU - KOLOM I DICENTANG)
         // =========================================================
         function kirimKeRekap(rowsData) {
             let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
@@ -420,7 +420,7 @@
         }
 
         // =========================================================
-        // 📤 UPDATE REKAP (BARANG KELUAR)
+        // 📤 KIRIM REKAP (UPDATE KELUAR - KOLOM J DICENTANG)
         // =========================================================
         function updateRekapKeluar(rowsData) {
             let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
@@ -432,6 +432,7 @@
             }).then(() => console.log("Trigger GAS OUT Terkirim"))
               .catch(e => console.log("Gagal:", e));
         }
+
         document.getElementById('btnTarikSO').addEventListener('click', async () => {
             const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusTarik');
@@ -1049,13 +1050,15 @@
                         let isMultiArtikel = tabType === 'AKTIF' && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
                         let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
 
-                        let tglTampil = data.tanggal;
+                        // Format Tanggal Keluar untuk Tab Riwayat
+                        let tglKeluarHtml = '';
                         if (tabType === 'OUT') {
-                            tglTampil = data.tanggal_out;
-                            if (tglTampil && tglTampil.includes('-')) {
-                                let [y, m, d] = tglTampil.split('-');
-                                tglTampil = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                            let tglKeluar = data.tanggal_out;
+                            if (tglKeluar && tglKeluar.includes('-')) {
+                                let [y, m, d] = tglKeluar.split('-');
+                                tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
                             }
+                            tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
                         }
 
                         let cardClass = 'premium-card';
@@ -1085,10 +1088,10 @@
 
                                 <div class="card-mid">
                                     <span class="card-size">${data.size}</span>
-                                    <span class="card-date">${tabType === 'OUT' ? 'KELUAR : ' : ''}${tglTampil}</span>
+                                    ${tglKeluarHtml}
                                 </div>
                                 
-                                <div class="card-info-grid">
+                                <div class="card-info-grid" style="margin-bottom: 10px;">
                                     <div class="info-col">
                                         <span class="lbl-sm">NO KARTON</span>
                                         <span class="val-md">${data.nomor_karton}</span>
@@ -1096,6 +1099,22 @@
                                     <div class="info-col" style="text-align: right;">
                                         <span class="lbl-sm">LOKASI</span>
                                         <span class="val-loc">${data.lokasi}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- PANEL BARU: TIPE, RUANGAN, TANGGAL MASUK -->
+                                <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
+                                    <div class="info-col">
+                                        <span class="lbl-sm">TIPE</span>
+                                        <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
+                                    </div>
+                                    <div class="info-col" style="text-align: center;">
+                                        <span class="lbl-sm">RUANGAN</span>
+                                        <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
+                                    </div>
+                                    <div class="info-col" style="text-align: right;">
+                                        <span class="lbl-sm">TGL MASUK</span>
+                                        <span class="val-md" style="font-size: 11px;">${data.tanggal || '-'}</span>
                                     </div>
                                 </div>
                                 
