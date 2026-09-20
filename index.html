@@ -390,8 +390,8 @@
         document.getElementById('tanggalInput').valueAsDate = new Date();
         let rawData = [];
         window.currentEditId = null; 
-        window.editOldSO = null; // Menyimpan SO lama sebelum diedit
-        window.editOldCTN = null; // Menyimpan CTN lama sebelum diedit
+        window.editOldSO = null; 
+        window.editOldCTN = null; 
         window.selectedIds = new Set();
         
         window.lastFetchedStok = [];
@@ -404,9 +404,6 @@
         let dataLokasiExcel = [];
         let dataStokExcel = []; 
 
-        // =========================================================
-        // 📤 KIRIM REKAP (INSERT BARU)
-        // =========================================================
         function kirimKeRekap(rowsData) {
             let payloadData = JSON.stringify({ action: "insertRekap", data: rowsData });
             fetch(URL_GAS_REKAP, {
@@ -418,9 +415,6 @@
               .catch(e => console.log("Gagal:", e));
         }
 
-        // =========================================================
-        // 📤 UPDATE REKAP (BARANG KELUAR)
-        // =========================================================
         function updateRekapKeluar(rowsData) {
             let payloadData = JSON.stringify({ action: "updateKeluar", data: rowsData });
             fetch(URL_GAS_REKAP, {
@@ -432,9 +426,6 @@
               .catch(e => console.log("Gagal:", e));
         }
 
-        // =========================================================
-        // 📤 EDIT REKAP (UPDATE BARIS LAMA)
-        // =========================================================
         function editRekapKeGAS(oldSO, oldCTN, newData) {
             let payloadData = JSON.stringify({ 
                 action: "editRekap", 
@@ -707,7 +698,6 @@
                 if(!input.hasAttribute('data-format')) {
                     input.setAttribute('data-format', 'true');
                     
-                    // Event saat mengetik No. Karton (Termasuk fitur Auto-Fill Size)
                     input.addEventListener('input', function() { 
                         this.value = this.value.replace(/[^0-9#]/g, ''); 
                         let val = this.value.trim();
@@ -715,7 +705,6 @@
                             val = '#' + val;
                         }
                         
-                        // Logika Auto-Fill Size dari memori dataStokExcel
                         if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
                             let match = dataStokExcel.find(d => d.karton === val);
                             if (match) {
@@ -728,14 +717,12 @@
                         }
                     });
                     
-                    // Menambahkan '#' saat pengguna selesai fokus jika lupa
                     input.addEventListener('blur', function() {
                         let val = this.value.trim();
                         if(val !== '' && !val.startsWith('#')) {
                             this.value = '#' + val;
                         }
                         
-                        // Validasi Auto-Fill Size lagi saat input blur
                         val = this.value.trim();
                         if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
                             let match = dataStokExcel.find(d => d.karton === val);
@@ -822,7 +809,6 @@
         document.getElementById('btnTambah').addEventListener('click', async () => {
             const val = (id) => document.getElementById(id).value.toUpperCase().trim();
             
-            // Format Tanggal disesuaikan
             const rawTanggal = document.getElementById('tanggalInput').value; 
             const dateObj = new Date(rawTanggal);
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -865,7 +851,6 @@
                         tanggal, so_number: so, jenis, artikel, size: dataToPush[0].size, nomor_karton: dataToPush[0].noKarton, lokasi, ruangan, keterangan, diinput_oleh: userName 
                     });
 
-                    // TRIGGER EDIT KE SPREADSHEET
                     let rekapEditData = {
                         tanggal: tanggal,
                         so: so,
@@ -877,6 +862,11 @@
                         note: keterangan
                     };
                     editRekapKeGAS(window.editOldSO, window.editOldCTN, rekapEditData);
+                    
+                    // UPDATE: Trigger sinkronisasi ke FG WH jika data diubah
+                    let syncPayload = [{ so: so, karton: dataToPush[0].noKarton, actionType: "UNCHECK" }];
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
                     alert("Data berhasil diperbarui!");
                     batalEdit(); 
@@ -888,6 +878,11 @@
                         });
                     });
                     await Promise.all(promises);
+
+                    // UPDATE: Trigger sinkronisasi UNCHECK ke spreadsheet FG WH 
+                    let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
                     let rekapRows = dataToPush.map(k => ({
                         tanggal: tanggal,
@@ -942,11 +937,9 @@
             let item = rawData.find(d => d.id === id);
             if(!item) return;
             
-            // Simpan data lama untuk acuan Edit Spreadsheet
             window.editOldSO = item.so_number;
             window.editOldCTN = item.nomor_karton;
             
-            // Kembalikan format ke yyyy-mm-dd untuk input date HTML
             let dateStr = "";
             if (item.tanggal) {
                 let dDate = new Date(item.tanggal);
@@ -1006,11 +999,13 @@
         window.outTerpilih = async () => {
             if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan catat di Rekap Excel?`)) {
                 let rekapOutPayload = [];
+                let syncPayload = [];
                 
                 for (let id of window.selectedIds) {
                     let itemData = rawData.find(d => d.id === id);
                     if(itemData) {
                         rekapOutPayload.push({ so: itemData.so_number, ctn: itemData.nomor_karton });
+                        syncPayload.push({ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" });
                     }
                     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                     let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
@@ -1019,6 +1014,12 @@
                 
                 if(rekapOutPayload.length > 0) {
                     updateRekapKeluar(rekapOutPayload);
+                }
+                
+                // UPDATE: Trigger sinkronisasi CHECK kembali ke FG WH
+                if(syncPayload.length > 0) {
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
                 
                 window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
@@ -1219,6 +1220,11 @@
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
                     updateRekapKeluar([{ so: itemData.so_number, ctn: itemData.nomor_karton }]);
+                    
+                    // UPDATE: Trigger sinkronisasi CHECK kembali ke FG WH
+                    let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
+                    let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
+                    fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
                 let tzoffset = (new Date()).getTimezoneOffset() * 60000;
                 let localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
