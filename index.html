@@ -1101,16 +1101,20 @@
             };
             dataAktif.sort(sorter); dataOut.sort(sorter);
 
-            function buildPivotHTML(dataArray, tabType) {
+function buildPivotHTML(dataArray, tabType) {
                 if (dataArray.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
                 let groupedBySOArt = {};
                 
                 let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
 
+                // 🌟 UPDATE: Tambahkan 'jenis' ke kunci pengelompokan agar SOLID & MIX dipisah
                 dataArray.forEach(d => {
-                    let so = (d.so_number || "TANPA SO").toUpperCase(), art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
-                    let key = so + "|||" + art; 
-                    if (!groupedBySOArt[key]) groupedBySOArt[key] = { so: so, art: art, items: [] };
+                    let so = (d.so_number || "TANPA SO").toUpperCase();
+                    let art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
+                    let tipe = (d.jenis || "SOLID").toUpperCase(); 
+                    
+                    let key = so + "|||" + art + "|||" + tipe; 
+                    if (!groupedBySOArt[key]) groupedBySOArt[key] = { so: so, art: art, tipe: tipe, items: [] };
                     groupedBySOArt[key].items.push(d);
                 });
 
@@ -1121,14 +1125,19 @@
                     let groupOwner = group.items[0].diinput_oleh || '';
                     let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
 
+                    // 🌟 UPDATE: Buat badge label khusus untuk ditaruh di sebelah SO
+                    let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
+
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
                             <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
                                 <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
-                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;">
-                                    📦 <b style="color:var(--primary);">${group.so}</b> 
-                                    <span style="color:var(--text-muted); font-weight:700; margin-left:4px;">| ${group.art}</span>
-                                </span>
+                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; display:flex; align-items:center;">
+                                    <span>📦</span>
+                                    <b style="color:var(--primary); margin-left:6px;">${group.so}</b> 
+                                    ${badgeGroup}
+                                    <span style="color:var(--text-muted); font-weight:700; margin-left:6px;">| ${group.art}</span>
+                                </div>
                             </div>
                             <div style="display:flex; align-items:center; flex-shrink: 0;">
                                 <span class="pivot-count">${group.items.length} Karton</span>
@@ -1146,7 +1155,6 @@
                         let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
                         let isOwner = (data.diinput_oleh === currentUser);
 
-                        // --- 🌟 PENERJEMAH FORMAT TANGGAL MASUK VISUAL ---
                         let visualTglMasuk = data.tanggal || '-';
                         if (visualTglMasuk !== '-') {
                             const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
@@ -1243,7 +1251,6 @@
                 });
                 return htmlOutput;
             }
-
             gridAktif.innerHTML = buildPivotHTML(dataAktif, 'AKTIF');
             gridRiwayat.innerHTML = buildPivotHTML(dataOut, 'OUT');
             
