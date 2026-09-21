@@ -290,6 +290,7 @@
                 <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridKartonAktif"></div> 
+            <div id="loaderAktif" style="text-align:center; padding:15px; color:var(--text-muted); font-weight:800; font-size:12px; display:none;">🔄 Memuat data...</div>
         </div>
 
         <div id="tabRiwayat" class="content">
@@ -298,6 +299,7 @@
                 <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridRiwayatOut"></div> 
+            <div id="loaderRiwayat" style="text-align:center; padding:15px; color:var(--text-muted); font-weight:800; font-size:12px; display:none;">🔄 Memuat data...</div>
         </div>
 
         <div id="tabLokasi" class="content">
@@ -1044,15 +1046,36 @@
             }
         }
 
+        /* =========================================================================
+           🚀 SISTEM INFINITE SCROLL / LAZY LOADING OPSI 2 (Beban Ringan)
+           ========================================================================= */
+        window.infiniteScrollState = {
+            AKTIF: { keys: [], groups: {}, renderedCount: 0, htmlContainer: 'gridKartonAktif' },
+            OUT: { keys: [], groups: {}, renderedCount: 0, htmlContainer: 'gridRiwayatOut' }
+        };
+        const BATCH_SIZE = 5; 
+        window.currentSoArtikelMap = {}; 
+
+        function groupData(dataArray) {
+            let grouped = {};
+            dataArray.forEach(d => {
+                let so = (d.so_number || "TANPA SO").toUpperCase();
+                let art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
+                let tipe = (d.jenis || "SOLID").toUpperCase(); 
+                let key = so + "|||" + art + "|||" + tipe; 
+                if (!grouped[key]) grouped[key] = { so: so, art: art, tipe: tipe, items: [] };
+                grouped[key].items.push(d);
+            });
+            return grouped;
+        }
+
         function renderData() {
-            const gridAktif = document.getElementById('gridKartonAktif');
-            const gridRiwayat = document.getElementById('gridRiwayatOut');
-            
             const fAktif = document.getElementById('filterSOAktif').value.toUpperCase().trim();
             const fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase().trim();
             const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat').value;
             
-            gridAktif.innerHTML = ''; gridRiwayat.innerHTML = '';
+            document.getElementById('gridKartonAktif').innerHTML = ''; 
+            document.getElementById('gridRiwayatOut').innerHTML = '';
 
             let dataAktif = rawData.filter(d => {
                 if (d.status !== "AKTIF") return false;
@@ -1083,11 +1106,12 @@
                 return matchText && matchKalender; 
             });
 
-            let soArtikelMap = {};
+            // Map untuk Peringatan SO Sama Beda Artikel
+            window.currentSoArtikelMap = {};
             rawData.filter(d => d.status === "AKTIF").forEach(d => {
                 let so = (d.so_number || "").toUpperCase(), art = (d.artikel || "").toUpperCase();
-                if (!soArtikelMap[so]) soArtikelMap[so] = new Set();
-                if (art) soArtikelMap[so].add(art);
+                if (!window.currentSoArtikelMap[so]) window.currentSoArtikelMap[so] = new Set();
+                if (art) window.currentSoArtikelMap[so].add(art);
             });
 
             const sorter = (a, b) => {
@@ -1101,161 +1125,183 @@
             };
             dataAktif.sort(sorter); dataOut.sort(sorter);
 
-function buildPivotHTML(dataArray, tabType) {
-                if (dataArray.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
-                let groupedBySOArt = {};
-                
-                let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
+            // Persiapan State untuk Lazy Loading
+            let groupedAktif = groupData(dataAktif);
+            window.infiniteScrollState.AKTIF.groups = groupedAktif;
+            window.infiniteScrollState.AKTIF.keys = Object.keys(groupedAktif).sort();
+            window.infiniteScrollState.AKTIF.renderedCount = 0;
 
-                // 🌟 UPDATE: Tambahkan 'jenis' ke kunci pengelompokan agar SOLID & MIX dipisah
-                dataArray.forEach(d => {
-                    let so = (d.so_number || "TANPA SO").toUpperCase();
-                    let art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
-                    let tipe = (d.jenis || "SOLID").toUpperCase(); 
-                    
-                    let key = so + "|||" + art + "|||" + tipe; 
-                    if (!groupedBySOArt[key]) groupedBySOArt[key] = { so: so, art: art, tipe: tipe, items: [] };
-                    groupedBySOArt[key].items.push(d);
-                });
+            let groupedOut = groupData(dataOut);
+            window.infiniteScrollState.OUT.groups = groupedOut;
+            window.infiniteScrollState.OUT.keys = Object.keys(groupedOut).sort();
+            window.infiniteScrollState.OUT.renderedCount = 0;
 
-                let htmlOutput = '';
-                Object.keys(groupedBySOArt).sort().forEach(key => {
-                    let group = groupedBySOArt[key];
-                    
-                    let groupOwner = group.items[0].diinput_oleh || '';
-                    let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
-
-                    // 🌟 UPDATE: Buat badge label khusus untuk ditaruh di sebelah SO
-                    let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
-
-                    htmlOutput += `
-                        <div class="pivot-group-header" onclick="toggleDropdown(this)">
-                            <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
-                                <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
-                                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; display:flex; align-items:center;">
-                                    <span>📦</span>
-                                    <b style="color:var(--primary); margin-left:6px;">${group.so}</b> 
-                                    ${badgeGroup}
-                                    <span style="color:var(--text-muted); font-weight:700; margin-left:6px;">| ${group.art}</span>
-                                </div>
-                            </div>
-                            <div style="display:flex; align-items:center; flex-shrink: 0;">
-                                <span class="pivot-count">${group.items.length} Karton</span>
-                                ${btnHapusSO}
-                            </div>
-                        </div>
-                        <div class="premium-grid">
-                    `;
-                    
-                    group.items.forEach(data => {
-                        let htmlKeterangan = data.keterangan ? `<div class="ket-text">📝 ${data.keterangan}</div>` : '';
-                        let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
-                        let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
-                        let isMultiArtikel = tabType === 'AKTIF' && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
-                        let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
-                        let isOwner = (data.diinput_oleh === currentUser);
-
-                        let visualTglMasuk = data.tanggal || '-';
-                        if (visualTglMasuk !== '-') {
-                            const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
-                            let splitTgl = visualTglMasuk.split(' ');
-                            if (splitTgl.length === 3) {
-                                let hari = splitTgl[0];
-                                let bulanAngka = mapBulan[splitTgl[1]] || splitTgl[1];
-                                let tahun = splitTgl[2];
-                                visualTglMasuk = `${hari}/${bulanAngka}/${tahun}`;
-                            }
-                        }
-
-                        let tglKeluarHtml = '';
-                        if (tabType === 'OUT') {
-                            let tglKeluar = data.tanggal_out;
-                            if (tglKeluar && tglKeluar.includes('-')) {
-                                let [y, m, d] = tglKeluar.split('-');
-                                tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
-                            }
-                            tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
-                        }
-
-                        let cardClass = 'premium-card';
-                        let actionHtml = '';
-
-                        if (tabType === 'AKTIF') {
-                            let btnEditHtml = isOwner ? `<button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>` : '';
-                            
-                            actionHtml = `
-                                <div class="action-row">
-                                    ${btnEditHtml}
-                                    <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
-                                </div>`;
-                        }
-
-                        let chkHtml = `<input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>`;
-
-                        htmlOutput += `
-                            <div class="${cardClass}">
-                                ${htmlPeringatanMulti}
-                                
-                                <div class="card-top">
-                                    <div class="card-so-wrap">
-                                        ${chkHtml}
-                                        <span class="card-so">${data.so_number}</span>
-                                    </div>
-                                    ${badgeJenis}
-                                </div>
-
-                                <div class="card-mid">
-                                    <span class="card-size">${data.size}</span>
-                                    ${tglKeluarHtml}
-                                </div>
-                                
-                                <div class="card-info-grid" style="margin-bottom: 10px;">
-                                    <div class="info-col">
-                                        <span class="lbl-sm">NO KARTON</span>
-                                        <span class="val-md">${data.nomor_karton}</span>
-                                    </div>
-                                    <div class="info-col" style="text-align: right;">
-                                        <span class="lbl-sm">LOKASI</span>
-                                        <span class="val-loc">${data.lokasi}</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
-                                    <div class="info-col">
-                                        <span class="lbl-sm">TIPE</span>
-                                        <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
-                                    </div>
-                                    <div class="info-col" style="text-align: center;">
-                                        <span class="lbl-sm">RUANGAN</span>
-                                        <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
-                                    </div>
-                                    <div class="info-col" style="text-align: right;">
-                                        <span class="lbl-sm">TGL MASUK</span>
-                                        <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="card-artikel">${data.artikel}</div>
-                                
-                                ${htmlKeterangan}
-                                
-                                <div class="card-footer">
-                                    <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
-                                </div>
-                                
-                                ${actionHtml}
-                            </div>
-                        `;
-                    });
-                    htmlOutput += `</div>`; 
-                });
-                return htmlOutput;
-            }
-            gridAktif.innerHTML = buildPivotHTML(dataAktif, 'AKTIF');
-            gridRiwayat.innerHTML = buildPivotHTML(dataOut, 'OUT');
+            // Render perdana (5 grup pertama)
+            renderNextBatch('AKTIF');
+            renderNextBatch('OUT');
             
             updateBulkDeleteUI();
         }
+
+        let isRendering = false;
+        window.renderNextBatch = (tabType) => {
+            if (isRendering) return;
+            isRendering = true;
+
+            let state = window.infiniteScrollState[tabType];
+            
+            if (state.renderedCount >= state.keys.length) {
+                isRendering = false;
+                return;
+            }
+
+            if (state.keys.length === 0) {
+                document.getElementById(state.htmlContainer).innerHTML = '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
+                isRendering = false;
+                return;
+            }
+
+            let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
+            let htmlOutput = '';
+            let startIdx = state.renderedCount;
+            let endIdx = Math.min(startIdx + BATCH_SIZE, state.keys.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                let key = state.keys[i];
+                let group = state.groups[key];
+                
+                let groupOwner = group.items[0].diinput_oleh || '';
+                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
+                let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
+
+                htmlOutput += `
+                    <div class="pivot-group-header" onclick="toggleDropdown(this)">
+                        <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
+                            <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
+                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; display:flex; align-items:center;">
+                                <span>📦</span>
+                                <b style="color:var(--primary); margin-left:6px;">${group.so}</b> 
+                                ${badgeGroup}
+                                <span style="color:var(--text-muted); font-weight:700; margin-left:6px;">| ${group.art}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; flex-shrink: 0;">
+                            <span class="pivot-count">${group.items.length} Karton</span>
+                            ${btnHapusSO}
+                        </div>
+                    </div>
+                    <div class="premium-grid">
+                `;
+                
+                group.items.forEach(data => {
+                    let htmlKeterangan = data.keterangan ? `<div class="ket-text">📝 ${data.keterangan}</div>` : '';
+                    let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
+                    let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
+                    let isMultiArtikel = tabType === 'AKTIF' && window.currentSoArtikelMap[group.so] && window.currentSoArtikelMap[group.so].size > 1;
+                    let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
+                    let isOwner = (data.diinput_oleh === currentUser);
+
+                    let visualTglMasuk = data.tanggal || '-';
+                    if (visualTglMasuk !== '-') {
+                        const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
+                        let splitTgl = visualTglMasuk.split(' ');
+                        if (splitTgl.length === 3) {
+                            let hari = splitTgl[0];
+                            let bulanAngka = mapBulan[splitTgl[1]] || splitTgl[1];
+                            let tahun = splitTgl[2];
+                            visualTglMasuk = `${hari}/${bulanAngka}/${tahun}`;
+                        }
+                    }
+
+                    let tglKeluarHtml = '';
+                    if (tabType === 'OUT') {
+                        let tglKeluar = data.tanggal_out;
+                        if (tglKeluar && tglKeluar.includes('-')) {
+                            let [y, m, d] = tglKeluar.split('-');
+                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                        }
+                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
+                    }
+
+                    let actionHtml = '';
+                    if (tabType === 'AKTIF') {
+                        let btnEditHtml = isOwner ? `<button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>` : '';
+                        actionHtml = `
+                            <div class="action-row">
+                                ${btnEditHtml}
+                                <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
+                            </div>`;
+                    }
+
+                    let chkHtml = `<input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>`;
+
+                    htmlOutput += `
+                        <div class="premium-card">
+                            ${htmlPeringatanMulti}
+                            <div class="card-top">
+                                <div class="card-so-wrap">
+                                    ${chkHtml}
+                                    <span class="card-so">${data.so_number}</span>
+                                </div>
+                                ${badgeJenis}
+                            </div>
+                            <div class="card-mid">
+                                <span class="card-size">${data.size}</span>
+                                ${tglKeluarHtml}
+                            </div>
+                            <div class="card-info-grid" style="margin-bottom: 10px;">
+                                <div class="info-col">
+                                    <span class="lbl-sm">NO KARTON</span>
+                                    <span class="val-md">${data.nomor_karton}</span>
+                                </div>
+                                <div class="info-col" style="text-align: right;">
+                                    <span class="lbl-sm">LOKASI</span>
+                                    <span class="val-loc">${data.lokasi}</span>
+                                </div>
+                            </div>
+                            <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
+                                <div class="info-col">
+                                    <span class="lbl-sm">TIPE</span>
+                                    <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
+                                </div>
+                                <div class="info-col" style="text-align: center;">
+                                    <span class="lbl-sm">RUANGAN</span>
+                                    <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
+                                </div>
+                                <div class="info-col" style="text-align: right;">
+                                    <span class="lbl-sm">TGL MASUK</span>
+                                    <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
+                                </div>
+                            </div>
+                            <div class="card-artikel">${data.artikel}</div>
+                            ${htmlKeterangan}
+                            <div class="card-footer">
+                                <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                            </div>
+                            ${actionHtml}
+                        </div>
+                    `;
+                });
+                htmlOutput += `</div>`; 
+            }
+
+            document.getElementById(state.htmlContainer).insertAdjacentHTML('beforeend', htmlOutput);
+            state.renderedCount = endIdx;
+            isRendering = false;
+        }
+
+        // Pemicu Scroll untuk Infinite Loading
+        window.addEventListener('scroll', () => {
+            // Ketika layar disekrol dan menyisakan jarak 150px ke bawah layar
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 150) {
+                if (document.getElementById('tabAktif').classList.contains('active')) {
+                    renderNextBatch('AKTIF');
+                }
+                if (document.getElementById('tabRiwayat').classList.contains('active')) {
+                    renderNextBatch('OUT');
+                }
+            }
+        });
 
         document.getElementById('filterSOAktif').addEventListener('input', renderData);
         document.getElementById('filterSORiwayat').addEventListener('input', renderData);
