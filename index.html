@@ -863,7 +863,6 @@
                     };
                     editRekapKeGAS(window.editOldSO, window.editOldCTN, rekapEditData);
                     
-                    // UPDATE: Trigger sinkronisasi ke FG WH jika data diubah
                     let syncPayload = [{ so: so, karton: dataToPush[0].noKarton, actionType: "UNCHECK" }];
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
@@ -879,7 +878,6 @@
                     });
                     await Promise.all(promises);
 
-                    // UPDATE: Trigger sinkronisasi UNCHECK ke spreadsheet FG WH 
                     let syncPayload = dataToPush.map(k => ({ so: so, karton: k.noKarton, actionType: "UNCHECK" }));
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
@@ -913,8 +911,15 @@
 
         window.hapusSemuaSO = async (e, soTarget, statusFilter) => {
             e.stopPropagation();
+            let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             const dataToDelete = rawData.filter(d => (d.so_number || "").toUpperCase() === soTarget && d.status === statusFilter);
             if(dataToDelete.length === 0) return alert('Data tidak ditemukan.');
+            
+            let notOwned = dataToDelete.some(d => d.diinput_oleh !== currentUser);
+            if (notOwned) {
+                return alert('⛔ AKSES DITOLAK: SO ini mengandung data yang diinput oleh orang lain. Anda hanya bisa menghapus data milik Anda sendiri.');
+            }
+
             if (!confirm(`⚠️ Hapus PERMANEN ${dataToDelete.length} karton untuk SO ${soTarget}? Tindakan ini tidak bisa dibatalkan.`)) return;
 
             for(let item of dataToDelete) {
@@ -925,6 +930,15 @@
         }
 
         window.hapusTerpilih = async () => {
+            let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
+            
+            for (let id of window.selectedIds) { 
+                let item = rawData.find(d => d.id === id);
+                if(item && item.diinput_oleh !== currentUser) {
+                    return alert('⛔ AKSES DITOLAK: Anda menyeleksi karton yang diinput oleh pengguna lain. Silakan un-check barang tersebut.');
+                }
+            }
+
             if(confirm(`⚠️ Hapus PERMANEN ${window.selectedIds.size} kardus yang dipilih? Tindakan ini tidak bisa dibatalkan.`)) {
                 for (let id of window.selectedIds) { 
                     await remove(ref(db, `stok_fg_wh/${id}`)); 
@@ -934,8 +948,13 @@
         }
 
         window.editSemuanya = (id) => {
+            let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             let item = rawData.find(d => d.id === id);
             if(!item) return;
+            
+            if(item.diinput_oleh !== currentUser) {
+                return alert('⛔ AKSES DITOLAK: Anda hanya bisa mengubah data yang Anda input sendiri.');
+            }
             
             window.editOldSO = item.so_number;
             window.editOldCTN = item.nomor_karton;
@@ -1016,7 +1035,6 @@
                     updateRekapKeluar(rekapOutPayload);
                 }
                 
-                // UPDATE: Trigger sinkronisasi CHECK kembali ke FG WH
                 if(syncPayload.length > 0) {
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
@@ -1086,6 +1104,9 @@
             function buildPivotHTML(dataArray, tabType) {
                 if (dataArray.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
                 let groupedBySOArt = {};
+                
+                let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
+
                 dataArray.forEach(d => {
                     let so = (d.so_number || "TANPA SO").toUpperCase(), art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
                     let key = so + "|||" + art; 
@@ -1096,7 +1117,9 @@
                 let htmlOutput = '';
                 Object.keys(groupedBySOArt).sort().forEach(key => {
                     let group = groupedBySOArt[key];
-                    let btnHapusSO = `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>`;
+                    
+                    let groupOwner = group.items[0].diinput_oleh || '';
+                    let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
 
                     htmlOutput += `
                         <div class="pivot-group-header" onclick="toggleDropdown(this)">
@@ -1121,6 +1144,20 @@
                         let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
                         let isMultiArtikel = tabType === 'AKTIF' && soArtikelMap[group.so] && soArtikelMap[group.so].size > 1;
                         let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
+                        let isOwner = (data.diinput_oleh === currentUser);
+
+                        // --- 🌟 PENERJEMAH FORMAT TANGGAL MASUK VISUAL ---
+                        let visualTglMasuk = data.tanggal || '-';
+                        if (visualTglMasuk !== '-') {
+                            const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
+                            let splitTgl = visualTglMasuk.split(' ');
+                            if (splitTgl.length === 3) {
+                                let hari = splitTgl[0];
+                                let bulanAngka = mapBulan[splitTgl[1]] || splitTgl[1];
+                                let tahun = splitTgl[2];
+                                visualTglMasuk = `${hari}/${bulanAngka}/${tahun}`;
+                            }
+                        }
 
                         let tglKeluarHtml = '';
                         if (tabType === 'OUT') {
@@ -1133,12 +1170,14 @@
                         }
 
                         let cardClass = 'premium-card';
-
                         let actionHtml = '';
+
                         if (tabType === 'AKTIF') {
+                            let btnEditHtml = isOwner ? `<button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>` : '';
+                            
                             actionHtml = `
                                 <div class="action-row">
-                                    <button class="btn-edit" onclick="editSemuanya('${data.id}')">EDIT</button>
+                                    ${btnEditHtml}
                                     <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
                                 </div>`;
                         }
@@ -1184,7 +1223,7 @@
                                     </div>
                                     <div class="info-col" style="text-align: right;">
                                         <span class="lbl-sm">TGL MASUK</span>
-                                        <span class="val-md" style="font-size: 11px;">${data.tanggal || '-'}</span>
+                                        <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
                                     </div>
                                 </div>
                                 
@@ -1221,7 +1260,6 @@
                 if(itemData) {
                     updateRekapKeluar([{ so: itemData.so_number, ctn: itemData.nomor_karton }]);
                     
-                    // UPDATE: Trigger sinkronisasi CHECK kembali ke FG WH
                     let syncPayload = [{ so: itemData.so_number, karton: itemData.nomor_karton, actionType: "CHECK" }];
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
