@@ -205,6 +205,18 @@
         .bulk-btn { padding: 8px 16px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 12px; border: none;}
         .bulk-btn-out { background: var(--secondary); color: white; }
         .bulk-btn-del { background: var(--primary); color: white; }
+
+        /* ========================================================
+           📱 RESPONSIVE MOBILE FIX (TAMPILAN HP)
+           ======================================================== */
+        @media (max-width: 768px) {
+            .premium-grid { grid-template-columns: 1fr; }
+            .form-row { flex-direction: column; gap: 12px; }
+            .form-row.karton-item { flex-direction: row; align-items: center; }
+            #tabRiwayat .sticky-filter { flex-direction: column; }
+            .summary-panel h2 { font-size: 38px; }
+            .content { padding: 15px 15px; }
+        }
     </style>
 </head>
 <body>
@@ -290,7 +302,6 @@
                 <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridKartonAktif"></div> 
-            <div id="loaderAktif" style="text-align:center; padding:15px; color:var(--text-muted); font-weight:800; font-size:12px; display:none;">🔄 Memuat data...</div>
         </div>
 
         <div id="tabRiwayat" class="content">
@@ -299,7 +310,6 @@
                 <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO, Style, User, Keterangan...">
             </div>
             <div id="gridRiwayatOut"></div> 
-            <div id="loaderRiwayat" style="text-align:center; padding:15px; color:var(--text-muted); font-weight:800; font-size:12px; display:none;">🔄 Memuat data...</div>
         </div>
 
         <div id="tabLokasi" class="content">
@@ -663,15 +673,22 @@
             }
             document.getElementById('ruanganInput').value = '';
             
+            // 🌟 SET JENIS SESUAI DATA YANG DITARIK DARI EXCEL
+            let isMixData = selectedData[0].size === '-' || selectedData[0].size === 'MIX';
+            document.getElementById('jenisInput').value = isMixData ? 'MIX' : 'SOLID';
+            
             const list = document.getElementById('kartonList');
             list.innerHTML = ''; 
+
+            let sizeVal = isMixData ? '-' : selectedData[0].size;
+            let readOnlyAttr = isMixData ? 'readonly style="background-color:var(--border);"' : '';
 
             selectedData.forEach(d => {
                 const row = document.createElement('div');
                 row.className = 'form-row karton-item';
                 row.style.marginBottom = '12px';
                 row.innerHTML = `
-                    <input type="text" class="form-input size-input" value="${d.size}" placeholder="Ukuran">
+                    <input type="text" class="form-input size-input" value="${sizeVal}" placeholder="Ukuran" ${readOnlyAttr}>
                     <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${d.karton}" placeholder="No. Karton">
                     <button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>
                 `;
@@ -685,6 +702,22 @@
             document.querySelectorAll('.chk-select-stok').forEach(cb => cb.checked = false);
             openTab('tabInput', document.getElementById('btnTabInput'));
         }
+
+        // 🌟 LISTENER OTOMATISASI KOTAK UKURAN UNTUK TIPE MIX/SOLID
+        document.getElementById('jenisInput').addEventListener('change', function() {
+            let isMix = this.value === 'MIX';
+            document.querySelectorAll('.size-input').forEach(input => {
+                if (isMix) {
+                    input.value = '-';
+                    input.readOnly = true;
+                    input.style.backgroundColor = 'var(--border)';
+                } else {
+                    if (input.value === '-' || input.value === 'MIX') input.value = '';
+                    input.readOnly = false;
+                    input.style.backgroundColor = '';
+                }
+            });
+        });
 
         function applyUppercaseListener() {
             document.querySelectorAll('input[type="text"]').forEach(input => {
@@ -707,13 +740,14 @@
                             val = '#' + val;
                         }
                         
-                        if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
+                        // Isi otomatis hanya jika mode SOLID
+                        if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0 && document.getElementById('jenisInput').value !== 'MIX') {
                             let match = dataStokExcel.find(d => d.karton === val);
                             if (match) {
                                 let row = this.closest('.karton-item');
                                 if (row) {
                                     let sizeInput = row.querySelector('.size-input');
-                                    if(sizeInput) sizeInput.value = match.size;
+                                    if(sizeInput && !sizeInput.readOnly) sizeInput.value = match.size;
                                 }
                             }
                         }
@@ -724,18 +758,6 @@
                         if(val !== '' && !val.startsWith('#')) {
                             this.value = '#' + val;
                         }
-                        
-                        val = this.value.trim();
-                        if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0) {
-                            let match = dataStokExcel.find(d => d.karton === val);
-                            if (match) {
-                                let row = this.closest('.karton-item');
-                                if (row) {
-                                    let sizeInput = row.querySelector('.size-input');
-                                    if(sizeInput) sizeInput.value = match.size;
-                                }
-                            }
-                        }
                     });
                 }
             });
@@ -743,12 +765,18 @@
 
         applyUppercaseListener(); applyKartonFormatListener();
 
+        // 🌟 SESUAIKAN TOMBOL TAMBAH BARIS DENGAN MODE MIX
         document.getElementById('btnTambahBaris').addEventListener('click', () => {
             const list = document.getElementById('kartonList');
             const row = document.createElement('div');
             row.className = 'form-row karton-item';
             row.style.marginBottom = '12px';
-            row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
+            
+            let isMix = document.getElementById('jenisInput').value === 'MIX';
+            let sizeVal = isMix ? '-' : '';
+            let readOnlyAttr = isMix ? 'readonly style="background-color:var(--border);"' : '';
+
+            row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Ukuran" value="${sizeVal}" ${readOnlyAttr}><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
             list.appendChild(row);
             applyUppercaseListener(); applyKartonFormatListener();
         });
@@ -775,7 +803,7 @@
         window.toggleDropdown = (headerEl) => {
             const grid = headerEl.nextElementSibling;
             const icon = headerEl.querySelector('.toggle-icon');
-            if (grid.style.display === 'none') {
+            if (grid.style.display === 'none' || grid.style.display === '') {
                 grid.style.display = 'grid'; 
                 icon.innerText = '▼';
             } else {
@@ -949,6 +977,7 @@
             }
         }
 
+        // 🌟 SESUAIKAN FUNGSI EDIT DENGAN MODE MIX
         window.editSemuanya = (id) => {
             let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             let item = rawData.find(d => d.id === id);
@@ -973,7 +1002,12 @@
             document.getElementById('lokasiInput').value = item.lokasi;
             document.getElementById('ruanganInput').value = item.ruangan || '';
             document.getElementById('keteranganInput').value = item.keterangan || '';
-            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" value="${item.size}"><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
+            
+            let isMix = item.jenis === 'MIX';
+            let sizeVal = isMix ? '-' : item.size;
+            let readOnlyAttr = isMix ? 'readonly style="background-color:var(--border);"' : '';
+
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" value="${sizeVal}" ${readOnlyAttr}><input type="text" inputmode="numeric" class="form-input nokarton-input" value="${item.nomor_karton}"><button class="btn-hapus-baris" style="display:none;">❌</button></div>`;
             
             applyUppercaseListener(); applyKartonFormatListener();
             window.currentEditId = id;
@@ -1047,13 +1081,10 @@
         }
 
         /* =========================================================================
-           🚀 SISTEM INFINITE SCROLL / LAZY LOADING OPSI 2 (Beban Ringan)
+           🚀 SISTEM RENDER DATA & LAZY LOADING (KHUSUS TAB RIWAYAT)
            ========================================================================= */
-        window.infiniteScrollState = {
-            AKTIF: { keys: [], groups: {}, renderedCount: 0, htmlContainer: 'gridKartonAktif' },
-            OUT: { keys: [], groups: {}, renderedCount: 0, htmlContainer: 'gridRiwayatOut' }
-        };
-        const BATCH_SIZE = 5; 
+        window.infiniteScrollState = { OUT: { keys: [], groups: {}, renderedCount: 0 } };
+        const BATCH_SIZE = 15; 
         window.currentSoArtikelMap = {}; 
 
         function groupData(dataArray) {
@@ -1069,107 +1100,15 @@
             return grouped;
         }
 
-        function renderData() {
-            const fAktif = document.getElementById('filterSOAktif').value.toUpperCase().trim();
-            const fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase().trim();
-            const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat').value;
+        function buildPivotHTML(groupedData, tabType) {
+            let keys = Object.keys(groupedData).sort();
+            if (keys.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
             
-            document.getElementById('gridKartonAktif').innerHTML = ''; 
-            document.getElementById('gridRiwayatOut').innerHTML = '';
-
-            let dataAktif = rawData.filter(d => {
-                if (d.status !== "AKTIF") return false;
-                if (!fAktif) return true;
-                return (d.so_number || "").toUpperCase().includes(fAktif) || 
-                       (d.artikel || "").toUpperCase().includes(fAktif) || 
-                       (d.diinput_oleh || "").toUpperCase().includes(fAktif) || 
-                       (d.keterangan || "").toUpperCase().includes(fAktif);
-            });
-
-            let dataOut = rawData.filter(d => {
-                if (d.status !== "OUT") return false;
-                let tglLokal = "";
-                if (d.tanggal_out) {
-                    let [y, m, day] = d.tanggal_out.split('-');
-                    if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('id-ID').toUpperCase();
-                }
-                let matchText = true;
-                if(fRiwayat) {
-                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || 
-                                (d.artikel || "").toUpperCase().includes(fRiwayat) || 
-                                (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || 
-                                (d.keterangan || "").toUpperCase().includes(fRiwayat) || 
-                                tglLokal.includes(fRiwayat); 
-                }
-                let matchKalender = true;
-                if(fTglRiwayatInput) matchKalender = (d.tanggal_out === fTglRiwayatInput);
-                return matchText && matchKalender; 
-            });
-
-            // Map untuk Peringatan SO Sama Beda Artikel
-            window.currentSoArtikelMap = {};
-            rawData.filter(d => d.status === "AKTIF").forEach(d => {
-                let so = (d.so_number || "").toUpperCase(), art = (d.artikel || "").toUpperCase();
-                if (!window.currentSoArtikelMap[so]) window.currentSoArtikelMap[so] = new Set();
-                if (art) window.currentSoArtikelMap[so].add(art);
-            });
-
-            const sorter = (a, b) => {
-                let soA = (a.so_number || "").toString();
-                let soB = (b.so_number || "").toString();
-                if (soA !== soB) return soA.localeCompare(soB);
-                if (a.sizeValue !== b.sizeValue) return (a.sizeValue || 0) - (b.sizeValue || 0);
-                let kA = (a.nomor_karton || "").toString();
-                let kB = (b.nomor_karton || "").toString();
-                return kA.localeCompare(kB);
-            };
-            dataAktif.sort(sorter); dataOut.sort(sorter);
-
-            // Persiapan State untuk Lazy Loading
-            let groupedAktif = groupData(dataAktif);
-            window.infiniteScrollState.AKTIF.groups = groupedAktif;
-            window.infiniteScrollState.AKTIF.keys = Object.keys(groupedAktif).sort();
-            window.infiniteScrollState.AKTIF.renderedCount = 0;
-
-            let groupedOut = groupData(dataOut);
-            window.infiniteScrollState.OUT.groups = groupedOut;
-            window.infiniteScrollState.OUT.keys = Object.keys(groupedOut).sort();
-            window.infiniteScrollState.OUT.renderedCount = 0;
-
-            // Render perdana (5 grup pertama)
-            renderNextBatch('AKTIF');
-            renderNextBatch('OUT');
-            
-            updateBulkDeleteUI();
-        }
-
-        let isRendering = false;
-        window.renderNextBatch = (tabType) => {
-            if (isRendering) return;
-            isRendering = true;
-
-            let state = window.infiniteScrollState[tabType];
-            
-            if (state.renderedCount >= state.keys.length) {
-                isRendering = false;
-                return;
-            }
-
-            if (state.keys.length === 0) {
-                document.getElementById(state.htmlContainer).innerHTML = '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
-                isRendering = false;
-                return;
-            }
-
             let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             let htmlOutput = '';
-            let startIdx = state.renderedCount;
-            let endIdx = Math.min(startIdx + BATCH_SIZE, state.keys.length);
-
-            for (let i = startIdx; i < endIdx; i++) {
-                let key = state.keys[i];
-                let group = state.groups[key];
-                
+            
+            keys.forEach(key => {
+                let group = groupedData[key];
                 let groupOwner = group.items[0].diinput_oleh || '';
                 let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
                 let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
@@ -1177,7 +1116,7 @@
                 htmlOutput += `
                     <div class="pivot-group-header" onclick="toggleDropdown(this)">
                         <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
-                            <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▼</span>
+                            <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▶</span>
                             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; display:flex; align-items:center;">
                                 <span>📦</span>
                                 <b style="color:var(--primary); margin-left:6px;">${group.so}</b> 
@@ -1190,7 +1129,7 @@
                             ${btnHapusSO}
                         </div>
                     </div>
-                    <div class="premium-grid">
+                    <div class="premium-grid" style="display: none;"> 
                 `;
                 
                 group.items.forEach(data => {
@@ -1283,20 +1222,216 @@
                     `;
                 });
                 htmlOutput += `</div>`; 
-            }
-
-            document.getElementById(state.htmlContainer).insertAdjacentHTML('beforeend', htmlOutput);
-            state.renderedCount = endIdx;
-            isRendering = false;
+            });
+            return htmlOutput;
         }
 
-        // Pemicu Scroll untuk Infinite Loading
-        window.addEventListener('scroll', () => {
-            // Ketika layar disekrol dan menyisakan jarak 150px ke bawah layar
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 150) {
-                if (document.getElementById('tabAktif').classList.contains('active')) {
-                    renderNextBatch('AKTIF');
+        function renderData() {
+            const fAktif = document.getElementById('filterSOAktif').value.toUpperCase().trim();
+            const fRiwayat = document.getElementById('filterSORiwayat').value.toUpperCase().trim();
+            const fTglRiwayatInput = document.getElementById('filterTanggalRiwayat').value;
+            
+            let dataAktif = rawData.filter(d => {
+                if (d.status !== "AKTIF") return false;
+                if (!fAktif) return true;
+                return (d.so_number || "").toUpperCase().includes(fAktif) || 
+                       (d.artikel || "").toUpperCase().includes(fAktif) || 
+                       (d.diinput_oleh || "").toUpperCase().includes(fAktif) || 
+                       (d.keterangan || "").toUpperCase().includes(fAktif);
+            });
+
+            let dataOut = rawData.filter(d => {
+                if (d.status !== "OUT") return false;
+                let tglLokal = "";
+                if (d.tanggal_out) {
+                    let [y, m, day] = d.tanggal_out.split('-');
+                    if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('id-ID').toUpperCase();
                 }
+                let matchText = true;
+                if(fRiwayat) {
+                    matchText = (d.so_number || "").toUpperCase().includes(fRiwayat) || 
+                                (d.artikel || "").toUpperCase().includes(fRiwayat) || 
+                                (d.diinput_oleh || "").toUpperCase().includes(fRiwayat) || 
+                                (d.keterangan || "").toUpperCase().includes(fRiwayat) || 
+                                tglLokal.includes(fRiwayat); 
+                }
+                let matchKalender = true;
+                if(fTglRiwayatInput) matchKalender = (d.tanggal_out === fTglRiwayatInput);
+                return matchText && matchKalender; 
+            });
+
+            window.currentSoArtikelMap = {};
+            rawData.filter(d => d.status === "AKTIF").forEach(d => {
+                let so = (d.so_number || "").toUpperCase(), art = (d.artikel || "").toUpperCase();
+                if (!window.currentSoArtikelMap[so]) window.currentSoArtikelMap[so] = new Set();
+                if (art) window.currentSoArtikelMap[so].add(art);
+            });
+
+            const sorter = (a, b) => {
+                let soA = (a.so_number || "").toString();
+                let soB = (b.so_number || "").toString();
+                if (soA !== soB) return soA.localeCompare(soB);
+                if (a.sizeValue !== b.sizeValue) return (a.sizeValue || 0) - (b.sizeValue || 0);
+                let kA = (a.nomor_karton || "").toString();
+                let kB = (b.nomor_karton || "").toString();
+                return kA.localeCompare(kB);
+            };
+            
+            dataAktif.sort(sorter); 
+            dataOut.sort(sorter);
+
+            let groupedAktif = groupData(dataAktif);
+            document.getElementById('gridKartonAktif').innerHTML = buildPivotHTML(groupedAktif, 'AKTIF');
+
+            let groupedOut = groupData(dataOut);
+            window.infiniteScrollState.OUT.groups = groupedOut;
+            window.infiniteScrollState.OUT.keys = Object.keys(groupedOut).sort();
+            window.infiniteScrollState.OUT.renderedCount = 0;
+            document.getElementById('gridRiwayatOut').innerHTML = ''; 
+            renderNextBatch('OUT');
+            
+            updateBulkDeleteUI();
+        }
+
+        let isRendering = false;
+        window.renderNextBatch = (tabType) => {
+            if (isRendering) return;
+            isRendering = true;
+
+            let state = window.infiniteScrollState[tabType];
+            
+            if (state.renderedCount >= state.keys.length) {
+                isRendering = false;
+                return;
+            }
+
+            if (state.keys.length === 0) {
+                document.getElementById('gridRiwayatOut').innerHTML = '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
+                isRendering = false;
+                return;
+            }
+
+            let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
+            let htmlOutput = '';
+            let startIdx = state.renderedCount;
+            let endIdx = Math.min(startIdx + BATCH_SIZE, state.keys.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                let key = state.keys[i];
+                let group = state.groups[key];
+                
+                let groupOwner = group.items[0].diinput_oleh || '';
+                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
+                let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
+
+                htmlOutput += `
+                    <div class="pivot-group-header" onclick="toggleDropdown(this)">
+                        <div style="display:flex; align-items:center; gap:8px; flex: 1; overflow: hidden;">
+                            <span class="toggle-icon" style="font-size:10px; color:var(--text-muted); flex-shrink: 0;">▶</span>
+                            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; display:flex; align-items:center;">
+                                <span>📦</span>
+                                <b style="color:var(--primary); margin-left:6px;">${group.so}</b> 
+                                ${badgeGroup}
+                                <span style="color:var(--text-muted); font-weight:700; margin-left:6px;">| ${group.art}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; flex-shrink: 0;">
+                            <span class="pivot-count">${group.items.length} Karton</span>
+                            ${btnHapusSO}
+                        </div>
+                    </div>
+                    <div class="premium-grid" style="display: none;">
+                `;
+                
+                group.items.forEach(data => {
+                    let htmlKeterangan = data.keterangan ? `<div class="ket-text">📝 ${data.keterangan}</div>` : '';
+                    let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
+                    let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
+                    let isOwner = (data.diinput_oleh === currentUser);
+
+                    let visualTglMasuk = data.tanggal || '-';
+                    if (visualTglMasuk !== '-') {
+                        const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
+                        let splitTgl = visualTglMasuk.split(' ');
+                        if (splitTgl.length === 3) {
+                            let hari = splitTgl[0];
+                            let bulanAngka = mapBulan[splitTgl[1]] || splitTgl[1];
+                            let tahun = splitTgl[2];
+                            visualTglMasuk = `${hari}/${bulanAngka}/${tahun}`;
+                        }
+                    }
+
+                    let tglKeluarHtml = '';
+                    if (tabType === 'OUT') {
+                        let tglKeluar = data.tanggal_out;
+                        if (tglKeluar && tglKeluar.includes('-')) {
+                            let [y, m, d] = tglKeluar.split('-');
+                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                        }
+                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
+                    }
+
+                    let chkHtml = `<input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>`;
+
+                    htmlOutput += `
+                        <div class="premium-card">
+                            <div class="card-top">
+                                <div class="card-so-wrap">
+                                    ${chkHtml}
+                                    <span class="card-so">${data.so_number}</span>
+                                </div>
+                                ${badgeJenis}
+                            </div>
+                            <div class="card-mid">
+                                <span class="card-size">${data.size}</span>
+                                ${tglKeluarHtml}
+                            </div>
+                            <div class="card-info-grid" style="margin-bottom: 10px;">
+                                <div class="info-col">
+                                    <span class="lbl-sm">NO KARTON</span>
+                                    <span class="val-md">${data.nomor_karton}</span>
+                                </div>
+                                <div class="info-col" style="text-align: right;">
+                                    <span class="lbl-sm">LOKASI</span>
+                                    <span class="val-loc">${data.lokasi}</span>
+                                </div>
+                            </div>
+                            <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
+                                <div class="info-col">
+                                    <span class="lbl-sm">TIPE</span>
+                                    <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
+                                </div>
+                                <div class="info-col" style="text-align: center;">
+                                    <span class="lbl-sm">RUANGAN</span>
+                                    <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
+                                </div>
+                                <div class="info-col" style="text-align: right;">
+                                    <span class="lbl-sm">TGL MASUK</span>
+                                    <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
+                                </div>
+                            </div>
+                            <div class="card-artikel">${data.artikel}</div>
+                            ${htmlKeterangan}
+                            <div class="card-footer">
+                                <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                htmlOutput += `</div>`; 
+            }
+
+            document.getElementById('gridRiwayatOut').insertAdjacentHTML('beforeend', htmlOutput);
+            state.renderedCount = endIdx;
+            isRendering = false;
+            
+            if (document.documentElement.scrollHeight <= window.innerHeight + 50 && state.renderedCount < state.keys.length) {
+                setTimeout(() => renderNextBatch(tabType), 50);
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 150) {
                 if (document.getElementById('tabRiwayat').classList.contains('active')) {
                     renderNextBatch('OUT');
                 }
