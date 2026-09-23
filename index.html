@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
 
     <style>
         /* ========================================================
-           🌟 TEMA TERANG (LIGHT MODE) - LUXURY CLEAN
+           🌟 LIGHT MODE - LUXURY CLEAN
            ======================================================== */
         :root {
             --bg-color: #f3f6f9;
@@ -34,7 +34,7 @@
         }
 
         /* ========================================================
-           🌙 TEMA GELAP (DARK MODE) - MIDNIGHT ELEGANCE
+           🌙 DARK MODE - MIDNIGHT ELEGANCE
            ======================================================== */
         body.dark-mode {
             color-scheme: dark; 
@@ -207,7 +207,7 @@
         .bulk-btn-del { background: var(--primary); color: white; }
 
         /* ========================================================
-           📱 RESPONSIVE MOBILE FIX (TAMPILAN HP)
+           📱 RESPONSIVE MOBILE FIX 
            ======================================================== */
         @media (max-width: 768px) {
             .premium-grid { grid-template-columns: 1fr; }
@@ -228,7 +228,7 @@
             <p>Production Planning Finish Goods WH</p>
             <button class="btn-google" id="btnGoogleLogin">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
-                Masuk dengan Google
+                Sign in with Google
             </button>
         </div>
     </div>
@@ -238,68 +238,68 @@
         <div class="app-header">
             <button class="btn-mode" id="btnDarkMode">🌙</button>
             <img src="logo.png" alt="Logo">
-            <button class="btn-logout" id="btnLogout">Keluar</button>
+            <button class="btn-logout" id="btnLogout">Logout</button>
         </div>
 
         <div id="tabInput" class="content">
             <div style="background: var(--surface); padding: 20px; border-radius: var(--radius-xl); border: 1px dashed var(--text-muted); margin-bottom: 25px; box-shadow: var(--shadow-card);">
-                <span style="font-size: 11px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 12px; letter-spacing: 0.5px;">⚡ TARIK DATA STOK OTOMATIS</span>
+                <span style="font-size: 11px; font-weight: 900; color: var(--primary); display: block; margin-bottom: 12px; letter-spacing: 0.5px;">⚡ AUTO PULL STOCK DATA</span>
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="soTarikExcel" class="form-input" style="flex: 2; border-radius: var(--radius-md);" placeholder="Masukkan SO...">
-                    <button id="btnTarikSO" style="flex: 1; background: var(--text-main); color: var(--surface); border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer;">SINKRON</button>
+                    <input type="text" id="soTarikExcel" class="form-input" style="flex: 2; border-radius: var(--radius-md);" placeholder="Enter SO...">
+                    <button id="btnTarikSO" style="flex: 1; background: var(--text-main); color: var(--surface); border: none; border-radius: var(--radius-md); font-weight: 800; cursor: pointer;">SYNC</button>
                 </div>
                 <div id="statusTarik" style="font-size: 11px; font-weight: 800; margin-top: 12px; color: var(--primary);"></div>
             </div>
 
             <div class="form-card" id="formSmart">
-                <h3><span style="font-size:22px;">📝</span> Form Input Manual</h3>
+                <h3><span style="font-size:22px;">📝</span> Manual Input Form</h3>
                 <div class="form-row">
                     <input type="date" id="tanggalInput" class="form-input">
-                    <input type="text" id="soInput" class="form-input" placeholder="SO (Cth: 2026PYN)">
+                    <input type="text" id="soInput" class="form-input" placeholder="SO (e.g. 2026PYN)">
                 </div>
                 <div class="form-row">
                     <select id="jenisInput" class="form-select">
                         <option value="SOLID">📦 SOLID</option>
                         <option value="MIX">🔀 MIX</option>
                     </select>
-                    <input type="text" id="artikelInput" class="form-input" placeholder="Artikel / Style">
+                    <input type="text" id="artikelInput" class="form-input" placeholder="Article / Style">
                 </div>
                 <div class="form-row">
-                    <input type="text" id="lokasiInput" class="form-input" placeholder="Lokasi (AR01-000)">
+                    <input type="text" id="lokasiInput" class="form-input" placeholder="Location (AR01-000)">
                     <select id="ruanganInput" class="form-select">
-                        <option value="">🏭 Pilih Ruangan</option>
+                        <option value="">🏭 Select Room</option>
                         <option value="SI 1">SI 1</option>
                         <option value="SI 2">SI 2</option>
                     </select>
                 </div>
                 <div class="form-row">
-                    <input type="text" id="keteranganInput" class="form-input" placeholder="Keterangan (Opsional)">
+                    <input type="text" id="keteranganInput" class="form-input" placeholder="Note (Optional)">
                 </div>
 
                 <div class="dynamic-box">
-                    <div class="dynamic-header">Detail Karton</div>
+                    <div class="dynamic-header">Carton Details</div>
                     <div id="kartonList">
                         <div class="form-row karton-item" style="margin-bottom: 12px;">
-                            <input type="text" class="form-input size-input" placeholder="Ukuran">
-                            <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton">
+                            <input type="text" class="form-input size-input" placeholder="Size">
+                            <input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Ctn No.">
                             <button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button>
                         </div>
                     </div>
-                    <button id="btnTambahBaris" class="btn-tambah-baris">+ Tambah Baris Baru</button>
+                    <button id="btnTambahBaris" class="btn-tambah-baris">+ Add New Row</button>
                 </div>
                 
-                <button class="btn-add" id="btnTambah">Simpan Data Stok</button>
+                <button class="btn-add" id="btnTambah">Save Stock Data</button>
                 
                 <div id="editActionGroup" class="form-row" style="display: none; margin-top:20px;">
-                    <button class="btn-tambah-baris" onclick="batalEdit()">Batal Edit</button>
-                    <button class="btn-add" style="background:var(--danger-text); width:auto; box-shadow:none;" onclick="hapusPermanen()">Hapus</button>
+                    <button class="btn-tambah-baris" onclick="batalEdit()">Cancel Edit</button>
+                    <button class="btn-add" style="background:var(--danger-text); width:auto; box-shadow:none;" onclick="hapusPermanen()">Delete</button>
                 </div>
             </div>
         </div>
 
         <div id="tabAktif" class="content active">
             <div class="sticky-filter">
-                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Cari SO, Style, User, Keterangan...">
+                <input type="text" id="filterSOAktif" class="search-box" placeholder="🔍 Search SO, Style, User, Note...">
             </div>
             <div id="gridKartonAktif"></div> 
         </div>
@@ -307,25 +307,25 @@
         <div id="tabRiwayat" class="content">
             <div class="sticky-filter" style="display: flex; gap: 12px;">
                 <input type="date" id="filterTanggalRiwayat" class="search-box" style="flex: 1; font-size: 13px;">
-                <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Cari SO, Style, User, Keterangan...">
+                <input type="text" id="filterSORiwayat" class="search-box" style="flex: 1.5; font-size: 13px;" placeholder="🔍 Search SO, Style, User, Note...">
             </div>
             <div id="gridRiwayatOut"></div> 
         </div>
 
         <div id="tabLokasi" class="content">
             <div class="sticky-filter">
-                <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
+                <input type="text" id="filterCariLokasi" class="search-box" placeholder="🔍 Enter SO (e.g. 10206297)...">
             </div>
-            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Unduh Data Lokasi Spreadsheet</button>
+            <button class="btn-add" id="btnSyncLokasi" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Download Location Data</button>
             <div id="statusLokasi" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
             <div id="gridLokasi" class="premium-grid single-col"></div>
         </div>
 
         <div id="tabListStok" class="content">
             <div class="sticky-filter">
-                <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Masukkan SO (Cth: 10206297)...">
+                <input type="text" id="inputCariListStok" class="search-box" placeholder="🔍 Enter SO (e.g. 10206297)...">
             </div>
-            <button class="btn-add" id="btnCariListStok" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Cari Data Stok Spreadsheet</button>
+            <button class="btn-add" id="btnCariListStok" style="margin-bottom: 25px; background: var(--text-main); color: var(--surface); box-shadow: var(--shadow-card);">🔄 Search Spreadsheet Stock Data</button>
             <div id="statusListStok" style="text-align:center; font-size:12px; font-weight:800; margin-bottom:20px; color:var(--text-muted);"></div>
             
             <div id="summaryStokContainer"></div>
@@ -334,24 +334,24 @@
 
         <div class="tab-bar">
             <div id="btnTabInput" class="tab-btn" onclick="openTab('tabInput', this)"><span class="icon">➕</span> Input</div>
-            <div id="btnTabAktifTargetElement" class="tab-btn active" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> Aktif</div>
-            <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)"><span class="icon">⏱️</span> Riwayat</div>
-            <div id="btnTabListStok" class="tab-btn" onclick="openTab('tabListStok', this)"><span class="icon">📋</span> Stok FG</div>
-            <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)"><span class="icon">📍</span> Lokasi</div>
+            <div id="btnTabAktifTargetElement" class="tab-btn active" onclick="openTab('tabAktif', this)"><span class="icon">📦</span> In-Stock</div>
+            <div id="btnTabRiwayat" class="tab-btn" onclick="openTab('tabRiwayat', this)"><span class="icon">⏱️</span> Dispatched</div>
+            <div id="btnTabListStok" class="tab-btn" onclick="openTab('tabListStok', this)"><span class="icon">📋</span> FG Stock</div>
+            <div id="btnTabLokasi" class="tab-btn" onclick="openTab('tabLokasi', this)"><span class="icon">📍</span> Location</div>
         </div>
     </div>
 
     <!-- BULK BAR -->
     <div class="bulk-action-bar" id="bulkActionBar">
-        <span id="bulkCount">0 Dipilih</span>
-        <button class="bulk-btn bulk-btn-out" id="btnBulkOut" onclick="outTerpilih()">Keluarkan</button>
-        <button class="bulk-btn bulk-btn-del" id="btnBulkDel" onclick="hapusTerpilih()">Hapus</button>
+        <span id="bulkCount">0 Selected</span>
+        <button class="bulk-btn bulk-btn-out" id="btnBulkOut" onclick="outTerpilih()">Dispatch</button>
+        <button class="bulk-btn bulk-btn-del" id="btnBulkDel" onclick="hapusTerpilih()">Delete</button>
     </div>
 
     <!-- BULK BAR KHUSUS UNTUK STOK FG -->
     <div class="bulk-action-bar" id="bulkActionStokBar" style="background: rgba(16, 185, 129, 0.95); bottom: 95px; border-color: rgba(255,255,255,0.2);">
-        <span id="bulkStokCount">0 Dipilih</span>
-        <button class="bulk-btn" style="background: white; color: var(--secondary);" onclick="pindahkanKeInput()">✨ Input Manual</button>
+        <span id="bulkStokCount">0 Selected</span>
+        <button class="bulk-btn" style="background: white; color: var(--secondary);" onclick="pindahkanKeInput()">✨ Manual Input</button>
     </div>
 
     <script type="module">
@@ -381,7 +381,7 @@
         });
 
         document.getElementById('btnGoogleLogin').addEventListener('click', () => signInWithPopup(auth, provider));
-        document.getElementById('btnLogout').addEventListener('click', () => { if(confirm("Keluar dari sistem?")) signOut(auth); });
+        document.getElementById('btnLogout').addEventListener('click', () => { if(confirm("Log out of the system?")) signOut(auth); });
 
         const btnDarkMode = document.getElementById('btnDarkMode');
         if (localStorage.getItem('theme') === 'dark') {
@@ -424,7 +424,7 @@
                 headers: { "Content-Type": "text/plain" },
                 body: payloadData
             }).then(() => console.log("Trigger GAS IN Terkirim"))
-              .catch(e => console.log("Gagal:", e));
+              .catch(e => console.log("Failed:", e));
         }
 
         function updateRekapKeluar(rowsData) {
@@ -435,7 +435,7 @@
                 headers: { "Content-Type": "text/plain" },
                 body: payloadData
             }).then(() => console.log("Trigger GAS OUT Terkirim"))
-              .catch(e => console.log("Gagal:", e));
+              .catch(e => console.log("Failed:", e));
         }
 
         function editRekapKeGAS(oldSO, oldCTN, newData) {
@@ -449,15 +449,15 @@
                 headers: { "Content-Type": "text/plain" },
                 body: payloadData
             }).then(() => console.log("Trigger GAS EDIT Terkirim"))
-              .catch(e => console.log("Gagal:", e));
+              .catch(e => console.log("Failed:", e));
         }
 
         document.getElementById('btnTarikSO').addEventListener('click', async () => {
             const soTarget = document.getElementById('soTarikExcel').value.toUpperCase().trim();
             const statusDiv = document.getElementById('statusTarik');
-            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO terlebih dahulu.";
+            if(!soTarget) return statusDiv.innerText = "❌ Please enter SO number first.";
 
-            statusDiv.innerText = "⏳ Memuat data Stok...";
+            statusDiv.innerText = "⏳ Loading Stock data...";
             statusDiv.style.color = "var(--text-main)";
 
             try {
@@ -495,28 +495,28 @@
                 }
                 document.getElementById('lokasiInput').value = lokasiSO;
 
-                statusDiv.innerText = `✅ ${dataStokExcel.length} Karton berhasil dimuat.` + (lokasiSO ? ` Lokasi: ${lokasiSO}` : ' ⚠️ Lokasi tidak ditemukan, isi manual.');
+                statusDiv.innerText = `✅ ${dataStokExcel.length} Cartons loaded.` + (lokasiSO ? ` Location: ${lokasiSO}` : ' ⚠️ Location not found, fill manually.');
                 statusDiv.style.color = "var(--secondary)"; 
             } catch (err) {
-                statusDiv.innerText = '❌ Gagal terhubung ke server Spreadsheet.';
+                statusDiv.innerText = '❌ Failed to connect to Spreadsheet server.';
                 statusDiv.style.color = 'var(--primary)';
             }
         });
 
         document.getElementById('btnSyncLokasi').addEventListener('click', async () => {
             const statusDiv = document.getElementById('statusLokasi');
-            statusDiv.innerText = '⏳ Mengunduh data lokasi...';
+            statusDiv.innerText = '⏳ Downloading location data...';
             statusDiv.style.color = 'var(--text-main)';
             try {
                 const response = await fetch(URL_GAS_LOKASI);
                 dataLokasiExcel = await response.json();
-                if (!Array.isArray(dataLokasiExcel)) throw new Error("Format respons tidak valid.");
+                if (!Array.isArray(dataLokasiExcel)) throw new Error("Invalid response format.");
 
-                statusDiv.innerText = `✅ Berhasil memuat ${dataLokasiExcel.length} lokasi!`;
+                statusDiv.innerText = `✅ Successfully loaded ${dataLokasiExcel.length} locations!`;
                 statusDiv.style.color = 'var(--secondary)'; 
                 renderDataLokasi();
             } catch (error) {
-                statusDiv.innerText = '❌ Gagal terhubung ke Spreadsheet Lokasi.';
+                statusDiv.innerText = '❌ Failed to connect to Location Spreadsheet.';
                 statusDiv.style.color = 'var(--primary)';
             }
         });
@@ -528,11 +528,11 @@
             const filter = document.getElementById('filterCariLokasi').value.toUpperCase().trim();
             grid.innerHTML = '';
 
-            if(dataLokasiExcel.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Klik tombol Unduh di atas terlebih dahulu.</p>';
-            if(!filter) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Ketikkan nomor SO pada kolom pencarian 👆</p>';
+            if(dataLokasiExcel.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Click Download button above first.</p>';
+            if(!filter) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--text-muted); grid-column: 1 / -1;">Type SO number in the search box 👆</p>';
 
             let filtered = dataLokasiExcel.filter(d => (d.so || "").toUpperCase().includes(filter));
-            if (filtered.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--primary); grid-column: 1 / -1;">❌ SO tidak ditemukan.</p>';
+            if (filtered.length === 0) return grid.innerHTML = '<p style="text-align:center; font-weight:800; margin-top:20px; color:var(--primary); grid-column: 1 / -1;">❌ SO not found.</p>';
 
             filtered.forEach(d => {
                 grid.innerHTML += `
@@ -542,7 +542,7 @@
                             <div style="font-weight: 900; font-size: 18px; color: var(--warning-text);">${d.so}</div>
                         </div>
                         <div>
-                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">LOKASI KARTON</div>
+                            <div class="lbl-sm" style="color:var(--warning-text); opacity:0.8;">CARTON LOCATION</div>
                             <div style="font-size: 24px; font-weight: 900; color: var(--warning-text);">📍 ${d.lokasi}</div>
                         </div>
                     </div>`;
@@ -558,9 +558,9 @@
             grid.innerHTML = '';
             summaryContainer.innerHTML = '';
             
-            if(!soTarget) return statusDiv.innerText = "❌ Harap masukkan nomor SO.";
+            if(!soTarget) return statusDiv.innerText = "❌ Please enter SO number.";
 
-            statusDiv.innerText = "⏳ Mencari data stok & lokasi SO " + soTarget + "...";
+            statusDiv.innerText = "⏳ Searching stock & location data for SO " + soTarget + "...";
             statusDiv.style.color = "var(--text-main)";
 
             try {
@@ -578,13 +578,13 @@
                     statusDiv.innerText = data.error;
                     statusDiv.style.color = "var(--primary)";
                 } else if(data.length === 0) {
-                    statusDiv.innerText = "❌ Tidak ada karton yang ditandai untuk SO ini di Spreadsheet.";
+                    statusDiv.innerText = "❌ No marked cartons found for this SO in the Spreadsheet.";
                     statusDiv.style.color = "var(--primary)";
                 } else {
-                    statusDiv.innerText = `✅ Data berhasil dimuat. Pilih karton untuk di-input manual.`;
+                    statusDiv.innerText = `✅ Data successfully loaded. Select carton for manual input.`;
                     statusDiv.style.color = "var(--secondary)"; 
                     
-                    let lokasiSO = "TIDAK DITEMUKAN";
+                    let lokasiSO = "NOT FOUND";
                     if(Array.isArray(dataLokasiExcel) && dataLokasiExcel.length > 0) {
                         let matchLoc = dataLokasiExcel.find(l => {
                             let lSo = (l.so || "").toString().toUpperCase().trim();
@@ -602,7 +602,7 @@
                     summaryContainer.innerHTML = `
                         <div class="summary-panel">
                             <h2>${data.length}</h2>
-                            <span style="display:block; margin-bottom:8px;">KARTON TERSEDIA DI SPREADSHEET</span>
+                            <span style="display:block; margin-bottom:8px;">CARTONS AVAILABLE IN SPREADSHEET</span>
                             <span style="font-size:15px; color:var(--primary); background:var(--danger-bg); padding:6px 14px; border-radius:12px; display:inline-block; border:1px solid var(--danger-text);">SO: <b>${soTarget}</b></span>
                         </div>
                     `;
@@ -623,11 +623,11 @@
                                 </div>
                                 <div class="card-info-grid">
                                     <div class="info-col">
-                                        <span class="lbl-sm">NO KARTON</span>
+                                        <span class="lbl-sm">CTN NO.</span>
                                         <span class="val-md">${d.karton}</span>
                                     </div>
                                     <div class="info-col" style="text-align:right;">
-                                        <span class="lbl-sm">LOKASI KARTON</span>
+                                        <span class="lbl-sm">LOCATION</span>
                                         <span class="val-loc">${d.lokasi}</span>
                                     </div>
                                 </div>
@@ -637,7 +637,7 @@
                     });
                 }
             } catch (err) {
-                statusDiv.innerText = "❌ Gagal terhubung ke server!";
+                statusDiv.innerText = "❌ Failed to connect to server!";
                 statusDiv.style.color = "var(--primary)";
             }
         });
@@ -651,7 +651,7 @@
             const bar = document.getElementById('bulkActionStokBar');
             if (window.selectedStokKarton.size > 0 && document.getElementById('tabListStok').classList.contains('active')) {
                 bar.style.display = 'flex';
-                document.getElementById('bulkStokCount').innerText = `${window.selectedStokKarton.size} Terpilih`;
+                document.getElementById('bulkStokCount').innerText = `${window.selectedStokKarton.size} Selected`;
             } else {
                 bar.style.display = 'none';
             }
@@ -666,14 +666,13 @@
 
             document.getElementById('soInput').value = selectedData[0].so || '';
             document.getElementById('artikelInput').value = selectedData[0].artikel || '';
-            if(selectedData[0].lokasi && selectedData[0].lokasi !== "TIDAK DITEMUKAN") {
+            if(selectedData[0].lokasi && selectedData[0].lokasi !== "NOT FOUND") {
                 document.getElementById('lokasiInput').value = selectedData[0].lokasi;
             } else {
                 document.getElementById('lokasiInput').value = '';
             }
             document.getElementById('ruanganInput').value = '';
             
-            // 🌟 SET JENIS SESUAI DATA YANG DITARIK DARI EXCEL
             let isMixData = selectedData[0].size === '-' || selectedData[0].size === 'MIX';
             document.getElementById('jenisInput').value = isMixData ? 'MIX' : 'SOLID';
             
@@ -688,8 +687,8 @@
                 row.className = 'form-row karton-item';
                 row.style.marginBottom = '12px';
                 row.innerHTML = `
-                    <input type="text" class="form-input size-input" value="${sizeVal}" placeholder="Ukuran" ${readOnlyAttr}>
-                    <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${d.karton}" placeholder="No. Karton">
+                    <input type="text" class="form-input size-input" value="${sizeVal}" placeholder="Size" ${readOnlyAttr}>
+                    <input type="text" inputmode="numeric" class="form-input nokarton-input" value="${d.karton}" placeholder="Ctn No.">
                     <button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>
                 `;
                 list.appendChild(row);
@@ -703,7 +702,6 @@
             openTab('tabInput', document.getElementById('btnTabInput'));
         }
 
-        // 🌟 LISTENER OTOMATISASI KOTAK UKURAN UNTUK TIPE MIX/SOLID
         document.getElementById('jenisInput').addEventListener('change', function() {
             let isMix = this.value === 'MIX';
             document.querySelectorAll('.size-input').forEach(input => {
@@ -740,7 +738,6 @@
                             val = '#' + val;
                         }
                         
-                        // Isi otomatis hanya jika mode SOLID
                         if (val !== '' && typeof dataStokExcel !== 'undefined' && dataStokExcel.length > 0 && document.getElementById('jenisInput').value !== 'MIX') {
                             let match = dataStokExcel.find(d => d.karton === val);
                             if (match) {
@@ -765,7 +762,6 @@
 
         applyUppercaseListener(); applyKartonFormatListener();
 
-        // 🌟 SESUAIKAN TOMBOL TAMBAH BARIS DENGAN MODE MIX
         document.getElementById('btnTambahBaris').addEventListener('click', () => {
             const list = document.getElementById('kartonList');
             const row = document.createElement('div');
@@ -776,7 +772,7 @@
             let sizeVal = isMix ? '-' : '';
             let readOnlyAttr = isMix ? 'readonly style="background-color:var(--border);"' : '';
 
-            row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Ukuran" value="${sizeVal}" ${readOnlyAttr}><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
+            row.innerHTML = `<input type="text" class="form-input size-input" placeholder="Size" value="${sizeVal}" ${readOnlyAttr}><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Ctn No."><button class="btn-hapus-baris" onclick="this.parentElement.remove()">❌</button>`;
             list.appendChild(row);
             applyUppercaseListener(); applyKartonFormatListener();
         });
@@ -789,14 +785,14 @@
             window.editOldCTN = null; 
             
             const btnTbh = document.getElementById('btnTambah');
-            btnTbh.innerHTML = "Simpan Data Stok"; 
+            btnTbh.innerHTML = "Save Stock Data"; 
             document.getElementById('editActionGroup').style.display = "none";
             document.getElementById('btnTambahBaris').style.display = "block"; 
             document.getElementById('tanggalInput').valueAsDate = new Date();
             ['soInput','artikelInput','lokasiInput','keteranganInput'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('jenisInput').value = 'SOLID'; 
             document.getElementById('ruanganInput').value = '';
-            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" placeholder="Ukuran"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="No. Karton"><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
+            document.getElementById('kartonList').innerHTML = `<div class="form-row karton-item" style="margin-bottom: 12px;"><input type="text" class="form-input size-input" placeholder="Size"><input type="text" inputmode="numeric" class="form-input nokarton-input" placeholder="Ctn No."><button class="btn-hapus-baris" onclick="hapusBaris(this)" style="display:none;">❌</button></div>`;
             applyUppercaseListener(); applyKartonFormatListener();
         }
 
@@ -841,15 +837,15 @@
             
             const rawTanggal = document.getElementById('tanggalInput').value; 
             const dateObj = new Date(rawTanggal);
-            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const tanggal = dateObj.getDate() + " " + months[dateObj.getMonth()] + " " + dateObj.getFullYear();
             
             const jenis = document.getElementById('jenisInput').value; 
             const so = val('soInput'), artikel = val('artikelInput'), lokasi = val('lokasiInput'), keterangan = val('keteranganInput');
             const ruangan = document.getElementById('ruanganInput').value;
 
-            if(!so || !artikel || !lokasi) return alert("Nomor SO, Artikel, dan Lokasi wajib diisi.");
-            if(!window.currentEditId && !ruangan) return alert("Ruangan (SI 1 / SI 2) wajib dipilih.");
+            if(!so || !artikel || !lokasi) return alert("SO Number, Article, and Location must be filled.");
+            if(!window.currentEditId && !ruangan) return alert("Room (SI 1 / SI 2) must be selected.");
 
             let dataToPush = [], isErrorPartial = false;
             document.querySelectorAll('.karton-item').forEach(item => {
@@ -861,20 +857,20 @@
                 else if (sizeInput || noKartonInput) isErrorPartial = true; 
             });
 
-            if(isErrorPartial) return alert("Terdapat baris isian yang belum lengkap.");
-            if(dataToPush.length === 0) return alert("Harap isi minimal 1 pasang Ukuran dan No. Karton!");
+            if(isErrorPartial) return alert("There are incomplete fields in the row.");
+            if(dataToPush.length === 0) return alert("Please fill at least 1 pair of Size and Ctn No.!");
 
-            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Pengguna Web";
+            const userName = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Web User";
             const btnTambah = document.getElementById('btnTambah');
             const textAsli = btnTambah.innerHTML;
-            btnTambah.innerHTML = "⏳ Mengirim & Menyinkronkan...";
+            btnTambah.innerHTML = "⏳ Sending & Syncing...";
             btnTambah.style.pointerEvents = "none";
             btnTambah.style.opacity = "0.7";
 
             try {
                 if (window.currentEditId) {
                     if(dataToPush.length > 1) {
-                        alert("Mode Ubah hanya dapat menyimpan 1 karton.");
+                        alert("Edit Mode can only save 1 carton.");
                         return;
                     }
                     await update(ref(db, `stok_fg_wh/${window.currentEditId}`), {
@@ -897,7 +893,7 @@
                     let fetchUrl = URL_GAS_STOK + "?action=sync&payload=" + encodeURIComponent(JSON.stringify(syncPayload));
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
 
-                    alert("Data berhasil diperbarui!");
+                    alert("Data successfully updated!");
                     batalEdit(); 
                     openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 } else {
@@ -926,12 +922,12 @@
                     }));
                     kirimKeRekap(rekapRows);
 
-                    alert(dataToPush.length > 1 ? `BERHASIL! ${dataToPush.length} Karton diinput & Excel tersinkronisasi.` : "Data berhasil disimpan!");
+                    alert(dataToPush.length > 1 ? `SUCCESS! ${dataToPush.length} Cartons inputted & Excel synchronized.` : "Data successfully saved!");
                     batalEdit(); 
                     openTab('tabAktif', document.getElementById('btnTabAktifTargetElement')); 
                 }
             } catch (err) {
-                alert("Terjadi kesalahan jaringan: " + err.message);
+                alert("Network error occurred: " + err.message);
             } finally {
                 btnTambah.innerHTML = textAsli;
                 btnTambah.style.pointerEvents = "auto";
@@ -943,19 +939,19 @@
             e.stopPropagation();
             let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             const dataToDelete = rawData.filter(d => (d.so_number || "").toUpperCase() === soTarget && d.status === statusFilter);
-            if(dataToDelete.length === 0) return alert('Data tidak ditemukan.');
+            if(dataToDelete.length === 0) return alert('Data not found.');
             
             let notOwned = dataToDelete.some(d => d.diinput_oleh !== currentUser);
             if (notOwned) {
-                return alert('⛔ AKSES DITOLAK: SO ini mengandung data yang diinput oleh orang lain. Anda hanya bisa menghapus data milik Anda sendiri.');
+                return alert('⛔ ACCESS DENIED: This SO contains data inputted by someone else. You can only delete your own data.');
             }
 
-            if (!confirm(`⚠️ Hapus PERMANEN ${dataToDelete.length} karton untuk SO ${soTarget}? Tindakan ini tidak bisa dibatalkan.`)) return;
+            if (!confirm(`⚠️ PERMANENTLY delete ${dataToDelete.length} cartons for SO ${soTarget}? This action cannot be undone.`)) return;
 
             for(let item of dataToDelete) {
                 await remove(ref(db, `stok_fg_wh/${item.id}`));
             }
-            alert(`Sukses! ${dataToDelete.length} karton dihapus permanen.`);
+            alert(`Success! ${dataToDelete.length} cartons permanently deleted.`);
             renderData();
         }
 
@@ -965,26 +961,25 @@
             for (let id of window.selectedIds) { 
                 let item = rawData.find(d => d.id === id);
                 if(item && item.diinput_oleh !== currentUser) {
-                    return alert('⛔ AKSES DITOLAK: Anda menyeleksi karton yang diinput oleh pengguna lain. Silakan un-check barang tersebut.');
+                    return alert('⛔ ACCESS DENIED: You selected a carton inputted by another user. Please uncheck that item.');
                 }
             }
 
-            if(confirm(`⚠️ Hapus PERMANEN ${window.selectedIds.size} kardus yang dipilih? Tindakan ini tidak bisa dibatalkan.`)) {
+            if(confirm(`⚠️ PERMANENTLY delete ${window.selectedIds.size} selected cartons? This action cannot be undone.`)) {
                 for (let id of window.selectedIds) { 
                     await remove(ref(db, `stok_fg_wh/${id}`)); 
                 }
-                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dihapus permanen.");
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Successfully deleted permanently.");
             }
         }
 
-        // 🌟 SESUAIKAN FUNGSI EDIT DENGAN MODE MIX
         window.editSemuanya = (id) => {
             let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             let item = rawData.find(d => d.id === id);
             if(!item) return;
             
             if(item.diinput_oleh !== currentUser) {
-                return alert('⛔ AKSES DITOLAK: Anda hanya bisa mengubah data yang Anda input sendiri.');
+                return alert('⛔ ACCESS DENIED: You can only edit data you inputted yourself.');
             }
             
             window.editOldSO = item.so_number;
@@ -1011,7 +1006,7 @@
             
             applyUppercaseListener(); applyKartonFormatListener();
             window.currentEditId = id;
-            document.getElementById('btnTambah').innerHTML = "Perbarui Data";
+            document.getElementById('btnTambah').innerHTML = "Update Data";
             document.getElementById('btnTambahBaris').style.display = "none";
             document.getElementById('editActionGroup').style.display = "flex";
             openTab('tabInput', document.getElementById('btnTabInput'));
@@ -1043,7 +1038,7 @@
 
             if (window.selectedIds.size > 0 && (isTabAktif || isTabRiwayat)) {
                 bar.style.display = 'flex';
-                document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Dipilih`;
+                document.getElementById('bulkCount').innerText = `${window.selectedIds.size} Selected`;
                 document.getElementById('btnBulkDel').style.display = 'block';
                 document.getElementById('btnBulkOut').style.display = isTabRiwayat ? 'none' : 'block';
             } else {
@@ -1052,7 +1047,7 @@
         }
 
         window.outTerpilih = async () => {
-            if(confirm(`Keluarkan ${window.selectedIds.size} kardus yang dipilih ke riwayat dan catat di Rekap Excel?`)) {
+            if(confirm(`Dispatch ${window.selectedIds.size} selected cartons to history and log to Excel?`)) {
                 let rekapOutPayload = [];
                 let syncPayload = [];
                 
@@ -1076,7 +1071,7 @@
                     fetch(fetchUrl, { mode: "no-cors" }).catch(e => console.log(e));
                 }
                 
-                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Berhasil dikeluarkan & Excel diperbarui.");
+                window.selectedIds.clear(); updateBulkDeleteUI(); alert("Successfully dispatched & Excel updated.");
             }
         }
 
@@ -1090,8 +1085,8 @@
         function groupData(dataArray) {
             let grouped = {};
             dataArray.forEach(d => {
-                let so = (d.so_number || "TANPA SO").toUpperCase();
-                let art = (d.artikel || "TANPA ARTIKEL").toUpperCase();
+                let so = (d.so_number || "NO SO").toUpperCase();
+                let art = (d.artikel || "NO ARTICLE").toUpperCase();
                 let tipe = (d.jenis || "SOLID").toUpperCase(); 
                 let key = so + "|||" + art + "|||" + tipe; 
                 if (!grouped[key]) grouped[key] = { so: so, art: art, tipe: tipe, items: [] };
@@ -1102,7 +1097,7 @@
 
         function buildPivotHTML(groupedData, tabType) {
             let keys = Object.keys(groupedData).sort();
-            if (keys.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
+            if (keys.length === 0) return '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">No data found.</p></div>';
             
             let currentUser = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "";
             let htmlOutput = '';
@@ -1110,7 +1105,7 @@
             keys.forEach(key => {
                 let group = groupedData[key];
                 let groupOwner = group.items[0].diinput_oleh || '';
-                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
+                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Delete</button>` : '';
                 let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
 
                 htmlOutput += `
@@ -1125,7 +1120,7 @@
                             </div>
                         </div>
                         <div style="display:flex; align-items:center; flex-shrink: 0;">
-                            <span class="pivot-count">${group.items.length} Karton</span>
+                            <span class="pivot-count">${group.items.length} Cartons</span>
                             ${btnHapusSO}
                         </div>
                     </div>
@@ -1137,12 +1132,12 @@
                     let badgeJenis = data.jenis === 'MIX' ? `<span class="badge-tipe badge-mix">MIX</span>` : `<span class="badge-tipe badge-solid">SOLID</span>`;
                     let isChecked = window.selectedIds.has(data.id) ? 'checked' : '';
                     let isMultiArtikel = tabType === 'AKTIF' && window.currentSoArtikelMap[group.so] && window.currentSoArtikelMap[group.so].size > 1;
-                    let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SO SAMA TAPI BEDA ARTIKEL!</div>` : '';
+                    let htmlPeringatanMulti = isMultiArtikel ? `<div class="alert-multi">SAME SO BUT DIFFERENT ARTICLES!</div>` : '';
                     let isOwner = (data.diinput_oleh === currentUser);
 
                     let visualTglMasuk = data.tanggal || '-';
                     if (visualTglMasuk !== '-') {
-                        const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
+                        const mapBulan = { "January":"1", "February":"2", "March":"3", "April":"4", "May":"5", "June":"6", "July":"7", "August":"8", "September":"9", "October":"10", "November":"11", "December":"12" };
                         let splitTgl = visualTglMasuk.split(' ');
                         if (splitTgl.length === 3) {
                             let hari = splitTgl[0];
@@ -1157,9 +1152,9 @@
                         let tglKeluar = data.tanggal_out;
                         if (tglKeluar && tglKeluar.includes('-')) {
                             let [y, m, d] = tglKeluar.split('-');
-                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('en-GB');
                         }
-                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
+                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">OUT : ${tglKeluar}</span>`;
                     }
 
                     let actionHtml = '';
@@ -1168,7 +1163,7 @@
                         actionHtml = `
                             <div class="action-row">
                                 ${btnEditHtml}
-                                <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">KELUAR</button>
+                                <button class="btn-out" onclick="pindahKeRiwayat('${data.id}')">DISPATCH</button>
                             </div>`;
                     }
 
@@ -1190,32 +1185,32 @@
                             </div>
                             <div class="card-info-grid" style="margin-bottom: 10px;">
                                 <div class="info-col">
-                                    <span class="lbl-sm">NO KARTON</span>
+                                    <span class="lbl-sm">CTN NO.</span>
                                     <span class="val-md">${data.nomor_karton}</span>
                                 </div>
                                 <div class="info-col" style="text-align: right;">
-                                    <span class="lbl-sm">LOKASI</span>
+                                    <span class="lbl-sm">LOCATION</span>
                                     <span class="val-loc">${data.lokasi}</span>
                                 </div>
                             </div>
                             <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
                                 <div class="info-col">
-                                    <span class="lbl-sm">TIPE</span>
+                                    <span class="lbl-sm">TYPE</span>
                                     <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
                                 </div>
                                 <div class="info-col" style="text-align: center;">
-                                    <span class="lbl-sm">RUANGAN</span>
+                                    <span class="lbl-sm">ROOM</span>
                                     <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
                                 </div>
                                 <div class="info-col" style="text-align: right;">
-                                    <span class="lbl-sm">TGL MASUK</span>
+                                    <span class="lbl-sm">DATE IN</span>
                                     <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
                                 </div>
                             </div>
                             <div class="card-artikel">${data.artikel}</div>
                             ${htmlKeterangan}
                             <div class="card-footer">
-                                <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                                <span class="card-user">By : ${data.diinput_oleh || 'System'}</span>
                             </div>
                             ${actionHtml}
                         </div>
@@ -1245,7 +1240,7 @@
                 let tglLokal = "";
                 if (d.tanggal_out) {
                     let [y, m, day] = d.tanggal_out.split('-');
-                    if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('id-ID').toUpperCase();
+                    if (y && m && day) tglLokal = new Date(y, m-1, day).toLocaleDateString('en-GB').toUpperCase();
                 }
                 let matchText = true;
                 if(fRiwayat) {
@@ -1306,7 +1301,7 @@
             }
 
             if (state.keys.length === 0) {
-                document.getElementById('gridRiwayatOut').innerHTML = '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">Tidak ada data yang ditemukan.</p></div>';
+                document.getElementById('gridRiwayatOut').innerHTML = '<div style="text-align:center; margin-top:40px;"><span style="font-size:40px;">📭</span><p style="color:var(--text-muted); font-weight:800; margin-top:10px;">No data found.</p></div>';
                 isRendering = false;
                 return;
             }
@@ -1321,7 +1316,7 @@
                 let group = state.groups[key];
                 
                 let groupOwner = group.items[0].diinput_oleh || '';
-                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Hapus</button>` : '';
+                let btnHapusSO = (currentUser === groupOwner) ? `<button onclick="hapusSemuaSO(event, '${group.so}', '${tabType}')" class="btn-delete-so">🗑️ Delete</button>` : '';
                 let badgeGroup = group.tipe === 'MIX' ? `<span class="badge-tipe badge-mix" style="margin-left:6px; font-size:10px;">MIX</span>` : `<span class="badge-tipe badge-solid" style="margin-left:6px; font-size:10px;">SOLID</span>`;
 
                 htmlOutput += `
@@ -1336,7 +1331,7 @@
                             </div>
                         </div>
                         <div style="display:flex; align-items:center; flex-shrink: 0;">
-                            <span class="pivot-count">${group.items.length} Karton</span>
+                            <span class="pivot-count">${group.items.length} Cartons</span>
                             ${btnHapusSO}
                         </div>
                     </div>
@@ -1351,7 +1346,7 @@
 
                     let visualTglMasuk = data.tanggal || '-';
                     if (visualTglMasuk !== '-') {
-                        const mapBulan = { "Januari":"1", "Februari":"2", "Maret":"3", "April":"4", "Mei":"5", "Juni":"6", "Juli":"7", "Agustus":"8", "September":"9", "Oktober":"10", "November":"11", "Desember":"12" };
+                        const mapBulan = { "January":"1", "February":"2", "March":"3", "April":"4", "May":"5", "June":"6", "July":"7", "August":"8", "September":"9", "October":"10", "November":"11", "December":"12" };
                         let splitTgl = visualTglMasuk.split(' ');
                         if (splitTgl.length === 3) {
                             let hari = splitTgl[0];
@@ -1366,9 +1361,9 @@
                         let tglKeluar = data.tanggal_out;
                         if (tglKeluar && tglKeluar.includes('-')) {
                             let [y, m, d] = tglKeluar.split('-');
-                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('id-ID');
+                            tglKeluar = new Date(y, m-1, d).toLocaleDateString('en-GB');
                         }
-                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">KELUAR : ${tglKeluar}</span>`;
+                        tglKeluarHtml = `<span class="card-date" style="color:var(--danger-text); font-weight:900;">OUT : ${tglKeluar}</span>`;
                     }
 
                     let chkHtml = `<input type="checkbox" class="chk-select" value="${data.id}" onchange="toggleSelect(this)" ${isChecked}>`;
@@ -1388,32 +1383,32 @@
                             </div>
                             <div class="card-info-grid" style="margin-bottom: 10px;">
                                 <div class="info-col">
-                                    <span class="lbl-sm">NO KARTON</span>
+                                    <span class="lbl-sm">CTN NO.</span>
                                     <span class="val-md">${data.nomor_karton}</span>
                                 </div>
                                 <div class="info-col" style="text-align: right;">
-                                    <span class="lbl-sm">LOKASI</span>
+                                    <span class="lbl-sm">LOCATION</span>
                                     <span class="val-loc">${data.lokasi}</span>
                                 </div>
                             </div>
                             <div class="card-info-grid" style="grid-template-columns: 1fr 1fr 1.5fr; margin-bottom: 14px; background: var(--bg-color); padding: 10px; border-radius: 8px; border: 1px dashed var(--border);">
                                 <div class="info-col">
-                                    <span class="lbl-sm">TIPE</span>
+                                    <span class="lbl-sm">TYPE</span>
                                     <span class="val-md" style="font-size: 11px;">${data.jenis || 'SOLID'}</span>
                                 </div>
                                 <div class="info-col" style="text-align: center;">
-                                    <span class="lbl-sm">RUANGAN</span>
+                                    <span class="lbl-sm">ROOM</span>
                                     <span class="val-md" style="font-size: 11px;">${data.ruangan || '-'}</span>
                                 </div>
                                 <div class="info-col" style="text-align: right;">
-                                    <span class="lbl-sm">TGL MASUK</span>
+                                    <span class="lbl-sm">DATE IN</span>
                                     <span class="val-md" style="font-size: 11px;">${visualTglMasuk}</span>
                                 </div>
                             </div>
                             <div class="card-artikel">${data.artikel}</div>
                             ${htmlKeterangan}
                             <div class="card-footer">
-                                <span class="card-user">Oleh : ${data.diinput_oleh || 'Sistem'}</span>
+                                <span class="card-user">By : ${data.diinput_oleh || 'System'}</span>
                             </div>
                         </div>
                     `;
@@ -1443,7 +1438,7 @@
         document.getElementById('filterTanggalRiwayat').addEventListener('input', renderData);
 
         window.pindahKeRiwayat = async (id) => {
-            if(confirm("Keluarkan data barang ini (OUT) dan catat di Rekap Excel?")) {
+            if(confirm("Dispatch this item (OUT) and log to Excel?")) {
                 let itemData = rawData.find(d => d.id === id);
                 if(itemData) {
                     updateRekapKeluar([{ so: itemData.so_number, ctn: itemData.nomor_karton }]);
